@@ -2059,3 +2059,17 @@ body {
   .source-privacy { flex-basis: 100%; }
   .vision-hud { grid-template-columns: 1fr; left: 8px; right: 8px; bottom: 8px; }
 }
+.model-evidence {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin: .45rem 0 .2rem;
+  padding: .35rem .65rem;
+  border: 2px solid var(--ink, #171717);
+  border-radius: 9px 13px 8px 12px;
+  background: #eef7e8;
+  color: #31543e;
+  font-size: .76rem;
+  font-weight: 700;
+  box-shadow: 2px 2px 0 rgba(23, 23, 23, .16);
+}

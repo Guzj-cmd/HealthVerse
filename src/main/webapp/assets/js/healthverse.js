@@ -35,7 +35,13 @@
     lastVideoTime: -1,
     lastInferenceAt: 0,
     inferenceFrames: 0,
-    inferenceWindowStarted: 0
+    inferenceWindowStarted: 0,
+    postureModel: null,
+    postureRuntime: null,
+    postureModelPromise: null,
+    postureCandidate: null,
+    postureCandidateSince: 0,
+    lastPostureInferenceAt: 0
   };
 
   const crumb = $('#crumb');
@@ -52,6 +58,19 @@
   const liveVisionStage = $('#liveVisionStage');
   const scenePlaceholder = $('#scenePlaceholder');
   const sourceStatus = $('#sourceStatus');
+
+  const POSTURE_LABELS = {
+    TUP: '躯干中性', TLF: '躯干前倾', TLB: '躯干后倾', TLL: '躯干左倾', TLR: '躯干右倾',
+    LAP: '双腿分开', LWA: '双腿宽开', LCS: '双腿合拢', LCR: '右腿交叉',
+    LCL: '左腿交叉', LLR: '双腿偏右', LLL: '双腿偏左'
+  };
+
+  const POSTURE_GUIDANCE = {
+    TLF: '如果这个前倾不是当前任务所需，可以让背部稍作支撑或把内容移近；也可以忽略。',
+    TLB: '如果后倾影响当前操作，可以轻微调整椅背或桌面距离；也可以保持现状。',
+    TLL: '左倾已持续出现，可以尝试把常用物品移近身体中线；先确认是否由任务造成。',
+    TLR: '右倾已持续出现，可以尝试把常用物品移近身体中线；先确认是否由任务造成。'
+  };
 
   function escapeHtml(value) {
     return String(value).replace(/[&<>'"]/g, (character) => ({
@@ -122,6 +141,79 @@
     }
   }
 
+  async function ensurePostureClassifier() {
+    if (state.postureModel && state.postureRuntime) return state.postureModel;
+    if (state.postureModelPromise) return state.postureModelPromise;
+    const runtimeUrl = appContext ? `${appContext}/assets/js/posture-inference.mjs` : './posture-inference.mjs';
+    const modelUrl = appContext ? `${appContext}/assets/models/posture-classifiers-v1.json` : './models/posture-classifiers-v1.json';
+    state.postureModelPromise = Promise.all([
+      import(runtimeUrl),
+      fetch(modelUrl).then((response) => {
+        if (!response.ok) throw new Error(`model HTTP ${response.status}`);
+        return response.json();
+      })
+    ]).then(([runtime, artifact]) => {
+      state.postureRuntime = runtime;
+      state.postureModel = artifact;
+      updateVisionMetric('#modelEvidence', `真实模型 ${artifact.version} · 已加载`);
+      return artifact;
+    }).catch((error) => {
+      state.postureModelPromise = null;
+      updateVisionMetric('#modelEvidence', '真实姿态模型 · 加载失败');
+      throw error;
+    });
+    return state.postureModelPromise;
+  }
+
+  function resetPostureInference() {
+    state.postureCandidate = null;
+    state.postureCandidateSince = 0;
+    state.lastPostureInferenceAt = 0;
+    updateVisionMetric('#confidenceText', '—');
+    const bar = $('#confidenceBar');
+    if (bar) bar.style.width = '0%';
+  }
+
+  function applyPostureInference(landmarks, timestamp) {
+    if (!state.postureModel || !state.postureRuntime || timestamp - state.lastPostureInferenceAt < 250) return;
+    state.lastPostureInferenceAt = timestamp;
+    const prediction = state.postureRuntime.classifyPose(state.postureModel, landmarks);
+    const upper = prediction.upper;
+    const lower = prediction.lower;
+    const confidence = Math.round(upper.confidence * 100);
+    updateVisionMetric('#confidenceText', `${confidence}%`);
+    const bar = $('#confidenceBar');
+    if (bar) bar.style.width = `${confidence}%`;
+    updateVisionMetric('#modelEvidence', `${POSTURE_LABELS[upper.label] || upper.label} ${confidence}% · 下身：${POSTURE_LABELS[lower.label] || lower.label}`);
+
+    if (upper.confidence < prediction.confidenceThreshold) {
+      state.postureCandidate = null;
+      state.postureCandidateSince = 0;
+      $('#agentFinding').textContent = '模型正在等待更多证据';
+      $('#agentReason').textContent = '当前分类置信度不足，因此不生成姿态建议。可以继续活动或调整摄像头视角。';
+      return;
+    }
+    if (upper.label === 'TUP') {
+      state.postureCandidate = null;
+      state.postureCandidateSince = 0;
+      $('#agentFinding').textContent = '当前躯干关系较稳定';
+      $('#agentReason').textContent = `真实训练模型识别为“${POSTURE_LABELS[upper.label]}”（${confidence}%）。姿态变化本身是正常的，系统不会要求你始终保持同一姿势。`;
+      return;
+    }
+    if (state.postureCandidate !== upper.label) {
+      state.postureCandidate = upper.label;
+      state.postureCandidateSince = timestamp;
+    }
+    const sustained = (timestamp - state.postureCandidateSince) / 1000;
+    if (sustained < 5) {
+      $('#agentFinding').textContent = `正在确认“${POSTURE_LABELS[upper.label]}”是否持续`;
+      $('#agentReason').textContent = `真实模型置信度 ${confidence}%，已持续 ${sustained.toFixed(1)} / 5.0 秒。按照 CHI 的低打扰反馈方法，单帧或短暂动作不会触发建议。`;
+      return;
+    }
+    $('#agentFinding').textContent = `${POSTURE_LABELS[upper.label]}已持续 5 秒`;
+    $('#agentReason').textContent = `${POSTURE_GUIDANCE[upper.label]} 这是基于关键点关系的非医疗建议，原始画面仍只在本机处理。`;
+  }
+
   function setLiveStage(active) {
     if (liveVisionStage) liveVisionStage.hidden = !active;
     if (scenePlaceholder) scenePlaceholder.hidden = active;
@@ -169,11 +261,13 @@
     state.paused = false;
     state.lastVideoTime = -1;
     state.inferenceFrames = 0;
+    resetPostureInference();
     setLiveStage(false);
     resetVisionMetrics();
     updateVisionMetric('#visionSourceMetric', '尚未启用视觉输入');
     updateVisionMetric('#visionSummary', '等待连接');
     updateVisionMetric('#visionSummaryDetail', '启用摄像头或导入视频后开始本地分析');
+    updateVisionMetric('#modelEvidence', state.postureModel ? `真实模型 ${state.postureModel.version} · 等待视觉输入` : '真实姿态模型 · 等待视觉输入');
     setSourceStatus('等待真实输入 · 本地处理', 'idle');
     $('#scene')?.classList.remove('paused');
     $('.status-pill.live')?.classList.remove('paused');
@@ -256,7 +350,8 @@
     updateVisionMetric('#visionSummaryDetail', 'MediaPipe 已从当前真实画面检测到人体姿态');
     updateVisionMetric('#neckMetric', neckAngle == null ? '头颈偏移 —' : `头颈偏移 ${neckAngle}°`);
     updateVisionMetric('#shoulderMetric', shoulderAngle == null ? '肩线角度 —' : `肩线角度 ${shoulderAngle}°`);
-    if (neckAngle != null) {
+    applyPostureInference(landmarks, performance.now());
+    if (neckAngle != null && !state.postureModel) {
       $('#agentFinding').textContent = neckAngle >= 12 ? '真实画面中检测到头部相对肩线偏移' : '真实画面中的头肩关系较稳定';
       $('#agentReason').textContent = `当前帧来自${state.visionMode === 'camera' ? '摄像头' : '导入视频'}，MediaPipe 估计头颈偏移约 ${neckAngle}°、肩线约 ${shoulderAngle ?? '—'}°。这是二维姿态线索，不是医疗诊断；你可以暂停、纠正或更换视角。`;
     }
@@ -313,6 +408,9 @@
       if (state.visionMode !== mode) return;
       setSourceStatus(`${label} · 视频正常播放，姿态模型加载失败`, 'warning');
       toast('视频输入已启用；姿态模型暂不可用，原始画面仍不会上传。', 3600);
+    });
+    ensurePostureClassifier().catch(() => {
+      toast('MediaPipe 仍可工作，但训练后的姿态分类器没有加载成功。', 3600);
     });
   }
 

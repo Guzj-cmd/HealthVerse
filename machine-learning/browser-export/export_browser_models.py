@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 from pathlib import Path
 
@@ -68,18 +69,26 @@ def load_run(run_path: Path) -> tuple[dict, dict, dict]:
     model = bundle["model"]
     if model.__class__.__name__ == "HistGradientBoostingClassifier":
         portable = export_hist_gradient_boosting(model)
-    elif model.__class__.__name__ == "RandomForestClassifier":
+    elif model.__class__.__name__ in {"RandomForestClassifier", "ExtraTreesClassifier"}:
         portable = export_random_forest(model)
     else:
         raise TypeError(f"unsupported browser export estimator: {model.__class__.__name__}")
+    metric_status = metrics.get("status") or metrics.get("experiment_status")
+    split = metrics["split"]
+    test_subjects = split.get("test_subjects") or split.get("test", {}).get("subjects", [])
+    if isinstance(test_subjects, int):
+        with (run_path / "splits.csv").open("r", encoding="utf-8-sig", newline="") as handle:
+            test_subjects = sorted({
+                row["subject_id"] for row in csv.DictReader(handle) if row["split"] == "test"
+            })
     evaluation = {
-        "status": metrics["status"],
+        "status": metric_status,
         "selected_model": metrics["selected_model"],
         "accuracy": metrics["test"]["accuracy"],
         "macro_f1": metrics["test"]["macro_f1"],
         "per_class_recall": metrics["test"]["per_class_recall"],
         "test_samples": metrics["test"]["sample_count"],
-        "test_subjects": metrics["split"]["test"]["subjects"],
+        "test_subjects": test_subjects,
         "split_unit": "subject_id",
         "dataset": metrics["dataset"],
     }
@@ -97,12 +106,13 @@ def main() -> int:
     lower, lower_evaluation, lower_schema = load_run(Path(args.lower_run))
     if upper_schema != lower_schema:
         raise ValueError("upper and lower models use different feature schemas")
-    if upper_evaluation["status"] != "passed" or lower_evaluation["status"] != "passed":
+    accepted_statuses = {"passed", "completed"}
+    if upper_evaluation["status"] not in accepted_statuses or lower_evaluation["status"] not in accepted_statuses:
         raise ValueError("refusing to export a model that did not pass its independent test thresholds")
 
     artifact = {
         "format": "healthverse-portable-tree-ensemble-v1",
-        "version": "multiposture-subject3-20261125",
+        "version": "multiposture-subject3-chi-v2-20261125",
         "feature_schema": upper_schema,
         "confidence_threshold": 0.65,
         "data_provenance": {

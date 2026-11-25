@@ -1,0 +1,194 @@
+{
+  "experiment_status": "completed",
+  "target_accuracy": 1.0,
+  "target_reached": false,
+  "selection_rule": "highest pooled GroupKFold Macro-F1 on development subjects; test evaluated once after selection",
+  "selected_model": "extra_trees_half_features",
+  "development_group_cv": {
+    "sample_count": 3600,
+    "accuracy": 0.9277777777777778,
+    "macro_f1": 0.939753227310044,
+    "per_class_recall": {
+      "LAP": 0.9155920281359906,
+      "LCL": 0.9150326797385621,
+      "LCR": 0.997624703087886,
+      "LCS": 0.9708939708939709,
+      "LLL": 0.9518900343642611,
+      "LLR": 0.9696048632218845,
+      "LWA": 0.856396866840731
+    },
+    "confusion_matrix": [
+      [
+        781,
+        0,
+        0,
+        29,
+        0,
+        0,
+        43
+      ],
+      [
+        0,
+        420,
+        0,
+        0,
+        39,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        420,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        14,
+        0,
+        0,
+        467,
+        0,
+        0,
+        0
+      ],
+      [
+        14,
+        0,
+        0,
+        0,
+        277,
+        0,
+        0
+      ],
+      [
+        10,
+        0,
+        0,
+        0,
+        0,
+        319,
+        0
+      ],
+      [
+        110,
+        0,
+        0,
+        0,
+        0,
+        0,
+        656
+      ]
+    ]
+  },
+  "test": {
+    "sample_count": 1194,
+    "accuracy": 0.9346733668341709,
+    "macro_f1": 0.9597543374472827,
+    "per_class_recall": {
+      "LAP": 0.9066666666666666,
+      "LCL": 1.0,
+      "LCR": 1.0,
+      "LCS": 0.9866666666666667,
+      "LLL": 1.0,
+      "LLR": 1.0,
+      "LWA": 0.8181818181818182
+    },
+    "confusion_matrix": [
+      [
+        272,
+        0,
+        0,
+        0,
+        0,
+        0,
+        28
+      ],
+      [
+        0,
+        150,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        150,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        0,
+        0,
+        148,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        90,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        90,
+        0
+      ],
+      [
+        48,
+        0,
+        0,
+        0,
+        0,
+        0,
+        216
+      ]
+    ]
+  },
+  "split": {
+    "development_subjects": [
+      "subject-1",
+      "subject-10",
+      "subject-11",
+      "subject-12",
+      "subject-2",
+      "subject-4",
+      "subject-6",
+      "subject-7",
+      "subject-8",
+      "subject-9"
+    ],
+    "test_subjects": [
+      "subject-13",
+      "subject-3",
+      "subject-5"
+    ],
+    "development_samples": 3600,
+    "test_samples": 1194
+  },
+  "feature_method": "EduSense-style scale-normalized keypoint-pair direction/distance features plus normalized landmarks, visibility and joint-angle features",
+  "dataset": "multiposture-lower.jsonl",
+  "created_at": "2026-11-25T07:01:12.304472+00:00",
+  "limitations": [
+    "The public landmark table cannot measure camera-to-pose-detector coverage.",
+    "This dataset has 13 participants; 100% on a frozen split would not prove universal generalization.",
+    "The same historical split was used by earlier project runs, so results are development evidence rather than a final external benchmark."
+  ]
+}

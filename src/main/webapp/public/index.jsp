@@ -3,10 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="app-context" content="${pageContext.request.contextPath}">
   <meta name="theme-color" content="#f7f1e5">
   <title>HealthVerse · 个人健康 AI 工作台</title>
   <meta name="description" content="一个以视觉感知、空间协同设计和自我实验为核心的个人健康 AI 工作台概念原型。">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/healthverse.css">
 </head>
 <body>
   <div class="app-shell">
@@ -117,9 +118,10 @@
               <div class="agent-title"><span class="agent-orb"></span><div><h2>Health Agent</h2><p>当前任务：深度学习 · 42 分钟</p></div></div>
               <div class="reasoning-card" aria-live="polite">
                 <div class="card-kicker">观察 → 推断 → 求证</div>
+                <div class="model-evidence" id="modelEvidence">真实姿态模型 · 等待视觉输入</div>
                 <h3 id="agentFinding">显示器可能低于舒适视线</h3>
                 <p id="agentReason">你持续注视屏幕，并在过去 18 分钟出现 6 次颈部前倾。屏幕位置可能需要调整，但我还需要侧面视角确认。</p>
-                <div class="evidence-row"><span>置信度</span><div class="confidence"><i style="width:78%"></i></div><b>78%</b></div>
+                <div class="evidence-row"><span>模型置信度</span><div class="confidence"><i id="confidenceBar" style="width:0%"></i></div><b id="confidenceText">—</b></div>
                 <div class="interrupt-note"><b>为什么现在提醒？</b><span>你已连续学习 42 分钟，当前处于自然停顿，预计打断成本较低。</span></div>
               </div>
               <div class="correction-row" aria-label="纠正 AI 的判断">
@@ -398,6 +400,6 @@
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js"></script>
+  <script src="${pageContext.request.contextPath}/assets/js/healthverse.js"></script>
 </body>
 </html>

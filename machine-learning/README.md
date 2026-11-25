@@ -74,3 +74,33 @@ python -m unittest discover -s tests -v
 ```
 
 单元测试只检查特征、分组切分和阈值逻辑，不能作为准确率证据。只有使用注明来源、许可、标签和独立测试分区的真实数据运行 `train.py` 后，输出指标才可报告为 benchmark 结果。
+
+## CHI / IMWUT 方法实验
+
+`train_chi_inspired.py` 使用 EduSense 的尺度归一化关键点对方向/距离特征，并在开发受试者上用 5 折 GroupKFold 比较固定候选。胜者确定后才对冻结的 3 名测试受试者评一次：
+
+```powershell
+python train_chi_inspired.py `
+  --data data/multiposture-upper.jsonl `
+  --config config-subject3.json `
+  --output runs/chi-inspired-v1
+```
+
+论文训练方法与 CHI 反馈机制的边界见 `CHI_METHODS.md`。100% 只是优化目标；禁止根据冻结测试集反复调参，也禁止用帧级随机切分制造虚高结果。
+
+## 浏览器模型导出与一致性验证
+
+通过的 sklearn HGB / RandomForest 会被转换为纯 JSON 树结构，网页在本地计算 456 维特征并执行同一模型。120 个冻结测试样本的 Python 与 JavaScript 预测标签必须完全一致，概率绝对误差小于 `1e-5`：
+
+```powershell
+python browser-export/export_browser_models.py `
+  --upper-run runs/upper-v2-subject3 --lower-run runs/chi-inspired-v1-lower-final `
+  --output ../src/main/webapp/assets/models/posture-classifiers-v1.json
+
+python browser-export/make_parity_fixture.py `
+  --machine-learning-root . --data data/multiposture-upper.jsonl `
+  --upper-run runs/upper-v2-subject3 --lower-run runs/chi-inspired-v1-lower-final `
+  --output browser-export/test-fixtures/parity-120.json
+
+node browser-export/test_model_parity.mjs
+```

@@ -1,0 +1,138 @@
+[
+  {
+    "candidate": "random_forest_half_features",
+    "fold": 1,
+    "validation_subjects": [
+      "subject-1",
+      "subject-12",
+      "subject-9"
+    ],
+    "accuracy": 0.937037037037037,
+    "macro_f1": 0.9258320646457131
+  },
+  {
+    "candidate": "random_forest_half_features",
+    "fold": 2,
+    "validation_subjects": [
+      "subject-11",
+      "subject-2",
+      "subject-6"
+    ],
+    "accuracy": 0.8725,
+    "macro_f1": 0.863393640061627
+  },
+  {
+    "candidate": "random_forest_half_features",
+    "fold": 3,
+    "validation_subjects": [
+      "subject-10",
+      "subject-4",
+      "subject-7",
+      "subject-8"
+    ],
+    "accuracy": 0.9037878787878788,
+    "macro_f1": 0.9233583594426726
+  },
+  {
+    "candidate": "extra_trees_half_features",
+    "fold": 1,
+    "validation_subjects": [
+      "subject-1",
+      "subject-12",
+      "subject-9"
+    ],
+    "accuracy": 0.9120370370370371,
+    "macro_f1": 0.911151067540944
+  },
+  {
+    "candidate": "extra_trees_half_features",
+    "fold": 2,
+    "validation_subjects": [
+      "subject-11",
+      "subject-2",
+      "subject-6"
+    ],
+    "accuracy": 0.9816666666666667,
+    "macro_f1": 0.9889588377723971
+  },
+  {
+    "candidate": "extra_trees_half_features",
+    "fold": 3,
+    "validation_subjects": [
+      "subject-10",
+      "subject-4",
+      "subject-7",
+      "subject-8"
+    ],
+    "accuracy": 0.8916666666666667,
+    "macro_f1": 0.9229833737012137
+  },
+  {
+    "candidate": "hist_gradient_boosting_31",
+    "fold": 1,
+    "validation_subjects": [
+      "subject-1",
+      "subject-12",
+      "subject-9"
+    ],
+    "accuracy": 0.8,
+    "macro_f1": 0.8183943756561121
+  },
+  {
+    "candidate": "hist_gradient_boosting_31",
+    "fold": 2,
+    "validation_subjects": [
+      "subject-11",
+      "subject-2",
+      "subject-6"
+    ],
+    "accuracy": 0.9508333333333333,
+    "macro_f1": 0.9572582438469021
+  },
+  {
+    "candidate": "hist_gradient_boosting_31",
+    "fold": 3,
+    "validation_subjects": [
+      "subject-10",
+      "subject-4",
+      "subject-7",
+      "subject-8"
+    ],
+    "accuracy": 0.8984848484848484,
+    "macro_f1": 0.9234232706629752
+  },
+  {
+    "candidate": "rbf_svc_c10",
+    "fold": 1,
+    "validation_subjects": [
+      "subject-1",
+      "subject-12",
+      "subject-9"
+    ],
+    "accuracy": 0.7888888888888889,
+    "macro_f1": 0.8128815422194997
+  },
+  {
+    "candidate": "rbf_svc_c10",
+    "fold": 2,
+    "validation_subjects": [
+      "subject-11",
+      "subject-2",
+      "subject-6"
+    ],
+    "accuracy": 0.8625,
+    "macro_f1": 0.8957719988320907
+  },
+  {
+    "candidate": "rbf_svc_c10",
+    "fold": 3,
+    "validation_subjects": [
+      "subject-10",
+      "subject-4",
+      "subject-7",
+      "subject-8"
+    ],
+    "accuracy": 0.9015151515151515,
+    "macro_f1": 0.9303163980513559
+  }
+]

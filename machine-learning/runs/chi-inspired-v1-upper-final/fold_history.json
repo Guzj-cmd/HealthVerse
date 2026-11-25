@@ -1,0 +1,138 @@
+[
+  {
+    "candidate": "random_forest_half_features",
+    "fold": 1,
+    "validation_subjects": [
+      "subject-1",
+      "subject-12",
+      "subject-9"
+    ],
+    "accuracy": 0.9694444444444444,
+    "macro_f1": 0.9651628690446925
+  },
+  {
+    "candidate": "random_forest_half_features",
+    "fold": 2,
+    "validation_subjects": [
+      "subject-11",
+      "subject-2",
+      "subject-6"
+    ],
+    "accuracy": 0.9883333333333333,
+    "macro_f1": 0.9799357329549266
+  },
+  {
+    "candidate": "random_forest_half_features",
+    "fold": 3,
+    "validation_subjects": [
+      "subject-10",
+      "subject-4",
+      "subject-7",
+      "subject-8"
+    ],
+    "accuracy": 0.9628787878787879,
+    "macro_f1": 0.9643841925947884
+  },
+  {
+    "candidate": "extra_trees_half_features",
+    "fold": 1,
+    "validation_subjects": [
+      "subject-1",
+      "subject-12",
+      "subject-9"
+    ],
+    "accuracy": 0.9666666666666667,
+    "macro_f1": 0.9634069487836545
+  },
+  {
+    "candidate": "extra_trees_half_features",
+    "fold": 2,
+    "validation_subjects": [
+      "subject-11",
+      "subject-2",
+      "subject-6"
+    ],
+    "accuracy": 0.9733333333333334,
+    "macro_f1": 0.9805861366669009
+  },
+  {
+    "candidate": "extra_trees_half_features",
+    "fold": 3,
+    "validation_subjects": [
+      "subject-10",
+      "subject-4",
+      "subject-7",
+      "subject-8"
+    ],
+    "accuracy": 0.9606060606060606,
+    "macro_f1": 0.962097138093846
+  },
+  {
+    "candidate": "hist_gradient_boosting_31",
+    "fold": 1,
+    "validation_subjects": [
+      "subject-1",
+      "subject-12",
+      "subject-9"
+    ],
+    "accuracy": 0.9574074074074074,
+    "macro_f1": 0.9470221948820431
+  },
+  {
+    "candidate": "hist_gradient_boosting_31",
+    "fold": 2,
+    "validation_subjects": [
+      "subject-11",
+      "subject-2",
+      "subject-6"
+    ],
+    "accuracy": 0.9766666666666667,
+    "macro_f1": 0.9886846058389394
+  },
+  {
+    "candidate": "hist_gradient_boosting_31",
+    "fold": 3,
+    "validation_subjects": [
+      "subject-10",
+      "subject-4",
+      "subject-7",
+      "subject-8"
+    ],
+    "accuracy": 0.9712121212121212,
+    "macro_f1": 0.9785436762043715
+  },
+  {
+    "candidate": "rbf_svc_c10",
+    "fold": 1,
+    "validation_subjects": [
+      "subject-1",
+      "subject-12",
+      "subject-9"
+    ],
+    "accuracy": 0.8925925925925926,
+    "macro_f1": 0.8665050180017267
+  },
+  {
+    "candidate": "rbf_svc_c10",
+    "fold": 2,
+    "validation_subjects": [
+      "subject-11",
+      "subject-2",
+      "subject-6"
+    ],
+    "accuracy": 0.9316666666666666,
+    "macro_f1": 0.9068146074903373
+  },
+  {
+    "candidate": "rbf_svc_c10",
+    "fold": 3,
+    "validation_subjects": [
+      "subject-10",
+      "subject-4",
+      "subject-7",
+      "subject-8"
+    ],
+    "accuracy": 0.9356060606060606,
+    "macro_f1": 0.9448487355112742
+  }
+]

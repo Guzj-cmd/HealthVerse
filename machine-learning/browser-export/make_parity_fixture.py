@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 import joblib
+import numpy as np
 
 
 def main() -> int:
@@ -30,13 +31,26 @@ def main() -> int:
     with (upper_run / "splits.csv").open("r", encoding="utf-8-sig", newline="") as handle:
         test_ids = {row["sample_id"] for row in csv.DictReader(handle) if row["split"] == "test"}
 
-    records = []
+    selected = []
     for sample in load_samples(args.data):
         if sample.sample_id not in test_ids:
             continue
-        features = pose_features(sample.landmarks).reshape(1, -1)
-        upper_probabilities = upper.predict_proba(features)[0]
-        lower_probabilities = lower.predict_proba(features)[0]
+        selected.append(sample)
+        if len(selected) >= args.samples:
+            break
+    if len(selected) < 100:
+        raise ValueError(f"parity fixture requires at least 100 test samples, found {len(selected)}")
+
+    # Predict the fixture as one batch. Besides being faster, this follows the
+    # same sklearn path used during evaluation instead of repeatedly invoking
+    # an estimator with one row.
+    feature_matrix = np.vstack([pose_features(sample.landmarks) for sample in selected])
+    upper_predictions = upper.predict_proba(feature_matrix)
+    lower_predictions = lower.predict_proba(feature_matrix)
+    records = []
+    for sample, upper_probabilities, lower_probabilities in zip(
+        selected, upper_predictions, lower_predictions, strict=True
+    ):
         records.append({
             "sample_id": sample.sample_id,
             "landmarks": [
@@ -52,10 +66,6 @@ def main() -> int:
                 "probabilities": [float(value) for value in lower_probabilities],
             },
         })
-        if len(records) >= args.samples:
-            break
-    if len(records) < 100:
-        raise ValueError(f"parity fixture requires at least 100 test samples, found {len(records)}")
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps({"samples": records}, separators=(",", ":")), encoding="utf-8")
