@@ -1,6 +1,6 @@
 # HealthVerse distilled student model card
 
-- Status: **passed**
+- Status: **development_passed**
 - Training observations: 119 real MultiPosture participant samples
 - Teacher: `gpt-5.6-sol`, two-pass exact consensus
 - Teacher-label coverage: 0.9370

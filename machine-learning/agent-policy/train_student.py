@@ -115,7 +115,7 @@ def main() -> int:
     if coverage < thresholds["minimum_coverage"]: failures.append("teacher_coverage")
     if teacher_abstention > thresholds["maximum_teacher_abstention"]: failures.append("teacher_abstention")
     report = {
-        "status": "passed" if not failures else "failed",
+        "status": "development_passed" if not failures else "failed",
         "metric_semantics": "agreement with filtered AI-teacher labels, not medical or ergonomic correctness",
         "failed_thresholds": failures,
         "action_student": {"selected_model": action_winner, "validation_selected_threshold": action_threshold, "test": action_test, "labels": action_labels},

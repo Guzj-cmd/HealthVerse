@@ -1,5 +1,5 @@
 {
-  "status": "passed",
+  "status": "development_passed",
   "metric_semantics": "agreement with filtered AI-teacher labels, not medical or ergonomic correctness",
   "failed_thresholds": [],
   "action_student": {
@@ -96,5 +96,5 @@
   },
   "student_input": "same observable structured posture context shown to the teacher",
   "environment_action_status": "untrained_missing_observed_environment_fields",
-  "created_at": "2026-11-25T06:36:07.728241+00:00"
+  "created_at": "2026-11-25T06:38:18.825440+00:00"
 }

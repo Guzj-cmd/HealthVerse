@@ -31,7 +31,7 @@ class AgentPolicyAuditTests(unittest.TestCase):
 
     def test_student_gate_and_subject_isolation(self):
         metrics = json.loads((ROOT / "artifacts" / "student-v2" / "metrics.json").read_text(encoding="utf-8"))
-        self.assertEqual(metrics["status"], "passed")
+        self.assertEqual(metrics["status"], "development_passed")
         self.assertEqual(metrics["metric_semantics"], "agreement with filtered AI-teacher labels, not medical or ergonomic correctness")
         splits = [set(metrics["split"][name]["subjects"]) for name in ("train", "validation", "test")]
         self.assertFalse(splits[0] & splits[1] or splits[0] & splits[2] or splits[1] & splits[2])
