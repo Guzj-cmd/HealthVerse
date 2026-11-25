@@ -64,6 +64,21 @@
       "evaluation": "planned subject-and-scene-disjoint"
     },
     {
+      "id": "couch-mocap",
+      "name": "COUCH MoCap NPZ release",
+      "status": "audited-blocked-target-manifest-missing",
+      "participants": 6,
+      "samples": 485,
+      "sample_unit": "motion sequences (656,698 frames)",
+      "modalities": ["smpl-h-motion", "root-translation", "chair-transform", "source-interval-boundaries"],
+      "scenes": ["four indoor scenes", "three chairs", "one sofa"],
+      "tasks": ["human-chair interaction", "published hand-contact taxonomy"],
+      "license": "non-commercial scientific research, education, and artistic projects",
+      "source_url": "https://virtualhumans.mpi-inf.mpg.de/couch/",
+      "evaluation": "planned leave-one-subject-out over six subjects; zero folds run because explicit targets are absent",
+      "notes": "The official 336,578,531-byte archive passed SHA-256 and ZIP/schema checks. All 485 NPZ files contain pose, trans, R, t, start_idx and end_idx, but none contains a contact/interaction target. The published contact taxonomy cannot be reconstructed from filename tokens or geometry. Training is blocked until an official sequence-to-label manifest or full contact annotations are available."
+    },
+    {
       "id": "aria-digital-twin",
       "name": "Aria Digital Twin",
       "status": "candidate",

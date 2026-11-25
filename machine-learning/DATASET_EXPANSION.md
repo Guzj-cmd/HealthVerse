@@ -24,7 +24,7 @@ PROX and Aria Digital Twin need their own license/registration steps and task-sp
 - **NICR Multi-Task Dataset** is highly relevant (27 participants, 235k depth patches, official participant-disjoint split), but the dataset requires an institutional signature and an emailed access request.
 - **MultiPosture** is openly downloadable, but its Zenodo Rights/License field does not name a license. Existing result records are retained for reproducibility; the source file is not redistributed and no new release is produced until permission is clarified.
 - **SitPose** describes 36 participants in the paper, but the public repository snapshot inspected here contains 5,746 derived-angle rows, no participant identifier, and no explicit dataset license. It is held out of formal metrics until the authors clarify the release.
-- **COUCH** is useful for chair contact and motion synthesis, but its RGB-D release is hundreds of GB per subject. BEHAVE is the more direct first relationship-training source.
+- **COUCH (ECCV 2022)** was audited using the official lightweight MoCap archive: 485 sequences, 656,698 frames and six subjects across three chairs and one sofa. The archive is intact and every sequence has a valid `start_idx/end_idx` interval, but its NPZ schema contains no hand-contact/interaction target and no official sequence-to-contact manifest accompanies the download. The paper's right-hand/left-hand/both-hands/no-contact/free-interaction/locomotion taxonomy therefore cannot be recovered without guessing from filenames or geometry. Training is blocked, zero LOSO folds were run, and no model or accuracy was produced. The reusable audit is recorded in `runs/couch-mocap-audit-v1/`.
 
 ## Source records
 
@@ -36,5 +36,6 @@ PROX and Aria Digital Twin need their own license/registration steps and task-sp
 - NICR Multi-Task: <https://github.com/TUI-NICR/nicr-multi-task-dataset>
 - HuMoLs: <https://datashare.ed.ac.uk/handle/10283/8851>
 - SitPose: <https://github.com/TaylorDurden1114/SitPose>
+- COUCH: <https://virtualhumans.mpi-inf.mpg.de/couch/>
 
 The machine-readable status, license, sample scale, target task, and evaluation protocol are recorded in `datasets.registry.json`.

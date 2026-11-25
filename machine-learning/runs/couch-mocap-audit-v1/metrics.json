@@ -1,0 +1,117 @@
+{
+  "dataset": "COUCH MoCap NPZ release",
+  "source_url": "https://virtualhumans.mpi-inf.mpg.de/couch/",
+  "license": "non-commercial scientific research, education, and artistic projects",
+  "license_url": "https://virtualhumans.mpi-inf.mpg.de/couch/license.html",
+  "archive": {
+    "filename": "mocap_npz.zip",
+    "bytes": 336578531,
+    "sha256": "c0a0569101a75d3c8257bf5cc4d592ae5c72374a9fccbaf9c846af79111520ae",
+    "zip_crc_valid": true
+  },
+  "scale": {
+    "subjects": 6,
+    "sequences": 485,
+    "frames": 656698,
+    "annotated_interval_frames": 245033,
+    "min_sequence_frames": 873,
+    "median_sequence_frames": 1234,
+    "max_sequence_frames": 10715
+  },
+  "per_subject": {
+    "subject1": {
+      "sequences": 186,
+      "frames": 264414
+    },
+    "subject2": {
+      "sequences": 51,
+      "frames": 64459
+    },
+    "subject3": {
+      "sequences": 59,
+      "frames": 76394
+    },
+    "subject4": {
+      "sequences": 69,
+      "frames": 98490
+    },
+    "subject5": {
+      "sequences": 66,
+      "frames": 86763
+    },
+    "subject6": {
+      "sequences": 54,
+      "frames": 66178
+    }
+  },
+  "per_chair": {
+    "chair1": {
+      "sequences": 167,
+      "frames": 242593
+    },
+    "chair2": {
+      "sequences": 153,
+      "frames": 194938
+    },
+    "chair3": {
+      "sequences": 30,
+      "frames": 42549
+    },
+    "sofa": {
+      "sequences": 135,
+      "frames": 176618
+    }
+  },
+  "schemas": [
+    {
+      "arrays": [
+        "R",
+        "end_idx",
+        "pose",
+        "start_idx",
+        "t",
+        "trans"
+      ],
+      "sequences": 485
+    }
+  ],
+  "label_audit": {
+    "published_contact_taxonomy": [
+      "right hand",
+      "left hand",
+      "both hands",
+      "no contact",
+      "free interaction",
+      "locomotion"
+    ],
+    "explicit_target_sequences": 0,
+    "official_target_manifest": null,
+    "partial_metadata_note": "The official code repository contains MotionCapture/Mode.txt for 120 original and mirrored sequences from one named subject using date-based identifiers. It neither covers the six released subject IDs nor provides a join key for the 485 NPZ files, so it is not used as benchmark ground truth.",
+    "source_interval_fields": [
+      "start_idx",
+      "end_idx"
+    ],
+    "admissible_label_policy": "Only an explicit source-provided target array or an official sequence-to-label manifest is admissible. Filename tokens, pose geometry, chair distance, and start/end boundaries must not be converted into contact or ergonomic ground truth.",
+    "filename_tokens_used_as_ground_truth": false,
+    "geometry_used_as_ground_truth": false
+  },
+  "evaluation": {
+    "planned": "leave-one-subject-out across all six subjects",
+    "folds_run": 0,
+    "metrics": null
+  },
+  "quality_gate": {
+    "status": "blocked",
+    "checks": {
+      "zip_crc_valid": true,
+      "archive_sha256_matches": true,
+      "all_expected_subjects_present": true,
+      "all_sequence_schemas_valid": true,
+      "explicit_source_target_present_for_every_sequence": false,
+      "loso_training_permitted": false
+    },
+    "blocker": "The official lightweight MoCap NPZ archive contains no explicit contact/interaction target array or official sequence-to-label manifest. start_idx/end_idx are retained as source interval metadata, but the release does not define them as hand-contact or ergonomic classes."
+  },
+  "invalid_sequences": [],
+  "explicit_target_examples": []
+}

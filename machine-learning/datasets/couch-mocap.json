@@ -1,0 +1,44 @@
+{
+  "id": "couch-mocap",
+  "name": "COUCH MoCap NPZ release",
+  "source_url": "https://virtualhumans.mpi-inf.mpg.de/couch/",
+  "archive_url": "https://datasets.d2.mpi-inf.mpg.de/eccv22couch/mocap_npz.zip",
+  "license_url": "https://virtualhumans.mpi-inf.mpg.de/couch/license.html",
+  "license": "non-commercial scientific research, education, and artistic projects",
+  "citation": "Zhang et al., COUCH: Towards Controllable Human-Chair Interactions, ECCV 2022",
+  "archive_sha256": "c0a0569101a75d3c8257bf5cc4d592ae5c72374a9fccbaf9c846af79111520ae",
+  "expected_subjects": [
+    "subject1",
+    "subject2",
+    "subject3",
+    "subject4",
+    "subject5",
+    "subject6"
+  ],
+  "required_arrays": [
+    "pose",
+    "trans",
+    "R",
+    "t",
+    "start_idx",
+    "end_idx"
+  ],
+  "published_contact_taxonomy": [
+    "right hand",
+    "left hand",
+    "both hands",
+    "no contact",
+    "free interaction",
+    "locomotion"
+  ],
+  "official_target_manifest": null,
+  "partial_metadata_note": "The official code repository contains MotionCapture/Mode.txt for 120 original and mirrored sequences from one named subject using date-based identifiers. It neither covers the six released subject IDs nor provides a join key for the 485 NPZ files, so it is not used as benchmark ground truth.",
+  "evaluation_if_labels_become_available": "leave-one-subject-out across all six subjects",
+  "quality_gate": {
+    "archive_sha256_matches": true,
+    "all_expected_subjects_present": true,
+    "all_sequence_schemas_valid": true,
+    "explicit_source_target_present_for_every_evaluated_subject": true
+  },
+  "label_policy": "Only an explicit source-provided target array or an official sequence-to-label manifest is admissible. Filename tokens, pose geometry, chair distance, and start/end boundaries must not be converted into contact or ergonomic ground truth."
+}

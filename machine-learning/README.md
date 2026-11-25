@@ -110,6 +110,19 @@ python train_office_context.py `
 
 本轮结果为 **REJECTED**：Accuracy 0.5814、Macro-F1 0.6050、坐姿 Recall 0.2128，未达到 Accuracy ≥ 0.80、Macro-F1 ≥ 0.80、每类 Recall ≥ 0.50。脚本在门槛失败时不会生成 `model.joblib`；该模型未接入网页。337 个跌倒正例全部来自同一参与者/办公室，因此排除在四类正式指标之外，也不能宣称已经验证跌倒检测。结论是检测框几何本身不足以跨办公室泛化，下一轮必须加入图像、人体姿态或场景标定证据。
 
+## COUCH MoCap 标签审计
+
+`audit_couch_mocap.py` 直接读取官方 ZIP，不解包或重新分发数据。它检查归档哈希、485 个 NPZ 的数组结构、六个被试覆盖和源区间边界，并在缺少明确目标时阻止训练：
+
+```powershell
+python audit_couch_mocap.py `
+  --archive ../ccfa-workfiles/datasets/healthverse-expansion/cache/couch/mocap_npz.zip `
+  --config datasets/couch-mocap.json `
+  --out-dir runs/couch-mocap-audit-v1
+```
+
+当前归档没有 `contact_type`、`hand_contact`、`label` 或 `target` 数组，也没有覆盖六个被试的官方序列标签清单。因此不从文件名、关节距离或 `start_idx/end_idx` 推导手接触/健康标签；计划的六被试 LOSO 运行 0 折，输出只有审计指标与报告，没有模型权重。
+
 ## 浏览器模型导出与一致性验证
 
 通过的 sklearn HGB / RandomForest 会被转换为纯 JSON 树结构，网页在本地计算 456 维特征并执行同一模型。120 个冻结测试样本的 Python 与 JavaScript 预测标签必须完全一致，概率绝对误差小于 `1e-5`：
