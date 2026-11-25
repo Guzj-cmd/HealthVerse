@@ -1,0 +1,435 @@
+{
+  "candidate": "independent source-scene specialists with source-only cross-scene mAP weighting",
+  "source_split": "Charades official train only; official test not loaded",
+  "weight_contract": "weights use predictions on other source scenes only; target labels do not participate",
+  "held_out_scenes": [
+    "Kitchen",
+    "Bedroom",
+    "Living room",
+    "Bathroom",
+    "Home Office / Study (A room in a house used for work)"
+  ],
+  "folds": [
+    {
+      "held_out_scene": "Kitchen",
+      "train_videos": 640,
+      "test_videos": 1262,
+      "test_subjects": 128,
+      "subject_overlap": 0,
+      "specialists": [
+        {
+          "source_scene": "Bedroom",
+          "train_videos": 235,
+          "source_only_validation_videos": 218,
+          "source_only_macro_map": 0.3389596598736228,
+          "frozen_weight": 0.2982761518690717
+        },
+        {
+          "source_scene": "Living room",
+          "train_videos": 62,
+          "source_only_validation_videos": 391,
+          "source_only_macro_map": 0.2644464313698049,
+          "frozen_weight": 0.23270634610001303
+        },
+        {
+          "source_scene": "Garage",
+          "train_videos": 56,
+          "source_only_validation_videos": 397,
+          "source_only_macro_map": 0.16587681010886834,
+          "frozen_weight": 0.14596750723091043
+        },
+        {
+          "source_scene": "Home Office / Study (A room in a house used for work)",
+          "train_videos": 56,
+          "source_only_validation_videos": 397,
+          "source_only_macro_map": 0.1575988495525209,
+          "frozen_weight": 0.13868310583343482
+        },
+        {
+          "source_scene": "Bathroom",
+          "train_videos": 44,
+          "source_only_validation_videos": 409,
+          "source_only_macro_map": 0.20951369254454466,
+          "frozen_weight": 0.18436688896657014
+        }
+      ],
+      "metrics": {
+        "macro_map_supported": 0.2745841728055429,
+        "supported_classes": 7,
+        "per_class_ap": {
+          "chair_sit": 0.5261354830805675,
+          "table_relation": 0.40984988781141585,
+          "laptop_interaction": 0.2346318533172302,
+          "couch_contact": 0.10610995940818123,
+          "floor_contact": 0.3962013862688614,
+          "bed_contact": 0.029288994635721058,
+          "sit_stand_transition": 0.2198716451168234
+        },
+        "per_class_recall_at_0_5": {
+          "chair_sit": 0.47333333333333333,
+          "table_relation": 0.1650485436893204,
+          "laptop_interaction": 0.5714285714285714,
+          "couch_contact": 0.26666666666666666,
+          "floor_contact": 0.4411764705882353,
+          "bed_contact": 0.0,
+          "sit_stand_transition": 0.42528735632183906
+        },
+        "prevalence": {
+          "chair_sit": 0.11885895404120443,
+          "table_relation": 0.08161648177496038,
+          "laptop_interaction": 0.03882725832012678,
+          "couch_contact": 0.011885895404120444,
+          "floor_contact": 0.02694136291600634,
+          "bed_contact": 0.003169572107765452,
+          "sit_stand_transition": 0.13787638668779714
+        }
+      }
+    },
+    {
+      "held_out_scene": "Bedroom",
+      "train_videos": 350,
+      "test_videos": 1209,
+      "test_subjects": 119,
+      "subject_overlap": 0,
+      "specialists": [
+        {
+          "source_scene": "Kitchen",
+          "train_videos": 62,
+          "source_only_validation_videos": 149,
+          "source_only_macro_map": 0.15657624843857532,
+          "frozen_weight": 0.2559588103361294
+        },
+        {
+          "source_scene": "Garage",
+          "train_videos": 49,
+          "source_only_validation_videos": 162,
+          "source_only_macro_map": 0.10861610584642656,
+          "frozen_weight": 0.17755725733012978
+        },
+        {
+          "source_scene": "Living room",
+          "train_videos": 44,
+          "source_only_validation_videos": 167,
+          "source_only_macro_map": 0.12069771923522908,
+          "frozen_weight": 0.1973073498299644
+        },
+        {
+          "source_scene": "Bathroom",
+          "train_videos": 30,
+          "source_only_validation_videos": 181,
+          "source_only_macro_map": 0.12016275822913457,
+          "frozen_weight": 0.19643283671535308
+        },
+        {
+          "source_scene": "Hallway",
+          "train_videos": 26,
+          "source_only_validation_videos": 185,
+          "source_only_macro_map": 0.10567156340998365,
+          "frozen_weight": 0.17274374578842336
+        }
+      ],
+      "metrics": {
+        "macro_map_supported": 0.277545752475334,
+        "supported_classes": 7,
+        "per_class_ap": {
+          "chair_sit": 0.19927894634213886,
+          "table_relation": 0.12059712766378874,
+          "laptop_interaction": 0.4050702933328426,
+          "couch_contact": 0.055849600899656515,
+          "floor_contact": 0.2719755933488171,
+          "bed_contact": 0.5173988159094929,
+          "sit_stand_transition": 0.3726498898306013
+        },
+        "per_class_recall_at_0_5": {
+          "chair_sit": 0.4658385093167702,
+          "table_relation": 0.0,
+          "laptop_interaction": 0.7865168539325843,
+          "couch_contact": 0.0,
+          "floor_contact": 0.5797101449275363,
+          "bed_contact": 0.0,
+          "sit_stand_transition": 0.2774725274725275
+        },
+        "prevalence": {
+          "chair_sit": 0.13316790736145576,
+          "table_relation": 0.07526881720430108,
+          "laptop_interaction": 0.07361455748552523,
+          "couch_contact": 0.023986765922249794,
+          "floor_contact": 0.05707196029776675,
+          "bed_contact": 0.3316790736145575,
+          "sit_stand_transition": 0.3010752688172043
+        }
+      }
+    },
+    {
+      "held_out_scene": "Living room",
+      "train_videos": 383,
+      "test_videos": 1182,
+      "test_subjects": 119,
+      "subject_overlap": 0,
+      "specialists": [
+        {
+          "source_scene": "Kitchen",
+          "train_videos": 71,
+          "source_only_validation_videos": 170,
+          "source_only_macro_map": 0.09991980245584713,
+          "frozen_weight": 0.18805992306146982
+        },
+        {
+          "source_scene": "Bedroom",
+          "train_videos": 66,
+          "source_only_validation_videos": 175,
+          "source_only_macro_map": 0.13230607812777231,
+          "frozen_weight": 0.24901441217588852
+        },
+        {
+          "source_scene": "Garage",
+          "train_videos": 54,
+          "source_only_validation_videos": 187,
+          "source_only_macro_map": 0.10576415266534257,
+          "frozen_weight": 0.19905962505975655
+        },
+        {
+          "source_scene": "Bathroom",
+          "train_videos": 26,
+          "source_only_validation_videos": 215,
+          "source_only_macro_map": 0.10565052377251381,
+          "frozen_weight": 0.19884576313931912
+        },
+        {
+          "source_scene": "Hallway",
+          "train_videos": 24,
+          "source_only_validation_videos": 217,
+          "source_only_macro_map": 0.08767840147446619,
+          "frozen_weight": 0.165020276563566
+        }
+      ],
+      "metrics": {
+        "macro_map_supported": 0.2738453801522129,
+        "supported_classes": 7,
+        "per_class_ap": {
+          "chair_sit": 0.3405113743474456,
+          "table_relation": 0.2377756244207201,
+          "laptop_interaction": 0.1052726297435254,
+          "couch_contact": 0.34179357021996615,
+          "floor_contact": 0.4606965634856601,
+          "bed_contact": 0.03898841594509508,
+          "sit_stand_transition": 0.3918794829030779
+        },
+        "per_class_recall_at_0_5": {
+          "chair_sit": 0.14634146341463414,
+          "table_relation": 0.0,
+          "laptop_interaction": 0.5348837209302325,
+          "couch_contact": 0.0,
+          "floor_contact": 0.6588235294117647,
+          "bed_contact": 0.0,
+          "sit_stand_transition": 0.524390243902439
+        },
+        "prevalence": {
+          "chair_sit": 0.20812182741116753,
+          "table_relation": 0.12774957698815567,
+          "laptop_interaction": 0.0727580372250423,
+          "couch_contact": 0.34179357021996615,
+          "floor_contact": 0.07191201353637902,
+          "bed_contact": 0.02284263959390863,
+          "sit_stand_transition": 0.34686971235194586
+        }
+      }
+    },
+    {
+      "held_out_scene": "Bathroom",
+      "train_videos": 593,
+      "test_videos": 553,
+      "test_subjects": 95,
+      "subject_overlap": 0,
+      "specialists": [
+        {
+          "source_scene": "Kitchen",
+          "train_videos": 106,
+          "source_only_validation_videos": 277,
+          "source_only_macro_map": 0.15876371104312906,
+          "frozen_weight": 0.18383560651399933
+        },
+        {
+          "source_scene": "Bedroom",
+          "train_videos": 94,
+          "source_only_validation_videos": 289,
+          "source_only_macro_map": 0.25184845901493313,
+          "frozen_weight": 0.29162025697452376
+        },
+        {
+          "source_scene": "Living room",
+          "train_videos": 89,
+          "source_only_validation_videos": 294,
+          "source_only_macro_map": 0.16986714555725815,
+          "frozen_weight": 0.19669249052661159
+        },
+        {
+          "source_scene": "Garage",
+          "train_videos": 58,
+          "source_only_validation_videos": 325,
+          "source_only_macro_map": 0.14716871834201378,
+          "frozen_weight": 0.17040953766155315
+        },
+        {
+          "source_scene": "Hallway",
+          "train_videos": 36,
+          "source_only_validation_videos": 347,
+          "source_only_macro_map": 0.1359698149115627,
+          "frozen_weight": 0.15744210832331218
+        }
+      ],
+      "metrics": {
+        "macro_map_supported": 0.3240207743904113,
+        "supported_classes": 7,
+        "per_class_ap": {
+          "chair_sit": 0.20421627462690548,
+          "table_relation": 0.3754724111866969,
+          "laptop_interaction": 0.7179823234869106,
+          "couch_contact": 0.01596231554037461,
+          "floor_contact": 0.48206773323867086,
+          "bed_contact": 0.13878149834064282,
+          "sit_stand_transition": 0.33366286431267794
+        },
+        "per_class_recall_at_0_5": {
+          "chair_sit": 0.35714285714285715,
+          "table_relation": 0.3333333333333333,
+          "laptop_interaction": 0.5384615384615384,
+          "couch_contact": 0.0,
+          "floor_contact": 0.625,
+          "bed_contact": 0.0,
+          "sit_stand_transition": 0.19387755102040816
+        },
+        "prevalence": {
+          "chair_sit": 0.05063291139240506,
+          "table_relation": 0.0054249547920434,
+          "laptop_interaction": 0.023508137432188065,
+          "couch_contact": 0.0054249547920434,
+          "floor_contact": 0.05786618444846293,
+          "bed_contact": 0.007233273056057866,
+          "sit_stand_transition": 0.17721518987341772
+        }
+      }
+    },
+    {
+      "held_out_scene": "Home Office / Study (A room in a house used for work)",
+      "train_videos": 1037,
+      "test_videos": 457,
+      "test_subjects": 78,
+      "subject_overlap": 0,
+      "specialists": [
+        {
+          "source_scene": "Kitchen",
+          "train_videos": 198,
+          "source_only_validation_videos": 424,
+          "source_only_macro_map": 0.1910060286866451,
+          "frozen_weight": 0.20278567243127807
+        },
+        {
+          "source_scene": "Bedroom",
+          "train_videos": 134,
+          "source_only_validation_videos": 488,
+          "source_only_macro_map": 0.18401786255336833,
+          "frozen_weight": 0.19536653504518628
+        },
+        {
+          "source_scene": "Living room",
+          "train_videos": 122,
+          "source_only_validation_videos": 500,
+          "source_only_macro_map": 0.2594245650340508,
+          "frozen_weight": 0.2754236880759779
+        },
+        {
+          "source_scene": "Garage",
+          "train_videos": 86,
+          "source_only_validation_videos": 536,
+          "source_only_macro_map": 0.1447560667621989,
+          "frozen_weight": 0.15368340223981586
+        },
+        {
+          "source_scene": "Bathroom",
+          "train_videos": 82,
+          "source_only_validation_videos": 540,
+          "source_only_macro_map": 0.1627063447119257,
+          "frozen_weight": 0.17274070220774196
+        }
+      ],
+      "metrics": {
+        "macro_map_supported": 0.4831477829319975,
+        "supported_classes": 7,
+        "per_class_ap": {
+          "chair_sit": 0.7384070861277321,
+          "table_relation": 0.6240950244248453,
+          "laptop_interaction": 0.6944560266509956,
+          "couch_contact": 0.2840962142432731,
+          "floor_contact": 0.5576324685263071,
+          "bed_contact": 0.02885443583118002,
+          "sit_stand_transition": 0.45449322471964954
+        },
+        "per_class_recall_at_0_5": {
+          "chair_sit": 0.8737373737373737,
+          "table_relation": 0.1676300578034682,
+          "laptop_interaction": 0.8210526315789474,
+          "couch_contact": 0.1875,
+          "floor_contact": 0.5217391304347826,
+          "bed_contact": 0.0,
+          "sit_stand_transition": 0.6713286713286714
+        },
+        "prevalence": {
+          "chair_sit": 0.43326039387308535,
+          "table_relation": 0.3785557986870897,
+          "laptop_interaction": 0.20787746170678337,
+          "couch_contact": 0.0350109409190372,
+          "floor_contact": 0.05032822757111598,
+          "bed_contact": 0.01312910284463895,
+          "sit_stand_transition": 0.31291028446389496
+        }
+      }
+    }
+  ],
+  "aggregate": {
+    "macro_map_supported": 0.36945594944409826,
+    "supported_classes": 7,
+    "per_class_ap": {
+      "chair_sit": 0.4243643622270844,
+      "table_relation": 0.38242392501125216,
+      "laptop_interaction": 0.31392103655619424,
+      "couch_contact": 0.2115086174606787,
+      "floor_contact": 0.4243142109866336,
+      "bed_contact": 0.46733553123365895,
+      "sit_stand_transition": 0.362323962633186
+    },
+    "per_class_recall_at_0_5": {
+      "chair_sit": 0.4661558109833972,
+      "table_relation": 0.09021113243761997,
+      "laptop_interaction": 0.6897590361445783,
+      "couch_contact": 0.014989293361884369,
+      "floor_contact": 0.588477366255144,
+      "bed_contact": 0.0,
+      "sit_stand_transition": 0.4247266610597141
+    },
+    "prevalence": {
+      "chair_sit": 0.1679176495818143,
+      "table_relation": 0.11173064550718421,
+      "laptop_interaction": 0.07119879905640146,
+      "couch_contact": 0.10015011794981771,
+      "floor_contact": 0.05211237400814926,
+      "bed_contact": 0.09478876259918508,
+      "sit_stand_transition": 0.25498606047608835
+    }
+  },
+  "comparison": {
+    "baseline_macro_map": 0.2614321056204793,
+    "candidate_macro_map": 0.36945594944409826,
+    "delta": 0.10802384382361896
+  },
+  "quality_gate": {
+    "thresholds": {
+      "minimum_aggregate_macro_map": 0.35,
+      "minimum_each_scene_macro_map_supported": 0.25,
+      "minimum_supported_classes_per_scene": 4
+    },
+    "status": "PASSED",
+    "failures": []
+  }
+}
+

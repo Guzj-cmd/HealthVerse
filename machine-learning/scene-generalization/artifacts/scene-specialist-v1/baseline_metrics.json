@@ -1,0 +1,272 @@
+{
+  "protocol": {
+    "source_split": "official Charades train only; official test not loaded",
+    "outer": "leave one of the five largest scenes out and remove all test subjects from training",
+    "model": "fixed alpha=0.001 class-balanced one-vs-rest logistic SGD",
+    "primary_metric": "macro average precision over classes with both labels in the held-out scene"
+  },
+  "data": {
+    "videos": 7985,
+    "subjects": 214,
+    "scenes": 16,
+    "held_out_scenes": [
+      "Kitchen",
+      "Bedroom",
+      "Living room",
+      "Bathroom",
+      "Home Office / Study (A room in a house used for work)"
+    ],
+    "relations": [
+      "chair_sit",
+      "table_relation",
+      "laptop_interaction",
+      "couch_contact",
+      "floor_contact",
+      "bed_contact",
+      "sit_stand_transition"
+    ]
+  },
+  "folds": [
+    {
+      "held_out_scene": "Kitchen",
+      "train_videos": 640,
+      "test_videos": 1262,
+      "train_subjects": 86,
+      "test_subjects": 128,
+      "subject_overlap": 0,
+      "metrics": {
+        "macro_map_supported": 0.2120078719375055,
+        "supported_classes": 7,
+        "per_class_ap": {
+          "chair_sit": 0.39575689212228127,
+          "table_relation": 0.22801515489468124,
+          "laptop_interaction": 0.21412262514339114,
+          "couch_contact": 0.06682332367888956,
+          "floor_contact": 0.30257633668652595,
+          "bed_contact": 0.053117974422290194,
+          "sit_stand_transition": 0.22364279661447894
+        },
+        "per_class_recall_at_0_5": {
+          "chair_sit": 0.6666666666666666,
+          "table_relation": 0.7766990291262136,
+          "laptop_interaction": 0.8979591836734694,
+          "couch_contact": 0.6,
+          "floor_contact": 0.6764705882352942,
+          "bed_contact": 0.75,
+          "sit_stand_transition": 0.41379310344827586
+        },
+        "prevalence": {
+          "chair_sit": 0.11885895404120443,
+          "table_relation": 0.08161648177496038,
+          "laptop_interaction": 0.03882725832012678,
+          "couch_contact": 0.011885895404120444,
+          "floor_contact": 0.02694136291600634,
+          "bed_contact": 0.003169572107765452,
+          "sit_stand_transition": 0.13787638668779714
+        }
+      }
+    },
+    {
+      "held_out_scene": "Bedroom",
+      "train_videos": 350,
+      "test_videos": 1209,
+      "train_subjects": 95,
+      "test_subjects": 119,
+      "subject_overlap": 0,
+      "metrics": {
+        "macro_map_supported": 0.24798935126559804,
+        "supported_classes": 7,
+        "per_class_ap": {
+          "chair_sit": 0.23721883049784692,
+          "table_relation": 0.22164054658633134,
+          "laptop_interaction": 0.31552715380682517,
+          "couch_contact": 0.045601346510963085,
+          "floor_contact": 0.20947821617849527,
+          "bed_contact": 0.3695885005309704,
+          "sit_stand_transition": 0.336870864747754
+        },
+        "per_class_recall_at_0_5": {
+          "chair_sit": 0.8881987577639752,
+          "table_relation": 0.8791208791208791,
+          "laptop_interaction": 0.6853932584269663,
+          "couch_contact": 0.8275862068965517,
+          "floor_contact": 0.8405797101449275,
+          "bed_contact": 0.4389027431421446,
+          "sit_stand_transition": 0.3626373626373626
+        },
+        "prevalence": {
+          "chair_sit": 0.13316790736145576,
+          "table_relation": 0.07526881720430108,
+          "laptop_interaction": 0.07361455748552523,
+          "couch_contact": 0.023986765922249794,
+          "floor_contact": 0.05707196029776675,
+          "bed_contact": 0.3316790736145575,
+          "sit_stand_transition": 0.3010752688172043
+        }
+      }
+    },
+    {
+      "held_out_scene": "Living room",
+      "train_videos": 383,
+      "test_videos": 1182,
+      "train_subjects": 95,
+      "test_subjects": 119,
+      "subject_overlap": 0,
+      "metrics": {
+        "macro_map_supported": 0.28906630926284443,
+        "supported_classes": 7,
+        "per_class_ap": {
+          "chair_sit": 0.29141777762060134,
+          "table_relation": 0.2475647005394208,
+          "laptop_interaction": 0.23741310217500258,
+          "couch_contact": 0.5974626612398881,
+          "floor_contact": 0.18017620982527854,
+          "bed_contact": 0.06506421611314991,
+          "sit_stand_transition": 0.40436549732656984
+        },
+        "per_class_recall_at_0_5": {
+          "chair_sit": 0.8414634146341463,
+          "table_relation": 0.8940397350993378,
+          "laptop_interaction": 0.8837209302325582,
+          "couch_contact": 0.6237623762376238,
+          "floor_contact": 0.8,
+          "bed_contact": 0.6666666666666666,
+          "sit_stand_transition": 0.6560975609756098
+        },
+        "prevalence": {
+          "chair_sit": 0.20812182741116753,
+          "table_relation": 0.12774957698815567,
+          "laptop_interaction": 0.0727580372250423,
+          "couch_contact": 0.34179357021996615,
+          "floor_contact": 0.07191201353637902,
+          "bed_contact": 0.02284263959390863,
+          "sit_stand_transition": 0.34686971235194586
+        }
+      }
+    },
+    {
+      "held_out_scene": "Bathroom",
+      "train_videos": 593,
+      "test_videos": 553,
+      "train_subjects": 119,
+      "test_subjects": 95,
+      "subject_overlap": 0,
+      "metrics": {
+        "macro_map_supported": 0.14207733387581867,
+        "supported_classes": 7,
+        "per_class_ap": {
+          "chair_sit": 0.16235915982751425,
+          "table_relation": 0.0226416515973478,
+          "laptop_interaction": 0.1994444975781109,
+          "couch_contact": 0.04221235866805487,
+          "floor_contact": 0.27159087379904545,
+          "bed_contact": 0.042078174989567396,
+          "sit_stand_transition": 0.25421462067109013
+        },
+        "per_class_recall_at_0_5": {
+          "chair_sit": 0.5714285714285714,
+          "table_relation": 0.6666666666666666,
+          "laptop_interaction": 0.8461538461538461,
+          "couch_contact": 0.6666666666666666,
+          "floor_contact": 0.625,
+          "bed_contact": 0.5,
+          "sit_stand_transition": 0.2755102040816326
+        },
+        "prevalence": {
+          "chair_sit": 0.05063291139240506,
+          "table_relation": 0.0054249547920434,
+          "laptop_interaction": 0.023508137432188065,
+          "couch_contact": 0.0054249547920434,
+          "floor_contact": 0.05786618444846293,
+          "bed_contact": 0.007233273056057866,
+          "sit_stand_transition": 0.17721518987341772
+        }
+      }
+    },
+    {
+      "held_out_scene": "Home Office / Study (A room in a house used for work)",
+      "train_videos": 1037,
+      "test_videos": 457,
+      "train_subjects": 136,
+      "test_subjects": 78,
+      "subject_overlap": 0,
+      "metrics": {
+        "macro_map_supported": 0.3435357263312489,
+        "supported_classes": 7,
+        "per_class_ap": {
+          "chair_sit": 0.6153760947889855,
+          "table_relation": 0.5468361106898388,
+          "laptop_interaction": 0.4022184680060359,
+          "couch_contact": 0.188628159729575,
+          "floor_contact": 0.21810204435689223,
+          "bed_contact": 0.03154364478215682,
+          "sit_stand_transition": 0.4020455619652582
+        },
+        "per_class_recall_at_0_5": {
+          "chair_sit": 0.9141414141414141,
+          "table_relation": 0.9248554913294798,
+          "laptop_interaction": 0.8736842105263158,
+          "couch_contact": 0.875,
+          "floor_contact": 0.782608695652174,
+          "bed_contact": 0.5,
+          "sit_stand_transition": 0.7832167832167832
+        },
+        "prevalence": {
+          "chair_sit": 0.43326039387308535,
+          "table_relation": 0.3785557986870897,
+          "laptop_interaction": 0.20787746170678337,
+          "couch_contact": 0.0350109409190372,
+          "floor_contact": 0.05032822757111598,
+          "bed_contact": 0.01312910284463895,
+          "sit_stand_transition": 0.31291028446389496
+        }
+      }
+    }
+  ],
+  "aggregate": {
+    "macro_map_supported": 0.2614321056204793,
+    "supported_classes": 7,
+    "per_class_ap": {
+      "chair_sit": 0.32957956427065743,
+      "table_relation": 0.2824162201961778,
+      "laptop_interaction": 0.27562219528982757,
+      "couch_contact": 0.23232938047847934,
+      "floor_contact": 0.2064263440564074,
+      "bed_contact": 0.16615210149828719,
+      "sit_stand_transition": 0.33749893355351857
+    },
+    "per_class_recall_at_0_5": {
+      "chair_sit": 0.8263090676883781,
+      "table_relation": 0.8771593090211133,
+      "laptop_interaction": 0.8283132530120482,
+      "couch_contact": 0.6445396145610278,
+      "floor_contact": 0.7695473251028807,
+      "bed_contact": 0.45701357466063347,
+      "sit_stand_transition": 0.5147182506307821
+    },
+    "prevalence": {
+      "chair_sit": 0.1679176495818143,
+      "table_relation": 0.11173064550718421,
+      "laptop_interaction": 0.07119879905640146,
+      "couch_contact": 0.10015011794981771,
+      "floor_contact": 0.05211237400814926,
+      "bed_contact": 0.09478876259918508,
+      "sit_stand_transition": 0.25498606047608835
+    }
+  },
+  "quality_gate": {
+    "thresholds": {
+      "minimum_aggregate_macro_map": 0.35,
+      "minimum_each_scene_macro_map_supported": 0.25,
+      "minimum_supported_classes_per_scene": 4
+    },
+    "status": "REJECTED",
+    "failures": [
+      "aggregate macro-mAP below 0.35",
+      "Kitchen: macro-mAP below 0.25",
+      "Bedroom: macro-mAP below 0.25",
+      "Bathroom: macro-mAP below 0.25"
+    ]
+  }
+}
+

@@ -158,3 +158,9 @@ python browser-export/make_parity_fixture.py `
 
 node browser-export/test_model_parity.mjs
 ```
+
+## 跨场景、跨参与者关系泛化
+
+`scene-generalization/` 保存目标 3 的冻结评估与复现脚本。它只使用 Charades 官方训练分区；每折同时留出一个住宅场景，并从训练源场景移除所有出现在该目标场景中的参与者。源场景专家的权重仅由其他源场景确定，目标标签不参与权重选择。
+
+通过候选的 aggregate macro-mAP 为 `0.3695`，相对冻结基线 `0.2614` 提升 `0.1080`；五个目标场景均超过预声明的 `0.25` 门槛，参与者交集均为零。该模块是关系识别泛化证据，不是健康结局或建议模型，也不替代正在训练的原始 RGB 端到端分支。

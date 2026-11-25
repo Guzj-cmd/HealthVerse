@@ -1,0 +1,22 @@
+{
+  "objective_2": {
+    "task": "observable temporal posture-state recognition, not medical risk prediction",
+    "source": "Charades official training videos and temporal action intervals",
+    "classes": ["background", "chair_sitting", "standing_to_sitting", "standing_up"],
+    "evaluation": "subject-grouped out-of-fold predictions within the official train split",
+    "gate": {"minimum_macro_f1": 0.50, "minimum_transition_recall": 0.50},
+    "unsupported_claim": "prolonged-sitting risk; Charades clips average about 30 seconds and contain no long-duration health outcome label"
+  },
+  "objective_3": {
+    "task": "human-environment relation recognition under unseen residential scenes and unseen subjects",
+    "source": "Charades official training split and official RGB fc7 features",
+    "evaluation": "leave each of the five largest scenes out; remove all held-out subjects from training",
+    "gate": {
+      "minimum_aggregate_macro_map": 0.35,
+      "minimum_each_scene_macro_map_supported": 0.25,
+      "minimum_supported_classes_per_scene": 4
+    },
+    "official_test_reuse": false
+  }
+}
+
