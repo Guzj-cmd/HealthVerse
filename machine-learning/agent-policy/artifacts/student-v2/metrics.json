@@ -1,0 +1,100 @@
+{
+  "status": "passed",
+  "metric_semantics": "agreement with filtered AI-teacher labels, not medical or ergonomic correctness",
+  "failed_thresholds": [],
+  "action_student": {
+    "selected_model": "logistic_regression",
+    "validation_selected_threshold": 0.5,
+    "test": {
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "confusion_matrix": [
+        [
+          22,
+          0
+        ],
+        [
+          0,
+          5
+        ]
+      ]
+    },
+    "labels": [
+      "ask_confirm",
+      "no_action"
+    ]
+  },
+  "risk_student": {
+    "selected_model": "logistic_regression",
+    "validation_selected_threshold": null,
+    "test": {
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "confusion_matrix": [
+        [
+          12,
+          0,
+          0
+        ],
+        [
+          0,
+          5,
+          0
+        ],
+        [
+          0,
+          0,
+          10
+        ]
+      ]
+    },
+    "labels": [
+      "high",
+      "low",
+      "moderate"
+    ]
+  },
+  "teacher": {
+    "model": "gpt-5.6-sol",
+    "attempted": 127,
+    "accepted": 119,
+    "coverage": 0.937007874015748,
+    "rejected_for_disagreement_or_confidence": 8,
+    "abstention_rate": 0.0,
+    "prompt_version": "office-posture-teacher-v1",
+    "prompt_checksum": "a901d9120d81de8531129189105a861af785ab3972522ddbc1d1ead7c62d6962"
+  },
+  "split": {
+    "train": {
+      "samples": 65,
+      "subjects": [
+        "10",
+        "12",
+        "13",
+        "2",
+        "4",
+        "5",
+        "9"
+      ]
+    },
+    "validation": {
+      "samples": 27,
+      "subjects": [
+        "11",
+        "3",
+        "7"
+      ]
+    },
+    "test": {
+      "samples": 27,
+      "subjects": [
+        "1",
+        "6",
+        "8"
+      ]
+    }
+  },
+  "student_input": "same observable structured posture context shown to the teacher",
+  "environment_action_status": "untrained_missing_observed_environment_fields",
+  "created_at": "2026-11-25T06:36:07.728241+00:00"
+}

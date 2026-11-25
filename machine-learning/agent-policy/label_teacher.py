@@ -94,6 +94,7 @@ def main() -> int:
     parser.add_argument("--batch-size", type=int, default=12)
     parser.add_argument("--timeout", type=int, default=240)
     parser.add_argument("--prepare-only", action="store_true")
+    parser.add_argument("--reuse-labels", help="Existing labels.json with the same prompt/context checksums")
     args = parser.parse_args()
     base = Path(__file__).resolve().parent; output = Path(args.output); output.mkdir(parents=True, exist_ok=True)
     config = json.loads(Path(args.config).read_text(encoding="utf-8")); settings = config["teacher_distillation"]
@@ -108,10 +109,18 @@ def main() -> int:
         print(json.dumps(state, ensure_ascii=False)); return 0
 
     annotations: dict[str, list[dict]] = {context["sample_id"]: [] for context in contexts}
+    if args.reuse_labels and Path(args.reuse_labels).exists():
+        previous = json.loads(Path(args.reuse_labels).read_text(encoding="utf-8"))
+        for item in previous.get("consensus", []) + previous.get("rejected", []):
+            context = item["context"]
+            if context["sample_id"] in annotations and context["context_checksum"] == next(c["context_checksum"] for c in contexts if c["sample_id"] == context["sample_id"]):
+                if all(annotation.get("prompt_checksum") == prompt_checksum for annotation in item["annotations"]):
+                    annotations[context["sample_id"]] = item["annotations"]
     try:
         for pass_index in range(int(settings["passes"])):
-            for start in range(0, len(contexts), args.batch_size):
-                batch = contexts[start:start + args.batch_size]
+            pending = [context for context in contexts if len(annotations[context["sample_id"]]) <= pass_index]
+            for start in range(0, len(pending), args.batch_size):
+                batch = pending[start:start + args.batch_size]
                 request = prompt_template + "\n\ncontexts = " + json.dumps(batch, ensure_ascii=False)
                 response = call_teacher(request, base / "teacher_output_schema.json", base, args.timeout)
                 returned = {item["sample_id"]: item for item in response["labels"]}

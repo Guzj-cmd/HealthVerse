@@ -1,0 +1,98 @@
+{
+  "benchmark_type": "perception",
+  "status": "passed",
+  "failed_thresholds": [],
+  "selected_model": "hist_gradient_boosting",
+  "test": {
+    "accuracy": 0.9852713178294573,
+    "macro_f1": 0.9837845484619366,
+    "per_class_recall": {
+      "TLB": 1.0,
+      "TLF": 0.988135593220339,
+      "TLL": 0.925,
+      "TLR": 1.0,
+      "TUP": 0.9924050632911392
+    },
+    "confusion_matrix": [
+      [
+        65,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        583,
+        0,
+        0,
+        7
+      ],
+      [
+        0,
+        9,
+        111,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        120,
+        0
+      ],
+      [
+        2,
+        1,
+        0,
+        0,
+        392
+      ]
+    ]
+  },
+  "thresholds": {
+    "accuracy": 0.9,
+    "macro_f1": 0.88,
+    "minimum_class_recall": 0.75
+  },
+  "dataset": {
+    "name": "MultiPosture v1",
+    "doi": "10.5281/zenodo.14230872",
+    "rows_loaded": 4794,
+    "participants": 13,
+    "coordinate_features": 99
+  },
+  "split": {
+    "train": {
+      "rows": 2454,
+      "subjects": [
+        "10",
+        "12",
+        "13",
+        "2",
+        "4",
+        "5",
+        "9"
+      ]
+    },
+    "validation": {
+      "rows": 1050,
+      "subjects": [
+        "11",
+        "3",
+        "7"
+      ]
+    },
+    "test": {
+      "rows": 1290,
+      "subjects": [
+        "1",
+        "6",
+        "8"
+      ]
+    }
+  },
+  "created_at": "2026-11-25T06:36:48.089317+00:00",
+  "scope": "upper-body sitting posture perception; not relation or recommendation policy"
+}

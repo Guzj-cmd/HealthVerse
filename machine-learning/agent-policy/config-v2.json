@@ -1,0 +1,41 @@
+{
+  "random_seed": 42,
+  "perception": {
+    "validation_subject_fraction": 0.25,
+    "test_subject_fraction": 0.23,
+    "thresholds": {
+      "accuracy": 0.90,
+      "macro_f1": 0.88,
+      "minimum_class_recall": 0.75
+    }
+  },
+  "teacher_distillation": {
+    "prompt_version": "office-posture-teacher-v1",
+    "passes": 2,
+    "samples_per_subject_posture": 2,
+    "minimum_teacher_confidence": 0.70,
+    "require_exact_consensus": true,
+    "student_thresholds": {
+      "accuracy": 0.80,
+      "macro_f1": 0.70,
+      "minimum_coverage": 0.60,
+      "maximum_teacher_abstention": 0.40
+    }
+  },
+  "feedback_policy": {
+    "status": "future_not_current_gate",
+    "minimum_decisive_preferences": 600,
+    "minimum_participants": 30,
+    "minimum_sessions": 60,
+    "minimum_preferences_per_action": 40,
+    "validation_participant_fraction": 0.20,
+    "test_participant_fraction": 0.20,
+    "deployment_preference_probability": 0.70,
+    "thresholds": {
+      "accuracy": 0.75,
+      "macro_f1": 0.75,
+      "roc_auc": 0.80,
+      "maximum_ece": 0.10
+    }
+  }
+}

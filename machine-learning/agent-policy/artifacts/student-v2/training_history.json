@@ -1,0 +1,178 @@
+{
+  "action": [
+    {
+      "model": "logistic_regression",
+      "validation": {
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "confusion_matrix": [
+          [
+            21,
+            0
+          ],
+          [
+            0,
+            6
+          ]
+        ]
+      },
+      "validation_selected_threshold": 0.5
+    },
+    {
+      "model": "decision_tree",
+      "validation": {
+        "accuracy": 0.9629629629629629,
+        "macro_f1": 0.949343339587242,
+        "confusion_matrix": [
+          [
+            20,
+            1
+          ],
+          [
+            0,
+            6
+          ]
+        ]
+      },
+      "validation_selected_threshold": 0.5
+    },
+    {
+      "model": "random_forest",
+      "validation": {
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "confusion_matrix": [
+          [
+            21,
+            0
+          ],
+          [
+            0,
+            6
+          ]
+        ]
+      },
+      "validation_selected_threshold": 0.5
+    },
+    {
+      "model": "hist_gradient_boosting",
+      "validation": {
+        "accuracy": 0.9629629629629629,
+        "macro_f1": 0.949343339587242,
+        "confusion_matrix": [
+          [
+            20,
+            1
+          ],
+          [
+            0,
+            6
+          ]
+        ]
+      },
+      "validation_selected_threshold": 0.5
+    }
+  ],
+  "risk": [
+    {
+      "model": "logistic_regression",
+      "validation": {
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "confusion_matrix": [
+          [
+            8,
+            0,
+            0
+          ],
+          [
+            0,
+            6,
+            0
+          ],
+          [
+            0,
+            0,
+            13
+          ]
+        ]
+      },
+      "validation_selected_threshold": null
+    },
+    {
+      "model": "decision_tree",
+      "validation": {
+        "accuracy": 0.8888888888888888,
+        "macro_f1": 0.8962962962962964,
+        "confusion_matrix": [
+          [
+            6,
+            0,
+            2
+          ],
+          [
+            0,
+            6,
+            0
+          ],
+          [
+            1,
+            0,
+            12
+          ]
+        ]
+      },
+      "validation_selected_threshold": null
+    },
+    {
+      "model": "random_forest",
+      "validation": {
+        "accuracy": 0.9629629629629629,
+        "macro_f1": 0.9670588235294119,
+        "confusion_matrix": [
+          [
+            8,
+            0,
+            0
+          ],
+          [
+            0,
+            6,
+            0
+          ],
+          [
+            1,
+            0,
+            12
+          ]
+        ]
+      },
+      "validation_selected_threshold": null
+    },
+    {
+      "model": "hist_gradient_boosting",
+      "validation": {
+        "accuracy": 0.8518518518518519,
+        "macro_f1": 0.8564102564102565,
+        "confusion_matrix": [
+          [
+            6,
+            0,
+            2
+          ],
+          [
+            0,
+            6,
+            0
+          ],
+          [
+            1,
+            1,
+            11
+          ]
+        ]
+      },
+      "validation_selected_threshold": null
+    }
+  ]
+}

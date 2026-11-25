@@ -1,0 +1,129 @@
+{
+  "action": [
+    {
+      "model": "logistic_regression",
+      "validation": {
+        "accuracy": 0.7692307692307693,
+        "macro_f1": 0.7450980392156863,
+        "confusion_matrix": [
+          [
+            7,
+            3
+          ],
+          [
+            0,
+            3
+          ]
+        ]
+      }
+    },
+    {
+      "model": "decision_tree",
+      "validation": {
+        "accuracy": 0.6153846153846154,
+        "macro_f1": 0.5112781954887218,
+        "confusion_matrix": [
+          [
+            7,
+            3
+          ],
+          [
+            2,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "model": "random_forest",
+      "validation": {
+        "accuracy": 0.6923076923076923,
+        "macro_f1": 0.5666666666666667,
+        "confusion_matrix": [
+          [
+            8,
+            2
+          ],
+          [
+            2,
+            1
+          ]
+        ]
+      }
+    }
+  ],
+  "risk": [
+    {
+      "model": "logistic_regression",
+      "validation": {
+        "accuracy": 0.7692307692307693,
+        "macro_f1": 0.7777777777777777,
+        "confusion_matrix": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            0,
+            3,
+            0
+          ],
+          [
+            0,
+            3,
+            3
+          ]
+        ]
+      }
+    },
+    {
+      "model": "decision_tree",
+      "validation": {
+        "accuracy": 0.6153846153846154,
+        "macro_f1": 0.5884615384615385,
+        "confusion_matrix": [
+          [
+            3,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            1,
+            1,
+            4
+          ]
+        ]
+      }
+    },
+    {
+      "model": "random_forest",
+      "validation": {
+        "accuracy": 0.7692307692307693,
+        "macro_f1": 0.7230769230769231,
+        "confusion_matrix": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            0,
+            1,
+            5
+          ]
+        ]
+      }
+    }
+  ]
+}
