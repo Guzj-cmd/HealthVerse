@@ -39,7 +39,7 @@
     {
       "id": "behave",
       "name": "BEHAVE",
-      "status": "trained-auxiliary-gate-passed-local-artifact",
+      "status": "v1-deployment-candidate-v2-nested-rejected",
       "participants": 8,
       "samples": 15000,
       "modalities": ["multi-view-rgbd", "smpl", "object-6d-pose", "contact"],
@@ -48,7 +48,7 @@
       "license": "non-commercial research license",
       "source_url": "https://virtualhumans.mpi-inf.mpg.de/behave/",
       "evaluation": "leave-one-participant-out over seven participants and 51 selected sequences",
-      "notes": "A three-class transform-based auxiliary head was trained for seated contact, table lean and monitor interaction. Aggregate LOSO accuracy is 0.9310 and macro-F1 is 0.9077; every aggregate class recall exceeds 0.88. The predefined macro-F1 >= 0.85 and per-class recall >= 0.80 gate passed. The local model artifact is Git-ignored pending clarification of derived-weight redistribution."
+      "notes": "V1 aggregate LOSO accuracy is 0.9310 and macro-F1 is 0.9077; minimum class recall is 0.8810. Nested v2 raised macro-F1 to 0.9482 but lowered minimum class recall to 0.8631, so the predeclared both-must-improve rule rejected v2 and kept v1 as the deployment candidate. Local model artifacts are Git-ignored pending clarification of derived-weight redistribution."
     },
     {
       "id": "prox",

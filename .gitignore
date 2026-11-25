@@ -26,6 +26,10 @@ ccfa-workfiles/**/cache/
 # BEHAVE-derived weights stay local until the dataset owner confirms redistribution
 machine-learning/runs/behave-relation-v1/model.joblib
 
+# Charades source features and derived weights are non-redistributable
+machine-learning/runs/charades-relation-v1/model.joblib
+machine-learning/runs/behave-relation-v2/model.joblib
+
 # Local camera/video captures and preference records
 captures/
 preferences/*.jsonl

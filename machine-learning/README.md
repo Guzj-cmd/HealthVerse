@@ -98,6 +98,14 @@ python train_behave_relation.py --config datasets/behave-relation.json
 
 输出保存在 `runs/behave-relation-v1/`。原始数据不进入 Git；`model.joblib` 也保持本地，直至 BEHAVE 数据所有者明确允许衍生权重再分发。该模型依赖 SMPL/物体拟合变换，是关系头实验，不是原始摄像头端到端模型，也不是健康诊断模型。
 
+第二轮使用嵌套评估比较基线与因果时序窗口特征：
+
+```powershell
+python train_behave_relation_v2.py --config datasets/behave-relation-v2.json
+```
+
+每个外层参与者完全冻结，候选只在其余参与者的 3 折 GroupCV 中选择，外层只评一次。V2 的 macro-F1 提升到 0.9482，但最弱类召回从 0.8810 降到 0.8631；根据预先声明的“双指标都必须提升”规则，V2 不替换 V1。完整内层消融保存在 `runs/behave-relation-v2/ablation_summary.csv`。
+
 ## Edinburgh Office 跨场景情境实验
 
 `train_office_context.py` 使用 20 天真实办公室真值框训练空房、站/走、坐、交谈四类辅助头。评估采用嵌套的“整位参与者 + 整间办公室留一”，候选选择不能看到外层测试办公室：

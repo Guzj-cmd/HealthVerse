@@ -1,0 +1,107 @@
+{
+  "dataset": {
+    "id": "behave",
+    "source_url": "https://virtualhumans.mpi-inf.mpg.de/behave/",
+    "license": "Non-commercial scientific research only; no redistribution of source data; public images require face blurring",
+    "raw_data_redistributed": false
+  },
+  "protocol": {
+    "outer": "leave-one-subject-out; outer test evaluated once per subject",
+    "inner": "3-fold GroupKFold on development subjects only",
+    "selection_rule": "max inner OOF macro-F1, then minimum class recall, then accuracy, then lower predefined complexity rank",
+    "replacement_rule": "v2 replaces v1 only if aggregate macro-F1 and minimum aggregate class recall both strictly improve",
+    "causal_window_frames": 15
+  },
+  "data_summary": {
+    "subjects": [
+      "Sub01",
+      "Sub02",
+      "Sub03",
+      "Sub04",
+      "Sub06",
+      "Sub07",
+      "Sub08"
+    ],
+    "subject_count": 7,
+    "sequence_count": 51,
+    "sample_count": 2448,
+    "samples_per_class": {
+      "seated_contact": 1440,
+      "monitor_interaction": 672,
+      "table_lean": 336
+    },
+    "sequences_per_class": {
+      "seated_contact": 30,
+      "monitor_interaction": 14,
+      "table_lean": 7
+    },
+    "baseline_dimensions": 330,
+    "temporal_dimensions": 457
+  },
+  "aggregate_nested_loso": {
+    "accuracy": 0.9624183006535948,
+    "macro_f1": 0.9482209255464068,
+    "per_class_recall": {
+      "seated_contact": 0.9868055555555556,
+      "table_lean": 0.8630952380952381,
+      "monitor_interaction": 0.9598214285714286
+    },
+    "minimum_class_recall": 0.8630952380952381,
+    "class_support": {
+      "seated_contact": 1440,
+      "table_lean": 336,
+      "monitor_interaction": 672
+    }
+  },
+  "quality_gate": {
+    "thresholds": {
+      "minimum_aggregate_macro_f1": 0.85,
+      "minimum_aggregate_class_recall": 0.8
+    },
+    "status": "passed",
+    "failures": []
+  },
+  "comparison_to_v1": {
+    "v1_macro_f1": 0.9076812864855333,
+    "v2_macro_f1": 0.9482209255464068,
+    "macro_f1_delta": 0.040539639060873545,
+    "v1_minimum_class_recall": 0.8809523809523809,
+    "v2_minimum_class_recall": 0.8630952380952381,
+    "minimum_class_recall_delta": -0.017857142857142794,
+    "improves_both_required_metrics": false,
+    "deployment_candidate": "v1"
+  },
+  "outer_candidate_selection_counts": {
+    "hgb_temporal": 7
+  },
+  "final_full_data_candidate": {
+    "name": "hgb_temporal",
+    "feature_set": "temporal",
+    "inner_oof_metrics": {
+      "accuracy": 0.9428104575163399,
+      "macro_f1": 0.9137084749105306,
+      "per_class_recall": {
+        "seated_contact": 0.9826388888888888,
+        "table_lean": 0.7380952380952381,
+        "monitor_interaction": 0.9598214285714286
+      },
+      "minimum_class_recall": 0.7380952380952381,
+      "class_support": {
+        "seated_contact": 1440,
+        "table_lean": 336,
+        "monitor_interaction": 672
+      }
+    }
+  },
+  "local_model_artifact": {
+    "path": "model.joblib",
+    "sha256": "e396b55b515b691aca3dd77d9e0018b51ec569dab2df9819cb400ffe2c70c9e5",
+    "tracked_by_git": false
+  },
+  "limitations": [
+    "Interaction labels come from BEHAVE sequence names, not ergonomic or medical outcome annotations.",
+    "Temporal statistics are causal past-only windows, but input still requires fitted SMPL and object transforms.",
+    "Sub08 has no table_lean test support; aggregate outer predictions contain all classes.",
+    "Nested selection prevents direct outer-test tuning, but seven participants still yield wide uncertainty."
+  ]
+}

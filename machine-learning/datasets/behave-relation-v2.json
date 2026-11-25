@@ -1,0 +1,70 @@
+{
+  "dataset_id": "behave",
+  "dataset_name": "BEHAVE",
+  "source_url": "https://virtualhumans.mpi-inf.mpg.de/behave/",
+  "license": "Non-commercial scientific research only; no redistribution of source data; public images require face blurring",
+  "local_params": "ccfa-workfiles/datasets/healthverse-expansion/cache/behave/params",
+  "output_dir": "machine-learning/runs/behave-relation-v2",
+  "v1_metrics": "machine-learning/runs/behave-relation-v1/metrics.json",
+  "random_seed": 20261125,
+  "samples_per_sequence": 48,
+  "temporal_trim_fraction": 0.1,
+  "causal_window_frames": 15,
+  "inner_group_folds": 3,
+  "classes": {
+    "seated_contact": ["chairblack_sit", "chairwood_sit", "stool_sit", "tablesquare_sit"],
+    "table_lean": ["tablesmall_lean"],
+    "monitor_interaction": ["monitor_hand", "monitor_move"]
+  },
+  "excluded_ambiguous_suffixes": ["chairblack_sitstand", "monitor_sit"],
+  "selection_rule": "max inner OOF macro-F1, then minimum class recall, then accuracy, then lower predefined complexity rank",
+  "replacement_rule": "v2 replaces v1 only if aggregate macro-F1 and minimum aggregate class recall both strictly improve",
+  "quality_gate": {
+    "minimum_aggregate_macro_f1": 0.85,
+    "minimum_aggregate_class_recall": 0.8
+  },
+  "candidates": [
+    {
+      "name": "et_baseline",
+      "feature_set": "baseline",
+      "estimator": "extra_trees",
+      "n_estimators": 300,
+      "min_samples_leaf": 2,
+      "max_features": "sqrt",
+      "class_weight": "balanced",
+      "complexity_rank": 0
+    },
+    {
+      "name": "et_temporal",
+      "feature_set": "temporal",
+      "estimator": "extra_trees",
+      "n_estimators": 300,
+      "min_samples_leaf": 2,
+      "max_features": "sqrt",
+      "class_weight": "balanced",
+      "complexity_rank": 1
+    },
+    {
+      "name": "rf_temporal",
+      "feature_set": "temporal",
+      "estimator": "random_forest",
+      "n_estimators": 300,
+      "min_samples_leaf": 2,
+      "max_features": "sqrt",
+      "class_weight": "balanced_subsample",
+      "complexity_rank": 2
+    },
+    {
+      "name": "hgb_temporal",
+      "feature_set": "temporal",
+      "estimator": "hist_gradient_boosting",
+      "max_iter": 180,
+      "learning_rate": 0.08,
+      "max_leaf_nodes": 31,
+      "min_samples_leaf": 20,
+      "l2_regularization": 1.0,
+      "class_weight": "balanced",
+      "complexity_rank": 3
+    }
+  ]
+}

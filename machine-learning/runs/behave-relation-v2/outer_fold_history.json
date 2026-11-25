@@ -1,0 +1,247 @@
+[
+  {
+    "accuracy": 0.9166666666666666,
+    "macro_f1": 0.8400913763563679,
+    "per_class_recall": {
+      "seated_contact": 1.0,
+      "table_lean": 0.4166666666666667,
+      "monitor_interaction": 1.0
+    },
+    "minimum_class_recall": 0.4166666666666667,
+    "class_support": {
+      "seated_contact": 192,
+      "table_lean": 48,
+      "monitor_interaction": 96
+    },
+    "holdout_subject": "Sub01",
+    "selected_candidate": "hgb_temporal",
+    "selected_feature_set": "temporal",
+    "inner_selected_metrics": {
+      "accuracy": 0.9706439393939394,
+      "macro_f1": 0.9642567982020598,
+      "per_class_recall": {
+        "seated_contact": 0.9855769230769231,
+        "table_lean": 0.9444444444444444,
+        "monitor_interaction": 0.9513888888888888
+      },
+      "minimum_class_recall": 0.9444444444444444,
+      "class_support": {
+        "seated_contact": 1248,
+        "table_lean": 288,
+        "monitor_interaction": 576
+      }
+    },
+    "train_samples": 2112,
+    "test_samples": 336
+  },
+  {
+    "accuracy": 0.9642857142857143,
+    "macro_f1": 0.9601394597919878,
+    "per_class_recall": {
+      "seated_contact": 1.0,
+      "table_lean": 0.9375,
+      "monitor_interaction": 0.90625
+    },
+    "minimum_class_recall": 0.90625,
+    "class_support": {
+      "seated_contact": 192,
+      "table_lean": 48,
+      "monitor_interaction": 96
+    },
+    "holdout_subject": "Sub02",
+    "selected_candidate": "hgb_temporal",
+    "selected_feature_set": "temporal",
+    "inner_selected_metrics": {
+      "accuracy": 0.9668560606060606,
+      "macro_f1": 0.9528116125869311,
+      "per_class_recall": {
+        "seated_contact": 0.9943910256410257,
+        "table_lean": 0.8472222222222222,
+        "monitor_interaction": 0.9670138888888888
+      },
+      "minimum_class_recall": 0.8472222222222222,
+      "class_support": {
+        "seated_contact": 1248,
+        "table_lean": 288,
+        "monitor_interaction": 576
+      }
+    },
+    "train_samples": 2112,
+    "test_samples": 336
+  },
+  {
+    "accuracy": 1.0,
+    "macro_f1": 1.0,
+    "per_class_recall": {
+      "seated_contact": 1.0,
+      "table_lean": 1.0,
+      "monitor_interaction": 1.0
+    },
+    "minimum_class_recall": 1.0,
+    "class_support": {
+      "seated_contact": 192,
+      "table_lean": 48,
+      "monitor_interaction": 48
+    },
+    "holdout_subject": "Sub03",
+    "selected_candidate": "hgb_temporal",
+    "selected_feature_set": "temporal",
+    "inner_selected_metrics": {
+      "accuracy": 0.9532407407407407,
+      "macro_f1": 0.9339343819043832,
+      "per_class_recall": {
+        "seated_contact": 0.9783653846153846,
+        "table_lean": 0.8368055555555556,
+        "monitor_interaction": 0.9567307692307693
+      },
+      "minimum_class_recall": 0.8368055555555556,
+      "class_support": {
+        "seated_contact": 1248,
+        "table_lean": 288,
+        "monitor_interaction": 624
+      }
+    },
+    "train_samples": 2160,
+    "test_samples": 288
+  },
+  {
+    "accuracy": 0.9285714285714286,
+    "macro_f1": 0.9096864590128521,
+    "per_class_recall": {
+      "seated_contact": 0.9583333333333334,
+      "table_lean": 0.8541666666666666,
+      "monitor_interaction": 0.90625
+    },
+    "minimum_class_recall": 0.8541666666666666,
+    "class_support": {
+      "seated_contact": 384,
+      "table_lean": 96,
+      "monitor_interaction": 192
+    },
+    "holdout_subject": "Sub04",
+    "selected_candidate": "hgb_temporal",
+    "selected_feature_set": "temporal",
+    "inner_selected_metrics": {
+      "accuracy": 0.9718468468468469,
+      "macro_f1": 0.957137261626923,
+      "per_class_recall": {
+        "seated_contact": 0.9839015151515151,
+        "table_lean": 0.8708333333333333,
+        "monitor_interaction": 0.9958333333333333
+      },
+      "minimum_class_recall": 0.8708333333333333,
+      "class_support": {
+        "seated_contact": 1056,
+        "table_lean": 240,
+        "monitor_interaction": 480
+      }
+    },
+    "train_samples": 1776,
+    "test_samples": 672
+  },
+  {
+    "accuracy": 0.9910714285714286,
+    "macro_f1": 0.9862184052346512,
+    "per_class_recall": {
+      "seated_contact": 0.9895833333333334,
+      "table_lean": 0.9791666666666666,
+      "monitor_interaction": 1.0
+    },
+    "minimum_class_recall": 0.9791666666666666,
+    "class_support": {
+      "seated_contact": 192,
+      "table_lean": 48,
+      "monitor_interaction": 96
+    },
+    "holdout_subject": "Sub06",
+    "selected_candidate": "hgb_temporal",
+    "selected_feature_set": "temporal",
+    "inner_selected_metrics": {
+      "accuracy": 0.953125,
+      "macro_f1": 0.9335819543944667,
+      "per_class_recall": {
+        "seated_contact": 0.9823717948717948,
+        "table_lean": 0.8263888888888888,
+        "monitor_interaction": 0.953125
+      },
+      "minimum_class_recall": 0.8263888888888888,
+      "class_support": {
+        "seated_contact": 1248,
+        "table_lean": 288,
+        "monitor_interaction": 576
+      }
+    },
+    "train_samples": 2112,
+    "test_samples": 336
+  },
+  {
+    "accuracy": 0.9965277777777778,
+    "macro_f1": 0.9956932518640144,
+    "per_class_recall": {
+      "seated_contact": 0.9947916666666666,
+      "table_lean": 1.0,
+      "monitor_interaction": 1.0
+    },
+    "minimum_class_recall": 0.9947916666666666,
+    "class_support": {
+      "seated_contact": 192,
+      "table_lean": 48,
+      "monitor_interaction": 48
+    },
+    "holdout_subject": "Sub07",
+    "selected_candidate": "hgb_temporal",
+    "selected_feature_set": "temporal",
+    "inner_selected_metrics": {
+      "accuracy": 0.9546296296296296,
+      "macro_f1": 0.9352690749361171,
+      "per_class_recall": {
+        "seated_contact": 0.9759615384615384,
+        "table_lean": 0.8576388888888888,
+        "monitor_interaction": 0.9567307692307693
+      },
+      "minimum_class_recall": 0.8576388888888888,
+      "class_support": {
+        "seated_contact": 1248,
+        "table_lean": 288,
+        "monitor_interaction": 624
+      }
+    },
+    "train_samples": 2160,
+    "test_samples": 288
+  },
+  {
+    "accuracy": 1.0,
+    "macro_f1": 0.6666666666666666,
+    "per_class_recall": {
+      "seated_contact": 1.0,
+      "table_lean": 0.0,
+      "monitor_interaction": 1.0
+    },
+    "minimum_class_recall": 0.0,
+    "class_support": {
+      "seated_contact": 96,
+      "table_lean": 0,
+      "monitor_interaction": 96
+    },
+    "holdout_subject": "Sub08",
+    "selected_candidate": "hgb_temporal",
+    "selected_feature_set": "temporal",
+    "inner_selected_metrics": {
+      "accuracy": 0.9601063829787234,
+      "macro_f1": 0.9473229816097781,
+      "per_class_recall": {
+        "seated_contact": 0.9851190476190477,
+        "table_lean": 0.8720238095238095,
+        "monitor_interaction": 0.953125
+      },
+      "minimum_class_recall": 0.8720238095238095,
+      "class_support": {
+        "seated_contact": 1344,
+        "table_lean": 336,
+        "monitor_interaction": 576
+      }
+    },
+    "train_samples": 2256,
+    "test_samples": 192
+  }
+]

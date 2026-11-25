@@ -1,0 +1,394 @@
+[
+  {
+    "candidate": "et_baseline",
+    "aggregate": {
+      "accuracy": 0.9019607843137255,
+      "macro_f1": 0.8559144336877623,
+      "per_class_recall": {
+        "seated_contact": 0.9395833333333333,
+        "table_lean": 0.6488095238095238,
+        "monitor_interaction": 0.9479166666666666
+      },
+      "minimum_class_recall": 0.6488095238095238,
+      "class_support": {
+        "seated_contact": 1440,
+        "table_lean": 336,
+        "monitor_interaction": 672
+      }
+    },
+    "folds": [
+      {
+        "accuracy": 0.875,
+        "macro_f1": 0.824933730494553,
+        "per_class_recall": {
+          "seated_contact": 0.9,
+          "table_lean": 0.7395833333333334,
+          "monitor_interaction": 0.8784722222222222
+        },
+        "minimum_class_recall": 0.7395833333333334,
+        "class_support": {
+          "seated_contact": 480,
+          "table_lean": 96,
+          "monitor_interaction": 288
+        },
+        "validation_subjects": [
+          "Sub04",
+          "Sub08"
+        ],
+        "train_subjects": [
+          "Sub01",
+          "Sub02",
+          "Sub03",
+          "Sub06",
+          "Sub07"
+        ]
+      },
+      {
+        "accuracy": 0.9553571428571429,
+        "macro_f1": 0.9386252045826513,
+        "per_class_recall": {
+          "seated_contact": 0.9401041666666666,
+          "table_lean": 0.9270833333333334,
+          "monitor_interaction": 1.0
+        },
+        "minimum_class_recall": 0.9270833333333334,
+        "class_support": {
+          "seated_contact": 384,
+          "table_lean": 96,
+          "monitor_interaction": 192
+        },
+        "validation_subjects": [
+          "Sub01",
+          "Sub02"
+        ],
+        "train_subjects": [
+          "Sub03",
+          "Sub04",
+          "Sub06",
+          "Sub07",
+          "Sub08"
+        ]
+      },
+      {
+        "accuracy": 0.8881578947368421,
+        "macro_f1": 0.8138183872648633,
+        "per_class_recall": {
+          "seated_contact": 0.9722222222222222,
+          "table_lean": 0.4027777777777778,
+          "monitor_interaction": 1.0
+        },
+        "minimum_class_recall": 0.4027777777777778,
+        "class_support": {
+          "seated_contact": 576,
+          "table_lean": 144,
+          "monitor_interaction": 192
+        },
+        "validation_subjects": [
+          "Sub03",
+          "Sub06",
+          "Sub07"
+        ],
+        "train_subjects": [
+          "Sub01",
+          "Sub02",
+          "Sub04",
+          "Sub08"
+        ]
+      }
+    ]
+  },
+  {
+    "candidate": "et_temporal",
+    "aggregate": {
+      "accuracy": 0.9199346405228758,
+      "macro_f1": 0.8887814407110008,
+      "per_class_recall": {
+        "seated_contact": 0.9472222222222222,
+        "table_lean": 0.7708333333333334,
+        "monitor_interaction": 0.9360119047619048
+      },
+      "minimum_class_recall": 0.7708333333333334,
+      "class_support": {
+        "seated_contact": 1440,
+        "table_lean": 336,
+        "monitor_interaction": 672
+      }
+    },
+    "folds": [
+      {
+        "accuracy": 0.8923611111111112,
+        "macro_f1": 0.8514492753623188,
+        "per_class_recall": {
+          "seated_contact": 0.9145833333333333,
+          "table_lean": 0.78125,
+          "monitor_interaction": 0.8923611111111112
+        },
+        "minimum_class_recall": 0.78125,
+        "class_support": {
+          "seated_contact": 480,
+          "table_lean": 96,
+          "monitor_interaction": 288
+        },
+        "validation_subjects": [
+          "Sub04",
+          "Sub08"
+        ],
+        "train_subjects": [
+          "Sub01",
+          "Sub02",
+          "Sub03",
+          "Sub06",
+          "Sub07"
+        ]
+      },
+      {
+        "accuracy": 0.9434523809523809,
+        "macro_f1": 0.9286286048978124,
+        "per_class_recall": {
+          "seated_contact": 0.9427083333333334,
+          "table_lean": 0.9375,
+          "monitor_interaction": 0.9479166666666666
+        },
+        "minimum_class_recall": 0.9375,
+        "class_support": {
+          "seated_contact": 384,
+          "table_lean": 96,
+          "monitor_interaction": 192
+        },
+        "validation_subjects": [
+          "Sub01",
+          "Sub02"
+        ],
+        "train_subjects": [
+          "Sub03",
+          "Sub04",
+          "Sub06",
+          "Sub07",
+          "Sub08"
+        ]
+      },
+      {
+        "accuracy": 0.9287280701754386,
+        "macro_f1": 0.8895093545650877,
+        "per_class_recall": {
+          "seated_contact": 0.9774305555555556,
+          "table_lean": 0.6527777777777778,
+          "monitor_interaction": 0.9895833333333334
+        },
+        "minimum_class_recall": 0.6527777777777778,
+        "class_support": {
+          "seated_contact": 576,
+          "table_lean": 144,
+          "monitor_interaction": 192
+        },
+        "validation_subjects": [
+          "Sub03",
+          "Sub06",
+          "Sub07"
+        ],
+        "train_subjects": [
+          "Sub01",
+          "Sub02",
+          "Sub04",
+          "Sub08"
+        ]
+      }
+    ]
+  },
+  {
+    "candidate": "rf_temporal",
+    "aggregate": {
+      "accuracy": 0.9264705882352942,
+      "macro_f1": 0.8898985823596108,
+      "per_class_recall": {
+        "seated_contact": 0.9888888888888889,
+        "table_lean": 0.6636904761904762,
+        "monitor_interaction": 0.9241071428571429
+      },
+      "minimum_class_recall": 0.6636904761904762,
+      "class_support": {
+        "seated_contact": 1440,
+        "table_lean": 336,
+        "monitor_interaction": 672
+      }
+    },
+    "folds": [
+      {
+        "accuracy": 0.9155092592592593,
+        "macro_f1": 0.9049954814864062,
+        "per_class_recall": {
+          "seated_contact": 0.9833333333333333,
+          "table_lean": 0.8333333333333334,
+          "monitor_interaction": 0.8298611111111112
+        },
+        "minimum_class_recall": 0.8298611111111112,
+        "class_support": {
+          "seated_contact": 480,
+          "table_lean": 96,
+          "monitor_interaction": 288
+        },
+        "validation_subjects": [
+          "Sub04",
+          "Sub08"
+        ],
+        "train_subjects": [
+          "Sub01",
+          "Sub02",
+          "Sub03",
+          "Sub06",
+          "Sub07"
+        ]
+      },
+      {
+        "accuracy": 0.9449404761904762,
+        "macro_f1": 0.9061578149847236,
+        "per_class_recall": {
+          "seated_contact": 1.0,
+          "table_lean": 0.6354166666666666,
+          "monitor_interaction": 0.9895833333333334
+        },
+        "minimum_class_recall": 0.6354166666666666,
+        "class_support": {
+          "seated_contact": 384,
+          "table_lean": 96,
+          "monitor_interaction": 192
+        },
+        "validation_subjects": [
+          "Sub01",
+          "Sub02"
+        ],
+        "train_subjects": [
+          "Sub03",
+          "Sub04",
+          "Sub06",
+          "Sub07",
+          "Sub08"
+        ]
+      },
+      {
+        "accuracy": 0.9232456140350878,
+        "macro_f1": 0.8688320493823714,
+        "per_class_recall": {
+          "seated_contact": 0.9861111111111112,
+          "table_lean": 0.5694444444444444,
+          "monitor_interaction": 1.0
+        },
+        "minimum_class_recall": 0.5694444444444444,
+        "class_support": {
+          "seated_contact": 576,
+          "table_lean": 144,
+          "monitor_interaction": 192
+        },
+        "validation_subjects": [
+          "Sub03",
+          "Sub06",
+          "Sub07"
+        ],
+        "train_subjects": [
+          "Sub01",
+          "Sub02",
+          "Sub04",
+          "Sub08"
+        ]
+      }
+    ]
+  },
+  {
+    "candidate": "hgb_temporal",
+    "aggregate": {
+      "accuracy": 0.9428104575163399,
+      "macro_f1": 0.9137084749105306,
+      "per_class_recall": {
+        "seated_contact": 0.9826388888888888,
+        "table_lean": 0.7380952380952381,
+        "monitor_interaction": 0.9598214285714286
+      },
+      "minimum_class_recall": 0.7380952380952381,
+      "class_support": {
+        "seated_contact": 1440,
+        "table_lean": 336,
+        "monitor_interaction": 672
+      }
+    },
+    "folds": [
+      {
+        "accuracy": 0.9490740740740741,
+        "macro_f1": 0.9258229247983346,
+        "per_class_recall": {
+          "seated_contact": 0.975,
+          "table_lean": 0.8541666666666666,
+          "monitor_interaction": 0.9375
+        },
+        "minimum_class_recall": 0.8541666666666666,
+        "class_support": {
+          "seated_contact": 480,
+          "table_lean": 96,
+          "monitor_interaction": 288
+        },
+        "validation_subjects": [
+          "Sub04",
+          "Sub08"
+        ],
+        "train_subjects": [
+          "Sub01",
+          "Sub02",
+          "Sub03",
+          "Sub06",
+          "Sub07"
+        ]
+      },
+      {
+        "accuracy": 0.9419642857142857,
+        "macro_f1": 0.9144045814862721,
+        "per_class_recall": {
+          "seated_contact": 0.9973958333333334,
+          "table_lean": 0.6979166666666666,
+          "monitor_interaction": 0.953125
+        },
+        "minimum_class_recall": 0.6979166666666666,
+        "class_support": {
+          "seated_contact": 384,
+          "table_lean": 96,
+          "monitor_interaction": 192
+        },
+        "validation_subjects": [
+          "Sub01",
+          "Sub02"
+        ],
+        "train_subjects": [
+          "Sub03",
+          "Sub04",
+          "Sub06",
+          "Sub07",
+          "Sub08"
+        ]
+      },
+      {
+        "accuracy": 0.9375,
+        "macro_f1": 0.9024771450474262,
+        "per_class_recall": {
+          "seated_contact": 0.9791666666666666,
+          "table_lean": 0.6875,
+          "monitor_interaction": 1.0
+        },
+        "minimum_class_recall": 0.6875,
+        "class_support": {
+          "seated_contact": 576,
+          "table_lean": 144,
+          "monitor_interaction": 192
+        },
+        "validation_subjects": [
+          "Sub03",
+          "Sub06",
+          "Sub07"
+        ],
+        "train_subjects": [
+          "Sub01",
+          "Sub02",
+          "Sub04",
+          "Sub08"
+        ]
+      }
+    ]
+  }
+]
