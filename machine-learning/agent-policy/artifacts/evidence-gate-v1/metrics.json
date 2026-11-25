@@ -1,0 +1,28 @@
+{
+  "status": "passed_for_safety_gate_only",
+  "dataset": "BEHAVE v1 participant-disjoint relation predictions",
+  "participants": 7,
+  "candidate_sequences": 51,
+  "accepted_sequences": 47,
+  "teacher_consensus_coverage": 0.9215686274509803,
+  "accepted_action_counts": {"no_action": 45, "ask_confirm": 2},
+  "evaluation": "subject_leave_one_out",
+  "accuracy": 0.9574468085106383,
+  "macro_f1": 0.821969696969697,
+  "per_class_recall": {"ask_confirm": 1.0, "no_action": 0.9555555555555556},
+  "confusion_matrix": [[2, 0], [2, 43]],
+  "calibration": {"brier_score": 0.0364283, "ece_5_bin": 0.10737},
+  "participant_cluster_bootstrap": {
+    "replicates": 2000,
+    "accuracy_95_ci": [0.9148936170212766, 1.0],
+    "macro_f1_95_ci": [0.4823529411764706, 1.0]
+  },
+  "deployment_actions": ["no_action", "ask_confirm"],
+  "mutating_action_examples": 0,
+  "limitations": [
+    "Only two accepted ask_confirm examples were available.",
+    "The wide clustered macro-F1 interval reflects the small participant and positive-action count.",
+    "This evaluation supports a refusal/request-confirmation gate, not a complete recommendation agent.",
+    "No duration, monitor-height, reach, pain, diagnosis, preference, or outcome evidence was present."
+  ]
+}

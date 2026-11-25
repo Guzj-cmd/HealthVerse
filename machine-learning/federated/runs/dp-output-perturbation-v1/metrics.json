@@ -1,0 +1,38 @@
+{
+  "status": "rejected",
+  "mechanism": "Gaussian output perturbation of L2-regularized strongly-convex multinomial softmax ERM with 512 fixed public random ReLU features",
+  "privacy_scope": "sample-level replace-one central differential privacy for each released model; trusted curator training; not participant-level DP and not federated secure aggregation",
+  "accounting": {
+    "epsilon": 6.0,
+    "delta": 0.00001,
+    "conversion": "Gaussian mechanism as rho-zCDP converted by epsilon = rho + 2*sqrt(rho*log(1/delta))",
+    "feature_l2_bound": 1.0,
+    "loss_gradient_lipschitz_bound": 1.4142135623730951,
+    "replace_one_sensitivity_bound": "4*sqrt(2)/(n*lambda)",
+    "regularization_lambda": 0.05,
+    "fixed_public_random_relu_features": 512,
+    "released_final_model_composition": "one mechanism"
+  },
+  "protocol": "seven-fold leave-one-participant-out evaluation",
+  "participants": 7,
+  "samples": 2448,
+  "sequences": 51,
+  "optimizer_maximum_final_gradient_norm": 5.033249410977263e-08,
+  "nonprivate": {
+    "accuracy": 0.5882352941176471,
+    "macro_f1": 0.24691358024691357,
+    "per_class_recall": {"seated_contact": 1.0, "table_lean": 0.0, "monitor_interaction": 0.0}
+  },
+  "sample_dp_output_perturbation": {
+    "accuracy": 0.5882352941176471,
+    "macro_f1": 0.24691358024691357,
+    "per_class_recall": {"seated_contact": 1.0, "table_lean": 0.0, "monitor_interaction": 0.0}
+  },
+  "gate": {"maximum_epsilon": 8.0, "minimum_macro_f1": 0.65},
+  "failures": ["dp_macro_f1"],
+  "limitations": [
+    "Multiple frames from one participant are correlated; sample-level DP is weaker than participant-level DP.",
+    "Training assumes a trusted curator; output perturbation protects the released model, not raw data during training.",
+    "The sensitivity statement depends on bounded features, exact L2-regularized ERM, and the recorded optimizer convergence checks."
+  ]
+}

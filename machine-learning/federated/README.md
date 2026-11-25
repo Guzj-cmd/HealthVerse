@@ -54,6 +54,22 @@ python client.py --server https://coordinator.example:8787 --secret $env:HV_FED_
 - 匿名设备指纹由主机标识经 HMAC 派生，原始硬件标识不会上传。
 - 两个本机进程具有相同设备指纹，集成测试确认它们不会被误报为多设备部署。
 
+## X25519/HKDF 安全聚合实验
+
+`secure_aggregation.py` 实现成对掩码原语；`run_behave_secure_aggregation.py` 对七个真实 BEHAVE 参与者分区启动七个独立进程。每个进程生成临时 X25519 密钥，通过 HKDF-SHA256 派生成对、异号的随机掩码。协调器只接收公钥和带掩码更新。
+
+冻结实验（`runs/secure-aggregation-v1/metrics.json`）中，安全聚合与独立明文审计的最大绝对误差为 `4.996e-15`，预测完全一致；序列隔离评估 Accuracy `0.8069`、Macro-F1 `0.6934`。这证明本次协议路径的掩码抵消与服务端负载边界，**不等于真实多设备部署**：七个客户端仍在同一台电脑上，且尚无掉线恢复、恶意客户端防护或 TLS。安全聚合也不提供差分隐私。
+
+复现实验需要本地 BEHAVE 数据缓存；临时客户端特征只写入系统临时目录并在运行结束后删除：
+
+```powershell
+python run_behave_secure_aggregation.py --output runs\secure-aggregation-local
+```
+
+## 正式 DP 机制的失败结果
+
+`runs/dp-output-perturbation-v1/metrics.json` 保存另一条正式隐私会计尝试的汇总结果：强凸 L2 softmax ERM 的高斯输出扰动，`epsilon=6`、`delta=1e-5`。它具有样本级、可信管理者中心 DP 会计，但 Macro-F1 仅 `0.2469`，未达到 `0.65` 门槛，因此被拒绝。它不是参与者级 DP，也不是联邦安全聚合，不能作为隐私目标已经完成的证据。
+
 ## 测试
 
 ```powershell

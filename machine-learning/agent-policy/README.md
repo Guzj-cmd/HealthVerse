@@ -36,3 +36,9 @@ The learned posture model supplies pose context. The distilled student selects o
 The pairwise preference schema/server and reward-model script are retained as future real-feedback infrastructure. They are not part of the current pass condition and cannot train without consented human records.
 
 See `iteration_history.md`, `DATA_MANIFEST.md`, `artifacts/perception/model_card.md`, and `artifacts/student-v2/model_card.md`.
+
+## Evidence safety gate (BEHAVE)
+
+`evidence_gate.py` adds a narrower integration contract for passed BEHAVE relation evidence. It emits only `no_action` or `ask_confirm`; invalid, unsupported, or low-confidence evidence always requests confirmation. The frozen aggregate evaluation is in `artifacts/evidence-gate-v1/metrics.json` and the exact input/output boundary is in `evidence_gate_contract.json`.
+
+This result does **not** complete the recommendation Agent. The accepted set contains 47 sequences from seven participants but only two `ask_confirm` examples and no mutating-action examples. Concrete suggestions still require real environment measurements, sustained-duration evidence, user preference, and action-outcome labels across participants. Per-sequence teacher outputs and the BEHAVE-derived weight are intentionally excluded from this public evidence package.

@@ -1,0 +1,32 @@
+{
+  "status": "protocol_passed_utility_below_deployment_gate",
+  "run_type": "single_machine_seven_process_localhost",
+  "dataset": "BEHAVE v1",
+  "real_clients": 7,
+  "independent_client_processes": 7,
+  "local_epochs": 60,
+  "transport": "localhost multiprocessing connection with process-local authentication; not TLS and not multi-device",
+  "key_agreement": "ephemeral X25519 per client",
+  "masking": "pairwise HKDF-SHA256 pseudorandom masks with opposite signs",
+  "coordinator_received_private_keys": false,
+  "coordinator_received_plaintext_updates": false,
+  "aggregate_maximum_absolute_error": 4.9960036108132044e-15,
+  "secure_and_plaintext_predictions_identical": true,
+  "frozen_evaluation": {
+    "samples": 720,
+    "accuracy": 0.8069444444444445,
+    "macro_f1": 0.6934172384092192,
+    "per_class_recall": {
+      "seated_contact": 0.9583333333333334,
+      "table_lean": 0.625,
+      "monitor_interaction": 0.5708333333333333
+    },
+    "confusion_matrix": [[414, 15, 3], [11, 30, 7], [71, 32, 137]]
+  },
+  "limitations": [
+    "All clients ran as independent processes on one physical machine, not on real remote devices.",
+    "Dropout recovery, malicious-client robustness, and transport TLS are not implemented.",
+    "The coordinator sees client identity, sample count, and masked update shape.",
+    "Secure aggregation hides individual plaintext updates from this coordinator but does not provide differential privacy for the aggregate model."
+  ]
+}

@@ -80,7 +80,12 @@ def local_train(model: dict[str, np.ndarray], x: np.ndarray, y: np.ndarray, *, e
     rng = np.random.default_rng(seed)
     classes = current["b2"].size
     counts = np.bincount(y, minlength=classes).astype(np.float64)
-    weights = np.where(counts > 0, len(y) / (classes * counts), 0.0) if class_balance else np.ones(classes)
+    if class_balance:
+        weights = np.zeros(classes, dtype=np.float64)
+        present = counts > 0
+        weights[present] = len(y) / (classes * counts[present])
+    else:
+        weights = np.ones(classes)
     for _ in range(epochs):
         order = rng.permutation(len(x))
         for start in range(0, len(x), batch_size):

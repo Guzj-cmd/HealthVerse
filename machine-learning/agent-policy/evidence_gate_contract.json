@@ -1,0 +1,22 @@
+{
+  "contract_version": "behave-safety-gate-v1",
+  "input": {
+    "source_model_status": {"required": true, "accepted": ["passed"]},
+    "predicted_relation": {"required": true, "accepted": ["seated_contact", "table_lean", "monitor_interaction"]},
+    "object": {"required": true, "type": "non_empty_string"},
+    "frame_consistency": {"required": true, "minimum": 0.0, "maximum": 1.0}
+  },
+  "output": {
+    "immutable_action": ["no_action", "ask_confirm"],
+    "minimum_confidence": 0.7,
+    "fallback_action": "ask_confirm",
+    "scope": "safety_gate_only"
+  },
+  "unsupported_actions": ["raise_monitor", "reposition_object", "take_break"],
+  "unsupported_evidence": ["duration", "monitor_height", "reach", "pain", "diagnosis", "preference"],
+  "model_weight": {
+    "default_local_path": "artifacts/evidence-gate-v1/student_policy.joblib",
+    "tracked": false,
+    "reason": "The learned weight is derived from locally held BEHAVE data and is not part of the public aggregate-evidence package."
+  }
+}
