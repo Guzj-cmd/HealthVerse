@@ -1,0 +1,391 @@
+{
+  "status": "PASSED",
+  "dataset": {
+    "name": "HeartSteps V1",
+    "commit": "3016391de426116bdef41880d72bc8cd4b9b2477",
+    "suggestions_sha256": "AF3B460CBEDDEB637F75AF5FD8BE93C87B6651C0594B38C88D6201ED33E5AB2D",
+    "license": "CC BY 4.0",
+    "participants": 37,
+    "decision_points": 6112,
+    "action_counts": {
+      "0": 2488,
+      "1": 3624
+    },
+    "outcome": "log1p of Jawbone steps in the 30 minutes after the decision; public release's documented zero-imputed field"
+  },
+  "protocol": {
+    "outer": "5-fold GroupKFold by participant",
+    "inner": "3-fold GroupKFold by source participant for threshold selection",
+    "estimator": "cross-fitted doubly robust policy value with known 0.6/0.4 randomization probabilities",
+    "features": [
+      "decision_slot",
+      "study_day",
+      "jbsteps30pre.zero",
+      "jbsteps60pre.zero",
+      "gfsteps30pre",
+      "gfsteps60pre",
+      "dec.temperature",
+      "dec.windspeed",
+      "dec.precipitation.chance",
+      "dec.snow",
+      "past_suggestions_5",
+      "past_suggestions_20",
+      "recognized.activity",
+      "dec.location.category",
+      "dec.weather.condition"
+    ],
+    "forbidden_features": [
+      "response",
+      "response time",
+      "response location/weather/activity",
+      "post-decision steps or walking minutes",
+      "returned suggestion text",
+      "participant demographics"
+    ],
+    "propensity": {
+      "no_suggestion": 0.4,
+      "suggestion": 0.6
+    },
+    "outcome_model": "ridge"
+  },
+  "folds": [
+    {
+      "fold": 0,
+      "train_participants": 29,
+      "test_participants": 8,
+      "test_decision_points": 1285,
+      "participant_overlap": 0,
+      "source_only_threshold": -0.06253652798576977,
+      "source_only_selection": {
+        "selected": {
+          "threshold": -0.06253652798576977,
+          "suggestion_rate": 0.6498860575927077,
+          "dr_value": 3.1668583358037794,
+          "uplift_vs_no_action": 0.10870767542381292
+        },
+        "candidates": [
+          {
+            "threshold": -0.06253652798576977,
+            "suggestion_rate": 0.6498860575927077,
+            "dr_value": 3.1668583358037794,
+            "uplift_vs_no_action": 0.10870767542381292
+          },
+          {
+            "threshold": 0.0,
+            "suggestion_rate": 0.6059664387818521,
+            "dr_value": 3.151887250813462,
+            "uplift_vs_no_action": 0.09373659043349569
+          },
+          {
+            "threshold": 0.07200279172307439,
+            "suggestion_rate": 0.5500310752019888,
+            "dr_value": 3.14367408863871,
+            "uplift_vs_no_action": 0.08552342825874325
+          },
+          {
+            "threshold": 0.203936920745442,
+            "suggestion_rate": 0.4499689247980112,
+            "dr_value": 3.1153421300217796,
+            "uplift_vs_no_action": 0.0571914696418131
+          },
+          {
+            "threshold": 0.33848416915350565,
+            "suggestion_rate": 0.3501139424072923,
+            "dr_value": 3.0655327044813614,
+            "uplift_vs_no_action": 0.0073820441013952446
+          },
+          {
+            "threshold": 0.4999633266896,
+            "suggestion_rate": 0.2500517920033147,
+            "dr_value": 3.057480380476653,
+            "uplift_vs_no_action": -0.0006702799033134069
+          },
+          {
+            "threshold": 0.6929994257215915,
+            "suggestion_rate": 0.14998964159933706,
+            "dr_value": 3.0396731207336276,
+            "uplift_vs_no_action": -0.018477539646338737
+          }
+        ]
+      },
+      "outer_suggestion_rate": 0.6778210116731518
+    },
+    {
+      "fold": 1,
+      "train_participants": 30,
+      "test_participants": 7,
+      "test_decision_points": 1185,
+      "participant_overlap": 0,
+      "source_only_threshold": -0.044360955857028955,
+      "source_only_selection": {
+        "selected": {
+          "threshold": -0.044360955857028955,
+          "suggestion_rate": 0.6498883702049929,
+          "dr_value": 3.2358098561565183,
+          "uplift_vs_no_action": 0.09679699402993644
+        },
+        "candidates": [
+          {
+            "threshold": -0.044360955857028955,
+            "suggestion_rate": 0.6498883702049929,
+            "dr_value": 3.2358098561565183,
+            "uplift_vs_no_action": 0.09679699402993644
+          },
+          {
+            "threshold": 0.0,
+            "suggestion_rate": 0.6103105337933834,
+            "dr_value": 3.212716073030688,
+            "uplift_vs_no_action": 0.07370321090410567
+          },
+          {
+            "threshold": 0.06235215244722038,
+            "suggestion_rate": 0.5500304444895474,
+            "dr_value": 3.2058956757360892,
+            "uplift_vs_no_action": 0.0668828136095068
+          },
+          {
+            "threshold": 0.16341227913339568,
+            "suggestion_rate": 0.4499695555104526,
+            "dr_value": 3.189259513960606,
+            "uplift_vs_no_action": 0.05024665183402355
+          },
+          {
+            "threshold": 0.2759592238746622,
+            "suggestion_rate": 0.3501116297950071,
+            "dr_value": 3.174285815333266,
+            "uplift_vs_no_action": 0.03527295320668363
+          },
+          {
+            "threshold": 0.3917906189250906,
+            "suggestion_rate": 0.25005074081591233,
+            "dr_value": 3.1448253327856883,
+            "uplift_vs_no_action": 0.005812470659106091
+          },
+          {
+            "threshold": 0.5443014837890525,
+            "suggestion_rate": 0.14998985183681754,
+            "dr_value": 3.175006253421335,
+            "uplift_vs_no_action": 0.03599339129475247
+          }
+        ]
+      },
+      "outer_suggestion_rate": 0.7181434599156118
+    },
+    {
+      "fold": 2,
+      "train_participants": 30,
+      "test_participants": 7,
+      "test_decision_points": 1185,
+      "participant_overlap": 0,
+      "source_only_threshold": -0.09915989259017036,
+      "source_only_selection": {
+        "selected": {
+          "threshold": -0.09915989259017036,
+          "suggestion_rate": 0.6498883702049929,
+          "dr_value": 3.1398367722320115,
+          "uplift_vs_no_action": -0.021670033328557225
+        },
+        "candidates": [
+          {
+            "threshold": -0.09915989259017036,
+            "suggestion_rate": 0.6498883702049929,
+            "dr_value": 3.1398367722320115,
+            "uplift_vs_no_action": -0.021670033328557225
+          },
+          {
+            "threshold": 0.0,
+            "suggestion_rate": 0.5784453014004465,
+            "dr_value": 3.136660877279693,
+            "uplift_vs_no_action": -0.02484592828087581
+          },
+          {
+            "threshold": 0.03413036301764762,
+            "suggestion_rate": 0.5500304444895474,
+            "dr_value": 3.1380374936822886,
+            "uplift_vs_no_action": -0.023469311878279983
+          },
+          {
+            "threshold": 0.1570995203092139,
+            "suggestion_rate": 0.4499695555104526,
+            "dr_value": 3.1054256536093576,
+            "uplift_vs_no_action": -0.056081151951210724
+          },
+          {
+            "threshold": 0.28621379062848007,
+            "suggestion_rate": 0.3501116297950071,
+            "dr_value": 3.1046793860576143,
+            "uplift_vs_no_action": -0.05682741950295451
+          },
+          {
+            "threshold": 0.4224207434123608,
+            "suggestion_rate": 0.25005074081591233,
+            "dr_value": 3.0705337415050087,
+            "uplift_vs_no_action": -0.09097306405555977
+          },
+          {
+            "threshold": 0.6133972678966106,
+            "suggestion_rate": 0.14998985183681754,
+            "dr_value": 3.1072294063124586,
+            "uplift_vs_no_action": -0.05427739924811028
+          }
+        ]
+      },
+      "outer_suggestion_rate": 0.6573839662447257
+    },
+    {
+      "fold": 3,
+      "train_participants": 30,
+      "test_participants": 7,
+      "test_decision_points": 1183,
+      "participant_overlap": 0,
+      "source_only_threshold": 0.19222594390812556,
+      "source_only_selection": {
+        "selected": {
+          "threshold": 0.19222594390812556,
+          "suggestion_rate": 0.44998985595455465,
+          "dr_value": 3.212758527424152,
+          "uplift_vs_no_action": 0.13607436969392767
+        },
+        "candidates": [
+          {
+            "threshold": -0.03272076514077815,
+            "suggestion_rate": 0.6500304321363359,
+            "dr_value": 3.1971112157499504,
+            "uplift_vs_no_action": 0.12042705801972595
+          },
+          {
+            "threshold": 0.0,
+            "suggestion_rate": 0.6179752485291135,
+            "dr_value": 3.1911913654860844,
+            "uplift_vs_no_action": 0.11450720775586005
+          },
+          {
+            "threshold": 0.0805904079906412,
+            "suggestion_rate": 0.5500101440454453,
+            "dr_value": 3.200268277871415,
+            "uplift_vs_no_action": 0.12358412014119077
+          },
+          {
+            "threshold": 0.19222594390812556,
+            "suggestion_rate": 0.44998985595455465,
+            "dr_value": 3.212758527424152,
+            "uplift_vs_no_action": 0.13607436969392767
+          },
+          {
+            "threshold": 0.29895430846945015,
+            "suggestion_rate": 0.349969567863664,
+            "dr_value": 3.19885416226807,
+            "uplift_vs_no_action": 0.12217000453784523
+          },
+          {
+            "threshold": 0.4202035774943722,
+            "suggestion_rate": 0.24994927977277337,
+            "dr_value": 3.1547441616195115,
+            "uplift_vs_no_action": 0.07806000388928742
+          },
+          {
+            "threshold": 0.5919885121881615,
+            "suggestion_rate": 0.1501318725907892,
+            "dr_value": 3.130373208017282,
+            "uplift_vs_no_action": 0.0536890502870574
+          }
+        ]
+      },
+      "outer_suggestion_rate": 0.44801352493660185
+    },
+    {
+      "fold": 4,
+      "train_participants": 29,
+      "test_participants": 8,
+      "test_decision_points": 1274,
+      "participant_overlap": 0,
+      "source_only_threshold": 0.0,
+      "source_only_selection": {
+        "selected": {
+          "threshold": 0.0,
+          "suggestion_rate": 0.6169904919388177,
+          "dr_value": 3.281419015507267,
+          "uplift_vs_no_action": 0.12002325248596658
+        },
+        "candidates": [
+          {
+            "threshold": -0.043807416455734445,
+            "suggestion_rate": 0.6500620090946673,
+            "dr_value": 3.2907676786929856,
+            "uplift_vs_no_action": 0.1293719156716846
+          },
+          {
+            "threshold": 0.0,
+            "suggestion_rate": 0.6169904919388177,
+            "dr_value": 3.281419015507267,
+            "uplift_vs_no_action": 0.12002325248596658
+          },
+          {
+            "threshold": 0.07846511332696225,
+            "suggestion_rate": 0.5500206696982224,
+            "dr_value": 3.2531451353674132,
+            "uplift_vs_no_action": 0.09174937234611226
+          },
+          {
+            "threshold": 0.19279351955909535,
+            "suggestion_rate": 0.4499793303017776,
+            "dr_value": 3.2650070117455128,
+            "uplift_vs_no_action": 0.10361124872421149
+          },
+          {
+            "threshold": 0.3117106391999375,
+            "suggestion_rate": 0.3499379909053328,
+            "dr_value": 3.2531379334860655,
+            "uplift_vs_no_action": 0.09174217046476475
+          },
+          {
+            "threshold": 0.4494634760182601,
+            "suggestion_rate": 0.25010334849111204,
+            "dr_value": 3.2005289856753834,
+            "uplift_vs_no_action": 0.03913322265408238
+          },
+          {
+            "threshold": 0.6153664713357994,
+            "suggestion_rate": 0.15006200909466721,
+            "dr_value": 3.1856627874761934,
+            "uplift_vs_no_action": 0.024267024454892875
+          }
+        ]
+      },
+      "outer_suggestion_rate": 0.6208791208791209
+    }
+  ],
+  "frozen_evaluation": {
+    "learned_policy_dr_value_log_steps": 3.21913552711036,
+    "never_suggest_dr_value_log_steps": 3.109960480043946,
+    "always_suggest_dr_value_log_steps": 3.2166199196671657,
+    "uplift_vs_never_suggest_log_steps": 0.1091750470664146,
+    "suggestion_rate": 0.62532722513089,
+    "matched_policy_effective_sample_size": 3059.8263051629638,
+    "participant_cluster_bootstrap": {
+      "replicates": 2000,
+      "estimate": 0.1091750470664146,
+      "ci_95": [
+        0.004603578598252264,
+        0.2134318337262218
+      ]
+    }
+  },
+  "quality_gate": {
+    "thresholds": {
+      "minimum_participants": 30,
+      "minimum_decision_points": 5000,
+      "minimum_action_support_each": 1500,
+      "minimum_matched_policy_ess": 1000,
+      "minimum_suggestion_rate": 0.15,
+      "maximum_suggestion_rate": 0.65,
+      "minimum_uplift_vs_never_suggest_log_steps": 0.0,
+      "minimum_cluster_bootstrap_95_ci_lower": 0.0,
+      "required_subject_overlap": 0
+    },
+    "failures": []
+  },
+  "runtime_seconds": 2.061868906021118,
+  "claim_scope": "contextual activity-suggestion policy only; not diagnosis, treatment, or ergonomic adjustment"
+}
+

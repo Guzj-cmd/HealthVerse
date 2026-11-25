@@ -1,0 +1,53 @@
+{
+  "selected": {
+    "threshold": 0.0,
+    "suggestion_rate": 0.5981675392670157,
+    "dr_value": 3.2611951998571422,
+    "uplift_vs_no_action": 0.1403081888076336
+  },
+  "candidates": [
+    {
+      "threshold": -0.06322681877468063,
+      "suggestion_rate": 0.650032722513089,
+      "dr_value": 3.248844923664193,
+      "uplift_vs_no_action": 0.1279579126146847
+    },
+    {
+      "threshold": 0.0,
+      "suggestion_rate": 0.5981675392670157,
+      "dr_value": 3.2611951998571422,
+      "uplift_vs_no_action": 0.1403081888076336
+    },
+    {
+      "threshold": 0.049561727977833966,
+      "suggestion_rate": 0.550065445026178,
+      "dr_value": 3.2401873421183955,
+      "uplift_vs_no_action": 0.11930033106888661
+    },
+    {
+      "threshold": 0.15525528698989824,
+      "suggestion_rate": 0.449934554973822,
+      "dr_value": 3.185033931992297,
+      "uplift_vs_no_action": 0.06414692094278794
+    },
+    {
+      "threshold": 0.2632825131583764,
+      "suggestion_rate": 0.349967277486911,
+      "dr_value": 3.1425292502703717,
+      "uplift_vs_no_action": 0.02164223922086231
+    },
+    {
+      "threshold": 0.38074555031574153,
+      "suggestion_rate": 0.25,
+      "dr_value": 3.1322268541252143,
+      "uplift_vs_no_action": 0.0113398430757056
+    },
+    {
+      "threshold": 0.5227432005584561,
+      "suggestion_rate": 0.150032722513089,
+      "dr_value": 3.1282572622492317,
+      "uplift_vs_no_action": 0.00737025119972254
+    }
+  ]
+}
+

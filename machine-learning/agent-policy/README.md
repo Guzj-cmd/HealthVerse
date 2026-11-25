@@ -42,3 +42,9 @@ See `iteration_history.md`, `DATA_MANIFEST.md`, `artifacts/perception/model_card
 `evidence_gate.py` adds a narrower integration contract for passed BEHAVE relation evidence. It emits only `no_action` or `ask_confirm`; invalid, unsupported, or low-confidence evidence always requests confirmation. The frozen aggregate evaluation is in `artifacts/evidence-gate-v1/metrics.json` and the exact input/output boundary is in `evidence_gate_contract.json`.
 
 This result does **not** complete the recommendation Agent. The accepted set contains 47 sequences from seven participants but only two `ask_confirm` examples and no mutating-action examples. Concrete suggestions still require real environment measurements, sustained-duration evidence, user preference, and action-outcome labels across participants. Per-sequence teacher outputs and the BEHAVE-derived weight are intentionally excluded from this public evidence package.
+
+## HeartSteps randomized-outcome activity policy
+
+`heartsteps/` adds the missing real intervention-outcome evidence for one narrow action: offering a dismissible activity-break suggestion. It is trained from 37 HeartSteps V1 participants and 6,112 randomized decision points, with complete-participant outer folds and source-participant-only threshold selection. The doubly robust uplift over never suggesting is `+0.1092` log-steps with participant-cluster 95% CI `[0.0046, 0.2134]`; the frozen gate passes.
+
+The policy does not establish superiority over always suggesting, and it cannot adjust furniture or provide medical advice. The HealthVerse seated-relation gate is an integration boundary rather than part of the HeartSteps randomization, so the jointly composed camera-to-suggestion pipeline is not claimed to have a randomized effect estimate.

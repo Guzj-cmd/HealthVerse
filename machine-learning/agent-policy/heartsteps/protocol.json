@@ -1,0 +1,72 @@
+{
+  "objective": "Evidence-constrained activity-suggestion policy learned from real randomized intervention outcomes",
+  "dataset": {
+    "name": "HeartSteps V1",
+    "source": "https://github.com/klasnja/HeartStepsV1",
+    "commit": "3016391de426116bdef41880d72bc8cd4b9b2477",
+    "license": "CC BY 4.0",
+    "local_root": "<external-data-root>/HeartStepsV1",
+    "suggestions_sha256": "AF3B460CBEDDEB637F75AF5FD8BE93C87B6651C0594B38C88D6201ED33E5AB2D"
+  },
+  "population": "available decision points during the planned first 210 decisions for each participant",
+  "action": {
+    "0": "no suggestion",
+    "1": "context-tailored activity suggestion",
+    "nominal_randomization_probability": {"0": 0.4, "1": 0.6}
+  },
+  "outcome": "log1p of Jawbone steps in the 30 minutes after the decision; public release's documented zero-imputed field",
+  "features": [
+    "decision slot",
+    "study day",
+    "pre-decision Jawbone steps in 30 and 60 minutes",
+    "pre-decision Google Fit steps in 30 and 60 minutes",
+    "recognized activity",
+    "decision location category",
+    "decision weather condition",
+    "temperature",
+    "wind speed",
+    "precipitation chance",
+    "snow",
+    "recent suggestion dosage from earlier decisions only"
+  ],
+  "forbidden_features": [
+    "response",
+    "response time",
+    "response location/weather/activity",
+    "post-decision steps or walking minutes",
+    "returned suggestion text",
+    "participant demographics"
+  ],
+  "evaluation": {
+    "outer": "5-fold GroupKFold by participant",
+    "inner": "3-fold GroupKFold by source participant for threshold selection",
+    "estimator": "cross-fitted doubly robust policy value with known 0.6/0.4 randomization probabilities",
+    "uncertainty": "2000-replicate participant-cluster bootstrap of policy-value uplift",
+    "official_outcome_reuse": "outer participant outcomes are used once for frozen evaluation and never for threshold selection"
+  },
+  "quality_gate": {
+    "minimum_participants": 30,
+    "minimum_decision_points": 5000,
+    "minimum_action_support_each": 1500,
+    "minimum_matched_policy_ess": 1000,
+    "minimum_suggestion_rate": 0.15,
+    "maximum_suggestion_rate": 0.65,
+    "minimum_uplift_vs_never_suggest_log_steps": 0.0,
+    "minimum_cluster_bootstrap_95_ci_lower": 0.0,
+    "required_subject_overlap": 0
+  },
+  "deployment_scope": [
+    "no_action",
+    "offer_activity_suggestion",
+    "ask_confirm"
+  ],
+  "excluded_claims": [
+    "diagnosis",
+    "medical treatment",
+    "ergonomic furniture adjustment",
+    "pain reduction",
+    "long-term clinical outcome"
+  ],
+  "frozen_before_first_run": true
+}
+

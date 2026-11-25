@@ -1,0 +1,25 @@
+{
+  "contract_version": "heartsteps-activity-policy-v1",
+  "upstream_gate": {
+    "source_model_status": "passed",
+    "predicted_relation": ["chair_sit", "seated_contact"],
+    "note": "This conservative visual eligibility gate was not jointly randomized in HeartSteps and is reported separately from the policy effect estimate."
+  },
+  "availability": {
+    "user_available": true,
+    "blocked_recognized_activity": ["IN_VEHICLE", "ON_BICYCLE", "AUGMENTED_VEHICLE"]
+  },
+  "outputs": ["no_action", "offer_activity_suggestion", "ask_confirm"],
+  "suggestion_copy_boundary": "Only a dismissible, non-medical prompt to take a brief activity break is permitted.",
+  "forbidden_outputs": [
+    "diagnosis",
+    "medical treatment",
+    "pain claim",
+    "ergonomic furniture adjustment",
+    "mandatory intervention"
+  ],
+  "artifact": {
+    "path": "artifacts/policy-v1/policy.joblib",
+    "sha256": "C4D17398A29C79C2618E3454B8FFE9D664DBF781463E862655E2502151220D58"
+  }
+}
