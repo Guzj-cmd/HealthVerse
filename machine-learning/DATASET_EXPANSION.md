@@ -7,6 +7,7 @@ This project expands data only when the source is real, its use terms are known,
 - **MultiPosture** supplied 4,800 expert-labelled skeleton frames from 13 participants for the existing fine-grained upper- and lower-body sitting-posture experiments. Those experiments use participant-disjoint evaluation, but the Zenodo Rights/License field is blank. New training and further weight redistribution are held until the authors clarify permitted use.
 - **Edinburgh Office** supplies 456,714 labelled fixed-camera frames from four participants in four real offices. A detector-box geometry context head was trained and evaluated by holding out an entire office and participant. It was **rejected**: 0.5814 accuracy, 0.6050 macro-F1, and 0.2128 sitting recall failed the 0.80/0.80/0.50 quality gate. No deployable artifact is emitted or integrated; the result shows that bounding-box geometry alone does not transfer reliably across offices.
 - **BEHAVE (CVPR 2022)** supplies 51 selected human–object sequences from seven participants for a separate transform-based interaction head. V1 leave-one-participant-out evaluation reached 0.9310 accuracy, 0.9077 macro-F1 and 0.8810 minimum class recall. A nested v2 compared baseline and causal temporal ExtraTrees, class-weighted RandomForest and HGB strictly inside each outer training set. V2 raised macro-F1 to 0.9482 but lowered minimum class recall to 0.8631; the predeclared rule required both to improve, so v2 was rejected and v1 remains the deployment candidate. These are source-derived interaction labels, not health outcomes.
+- **Charades (ECCV 2016)** supplies 9,848 real videos filmed by 267 people in their own homes. The official 214-subject train / 53-subject test split has zero identity overlap. A seven-label RGB relation head used only official VGG-16 two-stream fc7 features, tuned alpha and thresholds in subject-grouped train folds, and evaluated the official test once. It reached 0.3634 macro-mAP and 0.4562 macro-F1; every AP cleared prevalence + 0.10, but all class recalls were below the predeclared 0.50 minimum. The run is therefore **rejected**, not integrated, and its local weights and per-video predictions remain ignored.
 
 The two tasks are intentionally separate. The existing MultiPosture experiment asks “how is the seated body configured?”; Edinburgh Office asks “what coarse office state is observable?”. The latter must not be presented as a medical diagnosis or a fine-grained ergonomic score.
 
@@ -37,5 +38,6 @@ PROX and Aria Digital Twin need their own license/registration steps and task-sp
 - HuMoLs: <https://datashare.ed.ac.uk/handle/10283/8851>
 - SitPose: <https://github.com/TaylorDurden1114/SitPose>
 - COUCH: <https://virtualhumans.mpi-inf.mpg.de/couch/>
+- Charades: <https://allenai.org/plato/charades/>
 
 The machine-readable status, license, sample scale, target task, and evaluation protocol are recorded in `datasets.registry.json`.

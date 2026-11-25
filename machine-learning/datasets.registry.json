@@ -51,6 +51,21 @@
       "notes": "V1 aggregate LOSO accuracy is 0.9310 and macro-F1 is 0.9077; minimum class recall is 0.8810. Nested v2 raised macro-F1 to 0.9482 but lowered minimum class recall to 0.8631, so the predeclared both-must-improve rule rejected v2 and kept v1 as the deployment candidate. Local model artifacts are Git-ignored pending clarification of derived-weight redistribution."
     },
     {
+      "id": "charades-v1",
+      "name": "Charades v1",
+      "status": "trained-rejected-recall-gate",
+      "participants": 267,
+      "samples": 9848,
+      "sample_unit": "real indoor videos averaging about 30 seconds",
+      "modalities": ["rgb-video", "official-rgb-two-stream-fc7", "temporal-action-labels", "object-labels"],
+      "scenes": ["fifteen types of real residential indoor scenes"],
+      "tasks": ["chair sitting", "table relation", "laptop interaction", "couch contact", "floor contact", "bed contact", "sit-stand transition"],
+      "license": "Allen Institute for AI non-commercial-use license; source data may not be redistributed",
+      "source_url": "https://allenai.org/plato/charades/",
+      "evaluation": "official 214-subject train / 53-subject test split with zero identity overlap; four-fold subject-grouped tuning inside train; official test evaluated once",
+      "notes": "The real-data run reached 0.3634 official-test macro-mAP and 0.4562 macro-F1. Every class AP exceeded test prevalence by at least 0.10, but all seven recalls were below the predeclared 0.50 minimum. The model is rejected and not integrated; weights and per-video predictions remain Git-ignored."
+    },
+    {
       "id": "prox",
       "name": "PROX",
       "status": "approved-next-stage",

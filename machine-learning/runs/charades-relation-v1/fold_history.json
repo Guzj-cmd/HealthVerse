@@ -1,0 +1,86 @@
+[
+  {
+    "alpha": 1e-05,
+    "oof_macro_map": 0.4621375903458777
+  },
+  {
+    "alpha": 0.0001,
+    "oof_macro_map": 0.46703036054675107
+  },
+  {
+    "alpha": 0.001,
+    "oof_macro_map": 0.504587478491538
+  },
+  {
+    "fold": 0,
+    "alpha": 0.001,
+    "train_subjects": 160,
+    "validation_subjects": 54,
+    "train_videos": 5988,
+    "validation_videos": 1997,
+    "macro_map": 0.4898624210182859,
+    "per_class_ap": {
+      "chair_sit": 0.5159644372917026,
+      "table_relation": 0.5409177987208748,
+      "laptop_interaction": 0.5669432947665227,
+      "couch_contact": 0.399082874513668,
+      "floor_contact": 0.41155558189611247,
+      "bed_contact": 0.5124268225211595,
+      "sit_stand_transition": 0.4821461374179612
+    }
+  },
+  {
+    "fold": 1,
+    "alpha": 0.001,
+    "train_subjects": 161,
+    "validation_subjects": 53,
+    "train_videos": 5989,
+    "validation_videos": 1996,
+    "macro_map": 0.540675605810893,
+    "per_class_ap": {
+      "chair_sit": 0.58918410298699,
+      "table_relation": 0.5655847507831517,
+      "laptop_interaction": 0.4688572003930823,
+      "couch_contact": 0.6279939743564095,
+      "floor_contact": 0.5517843451943645,
+      "bed_contact": 0.42830902828724926,
+      "sit_stand_transition": 0.5530158386750039
+    }
+  },
+  {
+    "fold": 2,
+    "alpha": 0.001,
+    "train_subjects": 161,
+    "validation_subjects": 53,
+    "train_videos": 5989,
+    "validation_videos": 1996,
+    "macro_map": 0.5034940632928416,
+    "per_class_ap": {
+      "chair_sit": 0.5184381527235328,
+      "table_relation": 0.5067298314342619,
+      "laptop_interaction": 0.4980471224312538,
+      "couch_contact": 0.5438325122367957,
+      "floor_contact": 0.4955838880883409,
+      "bed_contact": 0.48208627977318497,
+      "sit_stand_transition": 0.4797406563625216
+    }
+  },
+  {
+    "fold": 3,
+    "alpha": 0.001,
+    "train_subjects": 160,
+    "validation_subjects": 54,
+    "train_videos": 5989,
+    "validation_videos": 1996,
+    "macro_map": 0.49009999076661215,
+    "per_class_ap": {
+      "chair_sit": 0.5623859509681032,
+      "table_relation": 0.553741482322458,
+      "laptop_interaction": 0.43255311537893304,
+      "couch_contact": 0.5606017032411145,
+      "floor_contact": 0.4154360499838277,
+      "bed_contact": 0.40587089371058926,
+      "sit_stand_transition": 0.5001107397612592
+    }
+  }
+]

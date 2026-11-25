@@ -1,0 +1,44 @@
+{
+  "dataset_id": "charades-v1",
+  "dataset_name": "Charades v1",
+  "source_url": "https://allenai.org/plato/charades/",
+  "paper": "Hollywood in Homes: Crowdsourcing Data Collection for Activity Understanding, ECCV 2016",
+  "license": "Allen Institute for AI non-commercial-use license; source data may not be redistributed to third parties",
+  "output_dir": "machine-learning/runs/charades-relation-v1",
+  "random_seed": 20261125,
+  "relations": {
+    "chair_sit": ["c059"],
+    "table_relation": ["c010", "c011", "c014"],
+    "laptop_interaction": ["c051", "c052"],
+    "couch_contact": ["c122", "c123"],
+    "floor_contact": ["c124", "c125"],
+    "bed_contact": ["c134", "c135"],
+    "sit_stand_transition": ["c151", "c154"]
+  },
+  "source_files": {
+    "annotations": {
+      "filename": "Charades.zip",
+      "bytes": 3519822,
+      "sha256": "c616913ef79c2ddde06d9c562eae57bb8901d459d7568a0d27bf09cbf33ae866",
+      "url": "https://ai2-public-datasets.s3-us-west-2.amazonaws.com/charades/Charades.zip"
+    },
+    "rgb_features": {
+      "filename": "Charades_v1_features_rgb.tar.gz",
+      "bytes": 12894974144,
+      "sha256": "81b95d449d6d7cbb9a42c0ed433dd4efd77d50d1ca4e15a1fdd224a32426449f",
+      "url": "https://ai2-public-datasets.s3-us-west-2.amazonaws.com/charades/Charades_v1_features_rgb.tar.gz"
+    }
+  },
+  "evaluation": "official subject-disjoint train/test split (214/53 subjects, zero overlap); four-fold GroupKFold tuning inside official train; official test evaluated once",
+  "training": {
+    "group_folds": 4,
+    "feature_sampling_stride": 6,
+    "alpha_candidates": [0.00001, 0.0001, 0.001]
+  },
+  "quality_gate": {
+    "minimum_macro_map": 0.35,
+    "minimum_macro_f1": 0.35,
+    "minimum_ap_above_prevalence": 0.1,
+    "minimum_class_recall": 0.5
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "chair_sit": [
+    "c059"
+  ],
+  "table_relation": [
+    "c010",
+    "c011",
+    "c014"
+  ],
+  "laptop_interaction": [
+    "c051",
+    "c052"
+  ],
+  "couch_contact": [
+    "c122",
+    "c123"
+  ],
+  "floor_contact": [
+    "c124",
+    "c125"
+  ],
+  "bed_contact": [
+    "c134",
+    "c135"
+  ],
+  "sit_stand_transition": [
+    "c151",
+    "c154"
+  ]
+}

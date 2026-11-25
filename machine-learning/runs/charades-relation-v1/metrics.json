@@ -1,0 +1,166 @@
+{
+  "dataset": {
+    "id": "charades-v1",
+    "source_url": "https://allenai.org/plato/charades/",
+    "license": "Allen Institute for AI non-commercial-use license; source data may not be redistributed to third parties",
+    "raw_data_redistributed": false,
+    "feature_archive_bytes": 12894974144,
+    "feature_archive_sha256": "81b95d449d6d7cbb9a42c0ed433dd4efd77d50d1ca4e15a1fdd224a32426449f",
+    "train_videos": 7985,
+    "test_videos": 1863,
+    "train_subjects": 214,
+    "test_subjects": 53,
+    "subject_overlap": 0
+  },
+  "feature_contract": {
+    "source": "official RGB two-stream VGG-16 fc7 after ReLU",
+    "pooling": "per-video mean concatenated with per-video maximum",
+    "sampling": "every sixth official 6-fps fc7 vector (approximately one real frame per second)",
+    "dimensions": 8192
+  },
+  "protocol": "official subject-disjoint train/test split (214/53 subjects, zero overlap); four-fold GroupKFold tuning inside official train; official test evaluated once",
+  "selected_alpha": 0.001,
+  "thresholds_from_train_oof_only": {
+    "chair_sit": 0.59,
+    "table_relation": 0.15999999999999998,
+    "laptop_interaction": 0.8899999999999999,
+    "couch_contact": 0.94,
+    "floor_contact": 0.8799999999999999,
+    "bed_contact": 0.94,
+    "sit_stand_transition": 0.73
+  },
+  "train_oof": {
+    "macro_map": 0.504587478491538,
+    "macro_f1": 0.6427920851553927,
+    "macro_ece": 0.0884320401249261,
+    "per_class_ap": {
+      "chair_sit": 0.5422049000234614,
+      "table_relation": 0.5426295098448656,
+      "laptop_interaction": 0.4961905880231283,
+      "couch_contact": 0.5364147678301145,
+      "floor_contact": 0.452572394356244,
+      "bed_contact": 0.46104699630307255,
+      "sit_stand_transition": 0.5010531930598796
+    },
+    "per_class_precision": {
+      "chair_sit": 0.6208869814020028,
+      "table_relation": 0.6141732283464567,
+      "laptop_interaction": 0.584319526627219,
+      "couch_contact": 0.6052631578947368,
+      "floor_contact": 0.5378266850068776,
+      "bed_contact": 0.5100755667506297,
+      "sit_stand_transition": 0.5429936305732485
+    },
+    "per_class_recall": {
+      "chair_sit": 0.6916334661354582,
+      "table_relation": 0.7770859277708593,
+      "laptop_interaction": 0.7775590551181102,
+      "couch_contact": 0.7958477508650519,
+      "floor_contact": 0.7607003891050583,
+      "bed_contact": 0.8181818181818182,
+      "sit_stand_transition": 0.5485254691689008
+    },
+    "per_class_f1": {
+      "chair_sit": 0.6543535620052771,
+      "table_relation": 0.6860912589334799,
+      "laptop_interaction": 0.6672297297297297,
+      "couch_contact": 0.6875934230194319,
+      "floor_contact": 0.6301369863013698,
+      "bed_contact": 0.6283941039565555,
+      "sit_stand_transition": 0.5457455321419045
+    },
+    "support": {
+      "chair_sit": 1255,
+      "table_relation": 803,
+      "laptop_interaction": 508,
+      "couch_contact": 578,
+      "floor_contact": 514,
+      "bed_contact": 495,
+      "sit_stand_transition": 1865
+    },
+    "prevalence": {
+      "chair_sit": 0.15716969317470256,
+      "table_relation": 0.10056355666875391,
+      "laptop_interaction": 0.06361928616155291,
+      "couch_contact": 0.07238572323105824,
+      "floor_contact": 0.06437069505322479,
+      "bed_contact": 0.061991233562930494,
+      "sit_stand_transition": 0.23356293049467752
+    }
+  },
+  "official_test_evaluated_once": {
+    "macro_map": 0.3634424371868964,
+    "macro_f1": 0.45624162520225653,
+    "macro_ece": 0.13394105452342658,
+    "per_class_ap": {
+      "chair_sit": 0.44562512661876097,
+      "table_relation": 0.4081442837548846,
+      "laptop_interaction": 0.2232911639094441,
+      "couch_contact": 0.40081459538106917,
+      "floor_contact": 0.23832865998751496,
+      "bed_contact": 0.3214283487306065,
+      "sit_stand_transition": 0.5064648819259941
+    },
+    "per_class_precision": {
+      "chair_sit": 0.5955555555555555,
+      "table_relation": 0.5714285714285714,
+      "laptop_interaction": 0.3584905660377358,
+      "couch_contact": 0.5974842767295597,
+      "floor_contact": 0.38064516129032255,
+      "bed_contact": 0.4756756756756757,
+      "sit_stand_transition": 0.5373134328358209
+    },
+    "per_class_recall": {
+      "chair_sit": 0.36712328767123287,
+      "table_relation": 0.4864864864864865,
+      "laptop_interaction": 0.41007194244604317,
+      "couch_contact": 0.45454545454545453,
+      "floor_contact": 0.36875,
+      "bed_contact": 0.4861878453038674,
+      "sit_stand_transition": 0.40148698884758366
+    },
+    "per_class_f1": {
+      "chair_sit": 0.4542372881355932,
+      "table_relation": 0.5255474452554745,
+      "laptop_interaction": 0.3825503355704698,
+      "couch_contact": 0.5163043478260869,
+      "floor_contact": 0.3746031746031746,
+      "bed_contact": 0.4808743169398907,
+      "sit_stand_transition": 0.4595744680851064
+    },
+    "support": {
+      "chair_sit": 365,
+      "table_relation": 222,
+      "laptop_interaction": 139,
+      "couch_contact": 209,
+      "floor_contact": 160,
+      "bed_contact": 181,
+      "sit_stand_transition": 538
+    },
+    "prevalence": {
+      "chair_sit": 0.19592055823939883,
+      "table_relation": 0.11916264090177134,
+      "laptop_interaction": 0.07461084272678475,
+      "couch_contact": 0.11218464841653247,
+      "floor_contact": 0.08588298443370908,
+      "bed_contact": 0.09715512614063339,
+      "sit_stand_transition": 0.28878153515834676
+    }
+  },
+  "quality_gate": {
+    "minimum_macro_map": 0.35,
+    "minimum_macro_f1": 0.35,
+    "minimum_ap_above_prevalence": 0.1,
+    "minimum_class_recall": 0.5
+  },
+  "gate_status": "REJECTED",
+  "gate_failures": [
+    "chair_sit recall 0.367123 below minimum",
+    "table_relation recall 0.486486 below minimum",
+    "laptop_interaction recall 0.410072 below minimum",
+    "couch_contact recall 0.454545 below minimum",
+    "floor_contact recall 0.368750 below minimum",
+    "bed_contact recall 0.486188 below minimum",
+    "sit_stand_transition recall 0.401487 below minimum"
+  ]
+}

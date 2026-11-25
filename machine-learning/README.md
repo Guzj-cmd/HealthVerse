@@ -131,6 +131,17 @@ python audit_couch_mocap.py `
 
 当前归档没有 `contact_type`、`hand_contact`、`label` 或 `target` 数组，也没有覆盖六个被试的官方序列标签清单。因此不从文件名、关节距离或 `start_idx/end_idx` 推导手接触/健康标签；计划的六被试 LOSO 运行 0 折，输出只有审计指标与报告，没有模型权重。
 
+## Charades 真实家庭关系实验
+
+`train_charades_relation.py` 直接流式读取 Charades 官方 RGB two-stream VGG-16 fc7 归档，不解压或提交近两百万个源特征文件。它按论文的稀疏 RGB 基线思路，每秒取约一个真实观测，形成每视频 mean+max 特征，并识别坐椅、桌面关系、笔记本交互、沙发/地面/床接触和坐站转换七个可观察关系：
+
+```powershell
+python train_charades_relation.py `
+  --cache-dir ..\..\..\ccfa-workfiles\charades\cache
+```
+
+官方训练/测试为 214/53 名参与者且身份交集为零。三个 `alpha` 候选和七个阈值只在训练参与者的 4 折 GroupKFold 中选择，官方测试只评一次。本轮 official-test macro-mAP 为 0.3634、macro-F1 为 0.4562；虽然 AP 门槛通过，但七类 Recall 均低于预先声明的 0.50，结果判为 **REJECTED**，不会接入网页。`model.joblib` 与逐视频预测受许可约束，默认保留在本地忽略目录。
+
 ## 浏览器模型导出与一致性验证
 
 通过的 sklearn HGB / RandomForest 会被转换为纯 JSON 树结构，网页在本地计算 456 维特征并执行同一模型。120 个冻结测试样本的 Python 与 JavaScript 预测标签必须完全一致，概率绝对误差小于 `1e-5`：
