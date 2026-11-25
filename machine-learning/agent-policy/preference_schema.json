@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://healthverse.local/schemas/pairwise-preference-v1.json",
+  "title": "HealthVerse consented pairwise recommendation preference",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "event_id", "recorded_at", "anonymous_participant_id", "anonymous_session_id", "consent", "context", "candidate_a", "candidate_b", "preference"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "event_id": {"type": "string", "minLength": 16},
+    "recorded_at": {"type": "string", "format": "date-time"},
+    "anonymous_participant_id": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "anonymous_session_id": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "consent": {
+      "type": "object", "additionalProperties": false,
+      "required": ["granted", "notice_version", "raw_media_retained", "may_withdraw"],
+      "properties": {
+        "granted": {"const": true},
+        "notice_version": {"const": "2026-11-25"},
+        "raw_media_retained": {"const": false},
+        "may_withdraw": {"const": true}
+      }
+    },
+    "context": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_type", "pose_class", "pose_probs", "neck_angle_deg", "shoulder_angle_deg", "duration_min", "monitor_delta_cm", "object_reach_cm", "perception_confidence", "relation_confidence", "interrupt_cost", "constraints"],
+      "properties": {
+        "source_type": {"enum": ["camera", "uploaded_video"]},
+        "pose_class": {"enum": ["TUP", "TLB", "TLF", "TLR", "TLL"]},
+        "pose_probs": {
+          "type": "object", "additionalProperties": false,
+          "required": ["TUP", "TLB", "TLF", "TLR", "TLL"],
+          "properties": {
+            "TUP": {"type": "number", "minimum": 0, "maximum": 1},
+            "TLB": {"type": "number", "minimum": 0, "maximum": 1},
+            "TLF": {"type": "number", "minimum": 0, "maximum": 1},
+            "TLR": {"type": "number", "minimum": 0, "maximum": 1},
+            "TLL": {"type": "number", "minimum": 0, "maximum": 1}
+          }
+        },
+        "neck_angle_deg": {"type": "number", "minimum": 0, "maximum": 180},
+        "shoulder_angle_deg": {"type": "number", "minimum": 0, "maximum": 180},
+        "duration_min": {"type": "number", "minimum": 0},
+        "monitor_delta_cm": {"type": ["number", "null"]},
+        "object_reach_cm": {"type": ["number", "null"], "minimum": 0},
+        "perception_confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "relation_confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "interrupt_cost": {"type": "number", "minimum": 0, "maximum": 1},
+        "constraints": {
+          "type": "object", "additionalProperties": false,
+          "required": ["lock_monitor", "keep_handwriting_zone", "suppress_break", "require_confirmation"],
+          "properties": {
+            "lock_monitor": {"type": "boolean"},
+            "keep_handwriting_zone": {"type": "boolean"},
+            "suppress_break": {"type": "boolean"},
+            "require_confirmation": {"type": "boolean"}
+          }
+        }
+      }
+    },
+    "candidate_a": {"$ref": "#/$defs/candidate"},
+    "candidate_b": {"$ref": "#/$defs/candidate"},
+    "preference": {
+      "type": "object", "additionalProperties": false,
+      "required": ["choice", "reason_tags", "latency_ms"],
+      "properties": {
+        "choice": {"enum": ["A", "B", "tie", "neither"]},
+        "reason_tags": {
+          "type": "array", "uniqueItems": true,
+          "items": {"enum": ["more_actionable", "less_disruptive", "more_relevant", "more_trustworthy", "respects_constraint", "unclear_evidence", "privacy_concern", "other"]}
+        },
+        "latency_ms": {"type": "integer", "minimum": 0}
+      }
+    }
+  },
+  "$defs": {
+    "candidate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["action", "rationale_codes", "text", "generator_version"],
+      "properties": {
+        "action": {"enum": ["no_action", "ask_confirm", "raise_monitor", "reposition_object", "take_break"]},
+        "rationale_codes": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "text": {"type": "string", "minLength": 1, "maxLength": 500},
+        "generator_version": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

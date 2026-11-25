@@ -1,0 +1,8 @@
+{
+  "state": "awaiting_teacher",
+  "real_contexts": 64,
+  "passes_requested": 2,
+  "teacher_model": "gpt-5.6-sol",
+  "prompt_version": "office-posture-teacher-v1",
+  "prompt_checksum": "a901d9120d81de8531129189105a861af785ab3972522ddbc1d1ead7c62d6962"
+}

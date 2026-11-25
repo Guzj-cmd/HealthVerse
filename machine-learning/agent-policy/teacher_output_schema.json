@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["labels"],
+  "properties": {
+    "labels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sample_id", "risk_level", "evidence", "recommended_action", "rationale", "confidence", "abstain"],
+        "properties": {
+          "sample_id": {"type": "string"},
+          "risk_level": {"enum": ["low", "moderate", "high", "uncertain"]},
+          "evidence": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+          "recommended_action": {"enum": ["no_action", "ask_confirm", "raise_monitor", "reposition_object", "take_break"]},
+          "rationale": {"type": "string", "minLength": 1, "maxLength": 400},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "abstain": {"type": "boolean"}
+        }
+      }
+    }
+  }
+}

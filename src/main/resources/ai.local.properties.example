@@ -1,0 +1,14 @@
+# Copy this file to ai.local.properties for local development.
+# Never commit the copied file or a real token.
+# Environment variables take precedence when the backend supports both forms.
+
+ai.provider=anthropic
+ai.api.url=https://your-compatible-gateway.example/v1/messages
+ai.api.key=${ANTHROPIC_AUTH_TOKEN}
+ai.model=your-model-name
+
+# Equivalent environment variables:
+# AI_PROVIDER=anthropic
+# AI_API_URL=https://your-compatible-gateway.example/v1/messages
+# AI_API_KEY=<local secret>
+# AI_MODEL=<model name>

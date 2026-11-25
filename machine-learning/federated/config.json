@@ -1,0 +1,9 @@
+{
+  "seed": 20261125,
+  "split": {"train_subjects": 7, "validation_subjects": 3},
+  "model": {"hidden_dim": 64},
+  "federated": {"rounds": 35, "local_epochs": 2, "learning_rate": 0.025, "batch_size": 64},
+  "baseline": {"epochs": 70, "learning_rate": 0.025, "batch_size": 64},
+  "privacy": {"update_clip_norm": 5.0, "gaussian_noise_std": 0.0},
+  "thresholds": {"accuracy": 0.85, "macro_f1": 0.80, "minimum_class_recall": 0.70, "minimum_test_subjects": 3}
+}

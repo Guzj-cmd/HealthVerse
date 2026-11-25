@@ -1,0 +1,350 @@
+{
+  "status": "failed",
+  "failed_thresholds": [
+    "class_recall:TLB"
+  ],
+  "run_type": "local_federated_test",
+  "claim_scope": "single-machine multi-client FedAvg simulation; not a real multi-device deployment",
+  "dataset": "multiposture-upper.jsonl",
+  "labels": [
+    "TLB",
+    "TLF",
+    "TLL",
+    "TLR",
+    "TUP"
+  ],
+  "split_subjects": {
+    "train": [
+      "subject-7",
+      "subject-2",
+      "subject-9",
+      "subject-10",
+      "subject-1",
+      "subject-8",
+      "subject-6"
+    ],
+    "validation": [
+      "subject-4",
+      "subject-12",
+      "subject-11"
+    ],
+    "test": [
+      "subject-13",
+      "subject-3",
+      "subject-5"
+    ]
+  },
+  "federated_test": {
+    "samples": 1194,
+    "accuracy": 0.923785594639866,
+    "macro_f1": 0.8987778289062417,
+    "per_class_recall": {
+      "TLB": 0.4942528735632184,
+      "TLF": 0.9875444839857651,
+      "TLL": 1.0,
+      "TLR": 1.0,
+      "TUP": 0.8904109589041096
+    },
+    "confusion_matrix": [
+      [
+        43,
+        0,
+        0,
+        0,
+        44
+      ],
+      [
+        0,
+        555,
+        0,
+        0,
+        7
+      ],
+      [
+        0,
+        0,
+        90,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        90,
+        0
+      ],
+      [
+        1,
+        39,
+        0,
+        0,
+        325
+      ]
+    ]
+  },
+  "centralized_baseline_test": {
+    "samples": 1194,
+    "accuracy": 0.9539363484087102,
+    "macro_f1": 0.9485211023286336,
+    "per_class_recall": {
+      "TLB": 0.7586206896551724,
+      "TLF": 1.0,
+      "TLL": 1.0,
+      "TLR": 1.0,
+      "TUP": 0.9068493150684932
+    },
+    "confusion_matrix": [
+      [
+        66,
+        0,
+        0,
+        0,
+        21
+      ],
+      [
+        0,
+        562,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        90,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        90,
+        0
+      ],
+      [
+        3,
+        31,
+        0,
+        0,
+        331
+      ]
+    ]
+  },
+  "federated_minus_central_macro_f1": -0.04974327342239193,
+  "per_test_client": {
+    "subject-13": {
+      "samples": 270,
+      "accuracy": 0.8740740740740741,
+      "macro_f1": 0.8953926295471684,
+      "per_class_recall": {
+        "TLB": 0.5657894736842105,
+        "TLF": 1.0,
+        "TLL": 1.0,
+        "TLR": 1.0,
+        "TUP": 0.9818181818181818
+      },
+      "confusion_matrix": [
+        [
+          43,
+          0,
+          0,
+          0,
+          33
+        ],
+        [
+          0,
+          79,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          30,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          30,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          54
+        ]
+      ]
+    },
+    "subject-3": {
+      "samples": 480,
+      "accuracy": 0.9541666666666667,
+      "macro_f1": 0.7829006158676488,
+      "per_class_recall": {
+        "TLB": 0.0,
+        "TLF": 1.0,
+        "TLL": 1.0,
+        "TLR": 1.0,
+        "TUP": 0.9349112426035503
+      },
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0,
+          0,
+          11
+        ],
+        [
+          0,
+          240,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          30,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          30,
+          0
+        ],
+        [
+          1,
+          10,
+          0,
+          0,
+          158
+        ]
+      ]
+    },
+    "subject-5": {
+      "samples": 444,
+      "accuracy": 0.9211711711711712,
+      "macro_f1": 0.759373370513954,
+      "per_class_recall": {
+        "TLB": 0.0,
+        "TLF": 0.9711934156378601,
+        "TLL": 1.0,
+        "TLR": 1.0,
+        "TUP": 0.8014184397163121
+      },
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          236,
+          0,
+          0,
+          7
+        ],
+        [
+          0,
+          0,
+          30,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          30,
+          0
+        ],
+        [
+          0,
+          28,
+          0,
+          0,
+          113
+        ]
+      ]
+    }
+  },
+  "worst_test_client": {
+    "subject": "subject-5",
+    "samples": 444,
+    "accuracy": 0.9211711711711712,
+    "macro_f1": 0.759373370513954,
+    "per_class_recall": {
+      "TLB": 0.0,
+      "TLF": 0.9711934156378601,
+      "TLL": 1.0,
+      "TLR": 1.0,
+      "TUP": 0.8014184397163121
+    },
+    "confusion_matrix": [
+      [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        236,
+        0,
+        0,
+        7
+      ],
+      [
+        0,
+        0,
+        30,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        30,
+        0
+      ],
+      [
+        0,
+        28,
+        0,
+        0,
+        113
+      ]
+    ]
+  },
+  "communication_bytes_uploaded": 13181000,
+  "privacy": {
+    "raw_samples_uploaded": false,
+    "update_clip_norm": 5.0,
+    "gaussian_noise_std": 0.0,
+    "differential_privacy_epsilon": "not_applicable",
+    "secure_aggregation": false
+  },
+  "thresholds": {
+    "accuracy": 0.85,
+    "macro_f1": 0.8,
+    "minimum_class_recall": 0.7,
+    "minimum_test_subjects": 3
+  },
+  "created_at": "2026-11-25T06:16:29.577929+00:00"
+}

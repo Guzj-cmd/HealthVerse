@@ -1,0 +1,6 @@
+numpy>=2.0,<3
+scikit-learn>=1.5,<2
+joblib>=1.4,<2
+# Only needed by capture_dataset.py:
+opencv-python>=4.10,<5
+mediapipe>=0.10.20

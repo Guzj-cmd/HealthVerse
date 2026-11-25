@@ -1,0 +1,85 @@
+{
+  "status": "passed",
+  "failed_thresholds": [],
+  "selected_model": "hist_gradient_boosting",
+  "test": {
+    "sample_count": 1194,
+    "class_support": {
+      "TLB": 87,
+      "TLF": 562,
+      "TLL": 90,
+      "TLR": 90,
+      "TUP": 365
+    },
+    "accuracy": 0.9899497487437185,
+    "macro_f1": 0.9879596980238275,
+    "per_class_recall": {
+      "TLB": 0.9885057471264368,
+      "TLF": 1.0,
+      "TLL": 1.0,
+      "TLR": 1.0,
+      "TUP": 0.9698630136986301
+    },
+    "confusion_matrix": [
+      [
+        86,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        562,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        90,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        90,
+        0
+      ],
+      [
+        6,
+        5,
+        0,
+        0,
+        354
+      ]
+    ]
+  },
+  "thresholds": {
+    "accuracy": 0.85,
+    "macro_f1": 0.8,
+    "minimum_class_recall": 0.7,
+    "minimum_test_subjects": 3,
+    "minimum_test_samples_per_class": 30
+  },
+  "split": {
+    "train": {
+      "samples": 2580,
+      "subjects": 7
+    },
+    "validation": {
+      "samples": 1020,
+      "subjects": 3
+    },
+    "test": {
+      "samples": 1194,
+      "subjects": 3
+    }
+  },
+  "created_at": "2026-11-25T06:13:12.423638+00:00",
+  "dataset": "multiposture-upper.jsonl",
+  "pose_coverage": null
+}

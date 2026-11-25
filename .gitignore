@@ -1,0 +1,34 @@
+# Build output
+target/
+*.war
+
+# Local credentials and machine-specific configuration
+*.local.properties
+.env
+.env.*
+!.env.example
+.claude/
+
+# Python caches and environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Raw or converted datasets are reproducible from the cited public source
+machine-learning/data/
+machine-learning/**/data/
+*.sqlite3
+
+# Local camera/video captures and preference records
+captures/
+preferences/*.jsonl
+*.mp4
+*.webm
+
+# IDE and operating-system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+

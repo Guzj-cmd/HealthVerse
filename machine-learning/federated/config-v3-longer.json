@@ -1,0 +1,10 @@
+{
+  "seed": 20261125,
+  "evaluation_scope": "exploratory_after_v1_v2_test_review; requires a fresh external participant test before deployment",
+  "split": {"train_subjects": 7, "validation_subjects": 3},
+  "model": {"hidden_dim": 128},
+  "federated": {"rounds": 120, "local_epochs": 3, "learning_rate": 0.012, "batch_size": 48, "class_balance": true},
+  "baseline": {"epochs": 140, "learning_rate": 0.012, "batch_size": 48, "class_balance": true},
+  "privacy": {"update_clip_norm": 5.0, "gaussian_noise_std": 0.0},
+  "thresholds": {"accuracy": 0.85, "macro_f1": 0.80, "minimum_class_recall": 0.70, "minimum_test_subjects": 3}
+}

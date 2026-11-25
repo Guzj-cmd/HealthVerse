@@ -1,0 +1,18 @@
+{
+  "message": "保留右侧手写区域，并比较两种显示器调整方案",
+  "context": {
+    "task": "论文写作",
+    "confidence": 0.68,
+    "interrupt_cost": "medium",
+    "observations": [
+      "显示器可能低于舒适视线",
+      "用户在自然停顿时查看建议"
+    ],
+    "objects": ["显示器", "键盘", "手写区域", "水杯"],
+    "constraints": ["右侧保留手写区域", "方案必须可撤销"],
+    "human": {"body_model": "pending_calibration"},
+    "environment": {"room": "study", "camera": "front"},
+    "relations": ["person-facing-monitor", "handwriting-zone-right"],
+    "memory": []
+  }
+}

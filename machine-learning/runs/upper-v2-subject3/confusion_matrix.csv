@@ -1,0 +1,6 @@
+actual\predicted,TLB,TLF,TLL,TLR,TUP
+TLB,86,0,0,0,1
+TLF,0,562,0,0,0
+TLL,0,0,90,0,0
+TLR,0,0,0,90,0
+TUP,6,5,0,0,354
