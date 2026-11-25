@@ -9,6 +9,7 @@ from pathlib import Path
 import joblib
 import numpy as np
 from sklearn.metrics import accuracy_score, f1_score, recall_score
+from sklearn.model_selection import GroupKFold
 
 from hvml.io import PoseSample, load_samples
 from hvml.modeling import candidate_models, load_config, matrix, metrics, threshold_status
@@ -58,28 +59,37 @@ def heldout_predictions(data_path: Path, run_path: Path) -> tuple[list[PoseSampl
     return test_samples, y, prediction, groups, list(bundle["labels"]), str(bundle["metadata"]["selected_model"])
 
 
-def loso(data_path: Path, config: dict, model_name: str, labels: list[str]) -> tuple[list[dict], dict]:
+def group_k_fold(data_path: Path, config: dict, model_name: str, labels: list[str], requested_folds: int) -> tuple[list[dict], dict]:
     samples = load_samples(data_path)
     x, y = matrix(samples)
     groups = np.asarray([sample.subject_id for sample in samples])
+    split_count = min(requested_folds, len(np.unique(groups)))
+    if split_count < 2:
+        raise ValueError("GroupKFold requires at least two subjects")
     rows, pooled_true, pooled_pred = [], [], []
-    for subject in sorted(np.unique(groups)):
-        test_index = np.flatnonzero(groups == subject)
-        train_index = np.flatnonzero(groups != subject)
+    splitter = GroupKFold(n_splits=split_count)
+    for fold_id, (train_index, test_index) in enumerate(splitter.split(x, y, groups), start=1):
         model = candidate_models(config)[model_name]
         model.fit(x[train_index], y[train_index])
         prediction = model.predict(x[test_index])
         score = fixed_metrics(y[test_index], prediction, labels)
         per_class = recall_score(y[test_index], prediction, labels=labels, average=None, zero_division=0)
+        test_subjects = sorted(str(value) for value in np.unique(groups[test_index]))
         row = {
-            "subject_id": str(subject), "train_samples": int(train_index.size), "test_samples": int(test_index.size),
+            "fold": fold_id, "test_subjects": "|".join(test_subjects), "test_subject_count": len(test_subjects),
+            "train_samples": int(train_index.size), "test_samples": int(test_index.size),
             **score, "minimum_class_recall": float(np.min(per_class)),
         }
         rows.append(row); pooled_true.append(y[test_index]); pooled_pred.append(prediction)
     all_true, all_pred = np.concatenate(pooled_true), np.concatenate(pooled_pred)
     pooled = fixed_metrics(all_true, all_pred, labels)
     worst = min(rows, key=lambda item: (item["macro_f1"], item["balanced_accuracy"], item["accuracy"]))
-    return rows, {"method": "leave_one_subject_out", "folds": len(rows), "pooled": pooled, "mean": {name: float(np.mean([row[name] for row in rows])) for name in ("accuracy", "macro_f1", "balanced_accuracy")}, "worst_unseen_subject": worst}
+    return rows, {
+        "method": "group_k_fold", "group_field": "subject_id", "folds": len(rows),
+        "pooled": pooled,
+        "mean": {name: float(np.mean([row[name] for row in rows])) for name in ("accuracy", "macro_f1", "balanced_accuracy")},
+        "worst_unseen_subject_group": worst,
+    }
 
 
 def classifier_status(test_result: dict, test_subject_count: int, thresholds: dict) -> tuple[str, list[str]]:
@@ -89,38 +99,39 @@ def classifier_status(test_result: dict, test_subject_count: int, thresholds: di
     return ("classifier_passed" if base == "passed" else "classifier_failed"), failures
 
 
-def analyze_task(name: str, data: Path, run: Path, config: dict, repeats: int, seed: int) -> tuple[dict, list[dict]]:
+def analyze_task(name: str, data: Path, run: Path, config: dict, repeats: int, seed: int, cv_folds: int) -> tuple[dict, list[dict]]:
     test_samples, y, prediction, groups, labels, model_name = heldout_predictions(data, run)
     detailed = metrics(y, prediction, labels)
     status, failures = classifier_status(detailed, len(np.unique(groups)), config["thresholds"])
     bootstrap = cluster_bootstrap(y, prediction, groups, labels, repeats, seed)
-    folds, loso_summary = loso(data, config, model_name, labels)
+    folds, cv_summary = group_k_fold(data, config, model_name, labels, cv_folds)
     return {
         "task": name, "dataset": data.name, "saved_run": run.name, "fixed_model_family": model_name,
         "classifier_status": status, "classifier_failed_thresholds": failures,
         "coverage_status": "pose_coverage_not_evaluated",
-        "end_to_end_status": "end_to_end_not_evaluated" if status == "classifier_passed" else "end_to_end_failed",
+        "end_to_end_status": "end_to_end_not_evaluated",
         "coverage_note": "MultiPosture is a landmark-only table containing successful landmark records; source-frame pose coverage cannot be reconstructed and is N/A.",
         "heldout_test": {**fixed_metrics(y, prediction, labels), "subjects": int(len(np.unique(groups))), "samples": int(len(y))},
         "subject_cluster_bootstrap_95_ci": bootstrap,
-        "loso": loso_summary,
+        "group_k_fold": cv_summary,
     }, [{"task": name, **row} for row in folds]
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Subject-cluster bootstrap and LOSO robustness analysis for MultiPosture.")
+    parser = argparse.ArgumentParser(description="Subject-cluster bootstrap and GroupKFold robustness analysis for MultiPosture.")
     parser.add_argument("--upper-data", required=True); parser.add_argument("--upper-run", required=True)
     parser.add_argument("--lower-data", required=True); parser.add_argument("--lower-run", required=True)
     parser.add_argument("--config", required=True); parser.add_argument("--output", required=True)
     parser.add_argument("--bootstrap-repeats", type=int, default=2000); parser.add_argument("--seed", type=int, default=20261125)
+    parser.add_argument("--cv-folds", type=int, default=5)
     args = parser.parse_args()
     output = Path(args.output)
     if output.exists() and any(output.iterdir()):
         raise ValueError("output directory must be new or empty; existing runs are never overwritten")
     output.mkdir(parents=True, exist_ok=True)
     config = load_config(args.config)
-    upper, upper_folds = analyze_task("upper_body", Path(args.upper_data), Path(args.upper_run), config, args.bootstrap_repeats, args.seed)
-    lower, lower_folds = analyze_task("lower_body", Path(args.lower_data), Path(args.lower_run), config, args.bootstrap_repeats, args.seed + 1)
+    upper, upper_folds = analyze_task("upper_body", Path(args.upper_data), Path(args.upper_run), config, args.bootstrap_repeats, args.seed, args.cv_folds)
+    lower, lower_folds = analyze_task("lower_body", Path(args.lower_data), Path(args.lower_run), config, args.bootstrap_repeats, args.seed + 1, args.cv_folds)
     report = {
         "schema": "healthverse.robustness.v1", "created_at": datetime.now(timezone.utc).isoformat(),
         "bootstrap_unit": "subject_id", "frame_bootstrap_forbidden": True,
@@ -128,8 +139,8 @@ def main() -> int:
         "tasks": [upper, lower],
     }
     (output / "robustness.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
-    with (output / "loso_folds.csv").open("w", encoding="utf-8", newline="") as handle:
-        fields = ["task", "subject_id", "train_samples", "test_samples", "accuracy", "macro_f1", "balanced_accuracy", "minimum_class_recall"]
+    with (output / "groupkfold_folds.csv").open("w", encoding="utf-8", newline="") as handle:
+        fields = ["task", "fold", "test_subjects", "test_subject_count", "train_samples", "test_samples", "accuracy", "macro_f1", "balanced_accuracy", "minimum_class_recall"]
         writer = csv.DictWriter(handle, fieldnames=fields); writer.writeheader(); writer.writerows(upper_folds + lower_folds)
     with (output / "cluster_bootstrap_ci.csv").open("w", encoding="utf-8", newline="") as handle:
         writer = csv.writer(handle); writer.writerow(["task", "metric", "point", "ci_low", "ci_high", "clusters", "repeats"])
@@ -140,8 +151,8 @@ def main() -> int:
     lines = ["# MultiPosture Robustness Analysis", "", "All uncertainty resampling is clustered by `subject_id`; frames are never bootstrapped independently.", "", "## Coverage boundary", "", "MultiPosture contains landmark rows after successful extraction, not the original stream with failed detections. Pose coverage is therefore **N/A**, and the end-to-end status is **not evaluated**.", ""]
     for task in (upper, lower):
         boot = task["subject_cluster_bootstrap_95_ci"]["metrics"]
-        worst = task["loso"]["worst_unseen_subject"]
-        lines += [f"## {task['task']}", "", f"- Classifier status: `{task['classifier_status']}`", f"- End-to-end status: `{task['end_to_end_status']}`", f"- Fixed estimator for LOSO: `{task['fixed_model_family']}`", f"- Held-out Accuracy: {boot['accuracy']['point']:.4f} (subject-cluster 95% CI {boot['accuracy']['ci_low']:.4f}–{boot['accuracy']['ci_high']:.4f})", f"- Held-out Macro-F1: {boot['macro_f1']['point']:.4f} (95% CI {boot['macro_f1']['ci_low']:.4f}–{boot['macro_f1']['ci_high']:.4f})", f"- Held-out Balanced Accuracy: {boot['balanced_accuracy']['point']:.4f} (95% CI {boot['balanced_accuracy']['ci_low']:.4f}–{boot['balanced_accuracy']['ci_high']:.4f})", f"- LOSO pooled Macro-F1: {task['loso']['pooled']['macro_f1']:.4f}", f"- Worst unseen subject: `{worst['subject_id']}`; Macro-F1 {worst['macro_f1']:.4f}; Balanced Accuracy {worst['balanced_accuracy']:.4f}", ""]
+        worst = task["group_k_fold"]["worst_unseen_subject_group"]
+        lines += [f"## {task['task']}", "", f"- Classifier status: `{task['classifier_status']}`", f"- End-to-end status: `{task['end_to_end_status']}`", f"- Fixed estimator for GroupKFold: `{task['fixed_model_family']}`", f"- Held-out Accuracy: {boot['accuracy']['point']:.4f} (subject-cluster 95% CI {boot['accuracy']['ci_low']:.4f}–{boot['accuracy']['ci_high']:.4f})", f"- Held-out Macro-F1: {boot['macro_f1']['point']:.4f} (95% CI {boot['macro_f1']['ci_low']:.4f}–{boot['macro_f1']['ci_high']:.4f})", f"- Held-out Balanced Accuracy: {boot['balanced_accuracy']['point']:.4f} (95% CI {boot['balanced_accuracy']['ci_low']:.4f}–{boot['balanced_accuracy']['ci_high']:.4f})", f"- GroupKFold pooled Macro-F1: {task['group_k_fold']['pooled']['macro_f1']:.4f}", f"- Worst unseen subject group: `{worst['test_subjects']}`; Macro-F1 {worst['macro_f1']:.4f}; Balanced Accuracy {worst['balanced_accuracy']:.4f}", ""]
     lines += ["## Interpretation", "", "These results measure classification conditional on an available 33-point landmark record. They do not establish camera-stream coverage, clinical validity, or performance on a new camera/domain."]
     (output / "ROBUSTNESS.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(json.dumps({"output": str(output), "tasks": [upper["task"], lower["task"]], "end_to_end_status": "end_to_end_not_evaluated"}, ensure_ascii=False))

@@ -1,0 +1,144 @@
+{
+  "schema": "healthverse.robustness.v1",
+  "created_at": "2026-11-25T06:36:36.964255+00:00",
+  "bootstrap_unit": "subject_id",
+  "frame_bootstrap_forbidden": true,
+  "coverage_status": "pose_coverage_not_evaluated",
+  "end_to_end_status": "end_to_end_not_evaluated",
+  "tasks": [
+    {
+      "task": "upper_body",
+      "dataset": "multiposture-upper.jsonl",
+      "saved_run": "upper-v2-subject3",
+      "fixed_model_family": "hist_gradient_boosting",
+      "classifier_status": "classifier_passed",
+      "classifier_failed_thresholds": [],
+      "coverage_status": "pose_coverage_not_evaluated",
+      "end_to_end_status": "end_to_end_not_evaluated",
+      "coverage_note": "MultiPosture is a landmark-only table containing successful landmark records; source-frame pose coverage cannot be reconstructed and is N/A.",
+      "heldout_test": {
+        "accuracy": 0.9899497487437185,
+        "macro_f1": 0.9879596980238275,
+        "balanced_accuracy": 0.9916737521650134,
+        "subjects": 3,
+        "samples": 1194
+      },
+      "subject_cluster_bootstrap_95_ci": {
+        "method": "subject_cluster_bootstrap",
+        "repeats": 2000,
+        "cluster_count": 3,
+        "confidence_level": 0.95,
+        "metrics": {
+          "accuracy": {
+            "point": 0.9899497487437185,
+            "ci_low": 0.9875,
+            "ci_high": 0.9932432432432432
+          },
+          "macro_f1": {
+            "point": 0.9879596980238275,
+            "ci_low": 0.7966224685005607,
+            "ci_high": 0.9945800681447926
+          },
+          "balanced_accuracy": {
+            "point": 0.9916737521650134,
+            "ci_low": 0.7957446808510638,
+            "ci_high": 0.9946587537091988
+          }
+        }
+      },
+      "group_k_fold": {
+        "method": "group_k_fold",
+        "group_field": "subject_id",
+        "folds": 5,
+        "pooled": {
+          "accuracy": 0.9787234042553191,
+          "macro_f1": 0.9755080632336262,
+          "balanced_accuracy": 0.9685026641339117
+        },
+        "mean": {
+          "accuracy": 0.9791411832940982,
+          "macro_f1": 0.9768519266695117,
+          "balanced_accuracy": 0.9736035011749798
+        },
+        "worst_unseen_subject_group": {
+          "fold": 3,
+          "test_subjects": "subject-12|subject-3|subject-8",
+          "test_subject_count": 3,
+          "train_samples": 3774,
+          "test_samples": 1020,
+          "accuracy": 0.9637254901960784,
+          "macro_f1": 0.946699204667319,
+          "balanced_accuracy": 0.9337694704049845,
+          "minimum_class_recall": 0.7333333333333333
+        }
+      }
+    },
+    {
+      "task": "lower_body",
+      "dataset": "multiposture-lower.jsonl",
+      "saved_run": "lower-v1-subject3",
+      "fixed_model_family": "random_forest",
+      "classifier_status": "classifier_passed",
+      "classifier_failed_thresholds": [],
+      "coverage_status": "pose_coverage_not_evaluated",
+      "end_to_end_status": "end_to_end_not_evaluated",
+      "coverage_note": "MultiPosture is a landmark-only table containing successful landmark records; source-frame pose coverage cannot be reconstructed and is N/A.",
+      "heldout_test": {
+        "accuracy": 0.9195979899497487,
+        "macro_f1": 0.9440298207512544,
+        "balanced_accuracy": 0.9460173160173161,
+        "subjects": 3,
+        "samples": 1194
+      },
+      "subject_cluster_bootstrap_95_ci": {
+        "method": "subject_cluster_bootstrap",
+        "repeats": 2000,
+        "cluster_count": 3,
+        "confidence_level": 0.95,
+        "metrics": {
+          "accuracy": {
+            "point": 0.9195979899497487,
+            "ci_low": 0.8175675675675675,
+            "ci_high": 1.0
+          },
+          "macro_f1": {
+            "point": 0.9440298207512544,
+            "ci_low": 0.8145169397808384,
+            "ci_high": 1.0
+          },
+          "balanced_accuracy": {
+            "point": 0.9460173160173161,
+            "ci_low": 0.8270935960591134,
+            "ci_high": 1.0
+          }
+        }
+      },
+      "group_k_fold": {
+        "method": "group_k_fold",
+        "group_field": "subject_id",
+        "folds": 5,
+        "pooled": {
+          "accuracy": 0.9240717563621194,
+          "macro_f1": 0.9385339920284642,
+          "balanced_accuracy": 0.9353017045461866
+        },
+        "mean": {
+          "accuracy": 0.9257791995744359,
+          "macro_f1": 0.9396564539350974,
+          "balanced_accuracy": 0.9444898160756725
+        },
+        "worst_unseen_subject_group": {
+          "fold": 2,
+          "test_subjects": "subject-10|subject-4|subject-7",
+          "test_subject_count": 3,
+          "train_samples": 3744,
+          "test_samples": 1050,
+          "accuracy": 0.8761904761904762,
+          "macro_f1": 0.8997426567431642,
+          "balanced_accuracy": 0.8968517175098729,
+          "minimum_class_recall": 0.6666666666666666
+        }
+      }
+    }
+  ]
+}
