@@ -1,0 +1,61 @@
+{
+  "seed": 42,
+  "steps": [
+    "Loaded all 20 official MATLAB ground-truth files.",
+    "Removed fallen frames from the four-class benchmark because only participant/office 1 contains them.",
+    "Computed detector-box geometry features without using pixels or handwritten decision rules.",
+    "Selected among three classifiers inside each outer development split.",
+    "Evaluated on one entirely unseen participant and office at a time.",
+    "Selected extra_trees as the best research candidate by four-group cross-validation.",
+    "Applied the quality gate: REJECTED. No deployable artifact is written when the gate fails."
+  ],
+  "outer_folds": [
+    {
+      "test_subject": "office-1-participant-1",
+      "selected_candidate": "extra_trees",
+      "train_frames": 75453,
+      "test_frames": 236313,
+      "accuracy": 0.5844832912281592,
+      "macro_f1": 0.5289137422108262
+    },
+    {
+      "test_subject": "office-2-participant-2",
+      "selected_candidate": "hist_gradient_boosting",
+      "train_frames": 89576,
+      "test_frames": 54721,
+      "accuracy": 0.16509201220737926,
+      "macro_f1": 0.5064094919257558
+    },
+    {
+      "test_subject": "office-3-participant-3",
+      "selected_candidate": "hist_gradient_boosting",
+      "train_frames": 83964,
+      "test_frames": 77628,
+      "accuracy": 0.443899108569073,
+      "macro_f1": 0.5715810782732449
+    },
+    {
+      "test_subject": "office-4-participant-4",
+      "selected_candidate": "extra_trees",
+      "train_frames": 76786,
+      "test_frames": 87715,
+      "accuracy": 0.9544433677250185,
+      "macro_f1": 0.7941989815071655
+    }
+  ],
+  "best_research_candidate": "extra_trees",
+  "candidate_training_frame_cap": 189024,
+  "quality_gate": {
+    "status": "REJECTED",
+    "thresholds": {
+      "accuracy": 0.8,
+      "macro_f1": 0.8,
+      "minimum_class_recall": 0.5
+    },
+    "failures": [
+      "accuracy 0.581390 < 0.80",
+      "macro_f1 0.605020 < 0.80",
+      "sitting recall 0.212848 < 0.50"
+    ]
+  }
+}

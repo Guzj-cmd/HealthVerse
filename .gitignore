@@ -20,6 +20,12 @@ machine-learning/data/
 machine-learning/**/data/
 *.sqlite3
 
+# External research datasets are downloaded locally and are never redistributed
+ccfa-workfiles/**/cache/
+
+# BEHAVE-derived weights stay local until the dataset owner confirms redistribution
+machine-learning/runs/behave-relation-v1/model.joblib
+
 # Local camera/video captures and preference records
 captures/
 preferences/*.jsonl

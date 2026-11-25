@@ -1,0 +1,5 @@
+actual/predicted,empty,standing_walking,sitting,talking
+empty,134110,0,0,0
+standing_walking,37,7311,1397,0
+sitting,40,189561,51269,1
+talking,0,7,1,72643

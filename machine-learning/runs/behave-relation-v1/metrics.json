@@ -1,0 +1,103 @@
+{
+  "dataset": {
+    "id": "behave",
+    "source_url": "https://virtualhumans.mpi-inf.mpg.de/behave/",
+    "license": "Non-commercial scientific research only; no redistribution of source data; public images require face blurring",
+    "raw_data_redistributed": false
+  },
+  "protocol": "leave-one-subject-out; all frames from a SubXX identity remain in one fold",
+  "feature_contract": {
+    "dimensions": 330,
+    "uses_smpl_betas": false,
+    "components": [
+      "smpl_pose_axis_angles_156",
+      "human_translation_3",
+      "object_minus_human_translation_3",
+      "object_axis_angles_3",
+      "smpl_pose_frame_delta_156",
+      "human_translation_frame_delta_3",
+      "object_translation_frame_delta_3",
+      "relative_translation_frame_delta_3"
+    ]
+  },
+  "data_summary": {
+    "subjects": [
+      "Sub01",
+      "Sub02",
+      "Sub03",
+      "Sub04",
+      "Sub06",
+      "Sub07",
+      "Sub08"
+    ],
+    "subject_count": 7,
+    "sequence_count": 51,
+    "sample_count": 2448,
+    "samples_per_class": {
+      "seated_contact": 1440,
+      "monitor_interaction": 672,
+      "table_lean": 336
+    },
+    "sequences_per_class": {
+      "seated_contact": 30,
+      "monitor_interaction": 14,
+      "table_lean": 7
+    },
+    "samples_per_subject": {
+      "Sub01": 336,
+      "Sub02": 336,
+      "Sub03": 288,
+      "Sub04": 672,
+      "Sub06": 336,
+      "Sub07": 288,
+      "Sub08": 192
+    }
+  },
+  "aggregate_loso": {
+    "accuracy": 0.9309640522875817,
+    "macro_f1": 0.9076812864855333,
+    "macro_f1_supported_classes": 0.9076812864855333,
+    "supported_labels": [
+      "seated_contact",
+      "table_lean",
+      "monitor_interaction"
+    ],
+    "per_class_recall": {
+      "seated_contact": 0.9263888888888889,
+      "table_lean": 0.8809523809523809,
+      "monitor_interaction": 0.9657738095238095
+    },
+    "class_support": {
+      "seated_contact": 1440,
+      "table_lean": 336,
+      "monitor_interaction": 672
+    }
+  },
+  "quality_gate": {
+    "thresholds": {
+      "minimum_aggregate_macro_f1": 0.85,
+      "minimum_aggregate_class_recall": 0.8
+    },
+    "status": "passed",
+    "failures": []
+  },
+  "fold_metric_mean": {
+    "accuracy": 0.9450467687074829,
+    "macro_f1_supported_classes": 0.9329290510271919
+  },
+  "fold_metric_std": {
+    "accuracy": 0.04672227988130805,
+    "macro_f1_supported_classes": 0.05841050512533885
+  },
+  "limitations": [
+    "Labels are source-derived interaction categories from sequence names, not ergonomic risk or medical outcome labels.",
+    "Frames are subsampled evenly per sequence; LOSO prevents identity leakage, but adjacent moments from one sequence remain correlated within one fold.",
+    "Sub08 has no table_lean sequence, so that fold has zero support for table_lean; aggregate LOSO includes all classes.",
+    "The input requires fitted SMPL/object transforms and is not yet a raw-RGB browser model."
+  ],
+  "local_model_artifact": {
+    "path": "model.joblib",
+    "sha256": "fcf06933a2b89b21773b557c66f8f4fa090bf76fcb5a171a09ea1a55febc132a",
+    "tracked_by_git": false
+  }
+}

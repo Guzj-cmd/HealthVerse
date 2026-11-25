@@ -1,0 +1,686 @@
+{
+  "experiment_status": "completed",
+  "created_at": "2026-11-25T07:37:46.782395+00:00",
+  "dataset": {
+    "name": "Human MotionLess Dataset (HuMoLs)",
+    "source": "https://datashare.ed.ac.uk/handle/10283/8851",
+    "metadata_source": "https://groups.inf.ed.ac.uk/vision/DATASETS/HUMOLS/",
+    "citation": "Chen, Fisher and Raza (2024), doi:10.7488/ds/7796; cite OPPH (ACVR/ECCV Workshop 2024)",
+    "use_terms": "Official description states the dataset can be used freely with citation.",
+    "videos": 101,
+    "class_support": {
+      "lying": 15,
+      "sitting": 82,
+      "standing": 4
+    },
+    "scenario_support": {
+      "home": 22,
+      "home cat": 14,
+      "home good light": 5,
+      "home low light": 9,
+      "home tv dark": 4,
+      "home tv dim light": 3,
+      "home tv good light": 3,
+      "indoor": 5,
+      "lab": 14,
+      "office": 20,
+      "outdoor": 2
+    },
+    "view_support": {
+      "front": 69,
+      "side": 18,
+      "top": 14
+    }
+  },
+  "protocol": {
+    "outer_evaluation": "4-fold stratified cross-validation; each official video contributes one mask and appears in one test fold",
+    "model_selection": "3-fold stratified CV within each outer development partition",
+    "raw_video_used": false,
+    "subject_disjoint": false,
+    "reason": "The official release has no participant identifier; the repository description calls it a single-subject dataset even though metadata contains M/F entries."
+  },
+  "pooled_outer_cv": {
+    "sample_count": 101,
+    "accuracy": 0.9108910891089109,
+    "macro_f1": 0.5826589595375723,
+    "per_class_recall": {
+      "lying": 0.6666666666666666,
+      "sitting": 1.0,
+      "standing": 0.0
+    },
+    "confusion_matrix": [
+      [
+        10,
+        5,
+        0
+      ],
+      [
+        0,
+        82,
+        0
+      ],
+      [
+        0,
+        4,
+        0
+      ]
+    ]
+  },
+  "quality_gate": {
+    "minimum_macro_f1": 0.8,
+    "minimum_per_class_recall": 0.5,
+    "passed": false
+  },
+  "by_scenario": {
+    "home": {
+      "sample_count": 22,
+      "accuracy": 0.9090909090909091,
+      "macro_f1": 0.31746031746031744,
+      "per_class_recall": {
+        "lying": 0.0,
+        "sitting": 1.0,
+        "standing": 0.0
+      },
+      "confusion_matrix": [
+        [
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          20,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "home cat": {
+      "sample_count": 14,
+      "accuracy": 1.0,
+      "macro_f1": 0.6666666666666666,
+      "per_class_recall": {
+        "lying": 1.0,
+        "sitting": 1.0,
+        "standing": 0.0
+      },
+      "confusion_matrix": [
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          0,
+          7,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "home good light": {
+      "sample_count": 5,
+      "accuracy": 0.6,
+      "macro_f1": 0.2857142857142857,
+      "per_class_recall": {
+        "lying": 0.75,
+        "sitting": 0.0,
+        "standing": 0.0
+      },
+      "confusion_matrix": [
+        [
+          3,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ]
+    },
+    "home low light": {
+      "sample_count": 9,
+      "accuracy": 1.0,
+      "macro_f1": 0.3333333333333333,
+      "per_class_recall": {
+        "lying": 0.0,
+        "sitting": 1.0,
+        "standing": 0.0
+      },
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          9,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "home tv dark": {
+      "sample_count": 4,
+      "accuracy": 1.0,
+      "macro_f1": 0.3333333333333333,
+      "per_class_recall": {
+        "lying": 0.0,
+        "sitting": 1.0,
+        "standing": 0.0
+      },
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          4,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "home tv dim light": {
+      "sample_count": 3,
+      "accuracy": 1.0,
+      "macro_f1": 0.3333333333333333,
+      "per_class_recall": {
+        "lying": 0.0,
+        "sitting": 1.0,
+        "standing": 0.0
+      },
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "home tv good light": {
+      "sample_count": 3,
+      "accuracy": 1.0,
+      "macro_f1": 0.3333333333333333,
+      "per_class_recall": {
+        "lying": 0.0,
+        "sitting": 1.0,
+        "standing": 0.0
+      },
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "indoor": {
+      "sample_count": 5,
+      "accuracy": 1.0,
+      "macro_f1": 0.3333333333333333,
+      "per_class_recall": {
+        "lying": 0.0,
+        "sitting": 1.0,
+        "standing": 0.0
+      },
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          5,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "lab": {
+      "sample_count": 14,
+      "accuracy": 0.9285714285714286,
+      "macro_f1": 0.32098765432098764,
+      "per_class_recall": {
+        "lying": 0.0,
+        "sitting": 1.0,
+        "standing": 0.0
+      },
+      "confusion_matrix": [
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          13,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "office": {
+      "sample_count": 20,
+      "accuracy": 0.85,
+      "macro_f1": 0.30630630630630634,
+      "per_class_recall": {
+        "lying": 0.0,
+        "sitting": 1.0,
+        "standing": 0.0
+      },
+      "confusion_matrix": [
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          17,
+          0
+        ],
+        [
+          0,
+          2,
+          0
+        ]
+      ]
+    },
+    "outdoor": {
+      "sample_count": 2,
+      "accuracy": 0.5,
+      "macro_f1": 0.2222222222222222,
+      "per_class_recall": {
+        "lying": 0.0,
+        "sitting": 1.0,
+        "standing": 0.0
+      },
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  "by_view": {
+    "front": {
+      "sample_count": 69,
+      "accuracy": 0.9565217391304348,
+      "macro_f1": 0.3259259259259259,
+      "per_class_recall": {
+        "lying": 0.0,
+        "sitting": 1.0,
+        "standing": 0.0
+      },
+      "confusion_matrix": [
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          66,
+          0
+        ],
+        [
+          0,
+          2,
+          0
+        ]
+      ]
+    },
+    "side": {
+      "sample_count": 18,
+      "accuracy": 0.7777777777777778,
+      "macro_f1": 0.533769063180828,
+      "per_class_recall": {
+        "lying": 0.7,
+        "sitting": 1.0,
+        "standing": 0.0
+      },
+      "confusion_matrix": [
+        [
+          7,
+          3,
+          0
+        ],
+        [
+          0,
+          7,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ]
+    },
+    "top": {
+      "sample_count": 14,
+      "accuracy": 0.8571428571428571,
+      "macro_f1": 0.5857142857142857,
+      "per_class_recall": {
+        "lying": 0.75,
+        "sitting": 1.0,
+        "standing": 0.0
+      },
+      "confusion_matrix": [
+        [
+          3,
+          1,
+          0
+        ],
+        [
+          0,
+          9,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  "folds": [
+    {
+      "fold": 1,
+      "winner": "random_forest",
+      "development_samples": 75,
+      "test_samples": 26,
+      "inner_candidates": [
+        {
+          "candidate": "random_forest",
+          "macro_f1": 0.5481146304675716,
+          "accuracy": 0.8933333333333333
+        },
+        {
+          "candidate": "extra_trees",
+          "macro_f1": 0.5481146304675716,
+          "accuracy": 0.8933333333333333
+        },
+        {
+          "candidate": "balanced_rbf_svc",
+          "macro_f1": 0.5481146304675716,
+          "accuracy": 0.8933333333333333
+        },
+        {
+          "candidate": "balanced_logistic",
+          "macro_f1": 0.5262222222222223,
+          "accuracy": 0.8533333333333334
+        }
+      ],
+      "test": {
+        "sample_count": 26,
+        "accuracy": 0.9230769230769231,
+        "macro_f1": 0.6038961038961039,
+        "per_class_recall": {
+          "lying": 0.75,
+          "sitting": 1.0,
+          "standing": 0.0
+        },
+        "confusion_matrix": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            0,
+            21,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "fold": 2,
+      "winner": "random_forest",
+      "development_samples": 76,
+      "test_samples": 25,
+      "inner_candidates": [
+        {
+          "candidate": "random_forest",
+          "macro_f1": 0.548425430778372,
+          "accuracy": 0.8947368421052632
+        },
+        {
+          "candidate": "balanced_rbf_svc",
+          "macro_f1": 0.548425430778372,
+          "accuracy": 0.8947368421052632
+        },
+        {
+          "candidate": "extra_trees",
+          "macro_f1": 0.5457266876216136,
+          "accuracy": 0.881578947368421
+        },
+        {
+          "candidate": "balanced_logistic",
+          "macro_f1": 0.512609649122807,
+          "accuracy": 0.8421052631578947
+        }
+      ],
+      "test": {
+        "sample_count": 25,
+        "accuracy": 0.88,
+        "macro_f1": 0.5322997416020672,
+        "per_class_recall": {
+          "lying": 0.5,
+          "sitting": 1.0,
+          "standing": 0.0
+        },
+        "confusion_matrix": [
+          [
+            2,
+            2,
+            0
+          ],
+          [
+            0,
+            20,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "fold": 3,
+      "winner": "extra_trees",
+      "development_samples": 76,
+      "test_samples": 25,
+      "inner_candidates": [
+        {
+          "candidate": "extra_trees",
+          "macro_f1": 0.5191102756892231,
+          "accuracy": 0.881578947368421
+        },
+        {
+          "candidate": "random_forest",
+          "macro_f1": 0.4862354892205638,
+          "accuracy": 0.868421052631579
+        },
+        {
+          "candidate": "balanced_rbf_svc",
+          "macro_f1": 0.4862354892205638,
+          "accuracy": 0.868421052631579
+        },
+        {
+          "candidate": "balanced_logistic",
+          "macro_f1": 0.46062992125984253,
+          "accuracy": 0.8026315789473685
+        }
+      ],
+      "test": {
+        "sample_count": 25,
+        "accuracy": 0.92,
+        "macro_f1": 0.6031746031746031,
+        "per_class_recall": {
+          "lying": 0.75,
+          "sitting": 1.0,
+          "standing": 0.0
+        },
+        "confusion_matrix": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            0,
+            20,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "fold": 4,
+      "winner": "random_forest",
+      "development_samples": 76,
+      "test_samples": 25,
+      "inner_candidates": [
+        {
+          "candidate": "random_forest",
+          "macro_f1": 0.5326547921967769,
+          "accuracy": 0.881578947368421
+        },
+        {
+          "candidate": "extra_trees",
+          "macro_f1": 0.5326547921967769,
+          "accuracy": 0.881578947368421
+        },
+        {
+          "candidate": "balanced_rbf_svc",
+          "macro_f1": 0.5326547921967769,
+          "accuracy": 0.881578947368421
+        },
+        {
+          "candidate": "balanced_logistic",
+          "macro_f1": 0.5262222222222223,
+          "accuracy": 0.8552631578947368
+        }
+      ],
+      "test": {
+        "sample_count": 25,
+        "accuracy": 0.92,
+        "macro_f1": 0.5848484848484848,
+        "per_class_recall": {
+          "lying": 0.6666666666666666,
+          "sitting": 1.0,
+          "standing": 0.0
+        },
+        "confusion_matrix": [
+          [
+            2,
+            1,
+            0
+          ],
+          [
+            0,
+            21,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ]
+        ]
+      }
+    }
+  ],
+  "artifact_model": "random_forest",
+  "deployment_status": "rejected",
+  "limitations": [
+    "This is a silhouette scene/view robustness experiment, not participant-generalization evidence.",
+    "There are only four standing videos; standing recall has very high uncertainty.",
+    "A supplied foreground mask is assumed. This model does not segment a person from RGB input.",
+    "Motionless pose classes do not provide fine-grained ergonomic sitting labels or health diagnoses."
+  ]
+}

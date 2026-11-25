@@ -7,8 +7,9 @@ import numpy as np
 from sklearn.exceptions import ConvergenceWarning
 
 from hvml.features import feature_names, pose_features
-from hvml.io import PoseSample
-from hvml.modeling import candidate_models, grouped_split, threshold_status
+from hvml.datasets import DatasetSpec, load_mapped_samples, merge_mapped_datasets
+from hvml.io import PoseSample, write_jsonl_sample
+from hvml.modeling import candidate_models, grouped_split, leave_one_dataset_out_split, threshold_status
 
 
 class PipelineTests(unittest.TestCase):
@@ -28,6 +29,47 @@ class PipelineTests(unittest.TestCase):
         self.assertFalse(groups["train"] & groups["validation"])
         self.assertFalse(groups["train"] & groups["test"])
         self.assertFalse(groups["validation"] & groups["test"])
+
+    def test_leave_one_dataset_out_keeps_holdout_intact(self):
+        landmarks = np.zeros((33, 4)); landmarks[:, 3] = 1
+        samples = [
+            PoseSample(f"a-{g}-{i}", f"person-{g}", "upright", "a", landmarks, "dataset-a")
+            for g in range(4) for i in range(2)
+        ] + [
+            PoseSample(f"b-{g}-{i}", f"person-{g}", "upright", "b", landmarks, "dataset-b")
+            for g in range(3) for i in range(2)
+        ]
+        config = {"random_seed": 7, "split": {"validation_fraction": .25}}
+        split = leave_one_dataset_out_split(samples, "dataset-b", config)
+        self.assertEqual({samples[i].dataset_id for i in split["test"]}, {"dataset-b"})
+        self.assertEqual({samples[i].dataset_id for i in split["train"]}, {"dataset-a"})
+        self.assertEqual({samples[i].dataset_id for i in split["validation"]}, {"dataset-a"})
+        development_subjects = {
+            samples[i].subject_id for name in ("train", "validation") for i in split[name]
+        }
+        test_subjects = {samples[i].subject_id for i in split["test"]}
+        # Raw names may collide across datasets; dataset holdout remains intact.
+        self.assertTrue(development_subjects & test_subjects)
+
+    def test_dataset_mapping_is_explicit_and_namespaced(self):
+        import tempfile
+        from pathlib import Path
+
+        landmarks = np.zeros((33, 4)); landmarks[:, 3] = 1
+        with tempfile.TemporaryDirectory() as directory:
+            first = Path(directory) / "first.jsonl"
+            second = Path(directory) / "second.jsonl"
+            for path, label in ((first, "neutral"), (second, "forward")):
+                with path.open("w", encoding="utf-8") as handle:
+                    write_jsonl_sample(handle, PoseSample("1", "person-1", label, "capture", landmarks))
+            spec_a = DatasetSpec("dataset-a", {"neutral": "TUP"})
+            spec_b = DatasetSpec("dataset-b", {"forward": "TLF"})
+            merged = merge_mapped_datasets([(first, spec_a), (second, spec_b)])
+            self.assertEqual({sample.sample_id for sample in merged}, {"dataset-a:1", "dataset-b:1"})
+            self.assertEqual({sample.subject_id for sample in merged}, {"dataset-a:person-1", "dataset-b:person-1"})
+            self.assertEqual({sample.label for sample in merged}, {"TUP", "TLF"})
+            with self.assertRaisesRegex(ValueError, "unmapped label"):
+                load_mapped_samples(first, DatasetSpec("bad-map", {"other": "TUP"}))
 
     def test_threshold_requires_every_class(self):
         result = {"accuracy": .91, "macro_f1": .86, "per_class_recall": {"upright": .88, "forward": .62}, "class_support": {"upright": 50, "forward": 50}}

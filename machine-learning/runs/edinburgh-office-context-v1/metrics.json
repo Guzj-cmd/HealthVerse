@@ -1,0 +1,57 @@
+{
+  "accuracy": 0.5813899473461633,
+  "macro_f1": 0.605019768272617,
+  "per_class": {
+    "empty": {
+      "precision": 0.9994261739214678,
+      "recall": 1.0,
+      "f1": 0.9997130046180166,
+      "support": 134110
+    },
+    "standing_walking": {
+      "precision": 0.037134483616840804,
+      "recall": 0.8360205831903945,
+      "f1": 0.07111037622067463,
+      "support": 8745
+    },
+    "sitting": {
+      "precision": 0.9734558642033911,
+      "recall": 0.21284837111981103,
+      "f1": 0.3493176351954432,
+      "support": 240871
+    },
+    "talking": {
+      "precision": 0.9999862342382028,
+      "recall": 0.9998898845163866,
+      "f1": 0.9999380570563337,
+      "support": 72651
+    }
+  },
+  "confusion_matrix_labels": [
+    "empty",
+    "standing_walking",
+    "sitting",
+    "talking"
+  ],
+  "evaluation_protocol": "nested leave-one-participant-and-office-out",
+  "subjects": [
+    "office-1-participant-1",
+    "office-2-participant-2",
+    "office-3-participant-3",
+    "office-4-participant-4"
+  ],
+  "frames": 456377,
+  "quality_gate": {
+    "status": "REJECTED",
+    "thresholds": {
+      "accuracy": 0.8,
+      "macro_f1": 0.8,
+      "minimum_class_recall": 0.5
+    },
+    "failures": [
+      "accuracy 0.581390 < 0.80",
+      "macro_f1 0.605020 < 0.80",
+      "sitting recall 0.212848 < 0.50"
+    ]
+  }
+}

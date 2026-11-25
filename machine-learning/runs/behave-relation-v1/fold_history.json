@@ -1,0 +1,176 @@
+[
+  {
+    "accuracy": 0.9315476190476191,
+    "macro_f1": 0.9148886878420995,
+    "macro_f1_supported_classes": 0.9148886878420995,
+    "supported_labels": [
+      "seated_contact",
+      "table_lean",
+      "monitor_interaction"
+    ],
+    "per_class_recall": {
+      "seated_contact": 0.8802083333333334,
+      "table_lean": 1.0,
+      "monitor_interaction": 1.0
+    },
+    "class_support": {
+      "seated_contact": 192,
+      "table_lean": 48,
+      "monitor_interaction": 96
+    },
+    "holdout_subject": "Sub01",
+    "train_samples": 2112,
+    "test_samples": 336,
+    "train_sequences": 44,
+    "test_sequences": 7
+  },
+  {
+    "accuracy": 0.9821428571428571,
+    "macro_f1": 0.9748115758586963,
+    "macro_f1_supported_classes": 0.9748115758586963,
+    "supported_labels": [
+      "seated_contact",
+      "table_lean",
+      "monitor_interaction"
+    ],
+    "per_class_recall": {
+      "seated_contact": 1.0,
+      "table_lean": 0.8958333333333334,
+      "monitor_interaction": 0.9895833333333334
+    },
+    "class_support": {
+      "seated_contact": 192,
+      "table_lean": 48,
+      "monitor_interaction": 96
+    },
+    "holdout_subject": "Sub02",
+    "train_samples": 2112,
+    "test_samples": 336,
+    "train_sequences": 44,
+    "test_sequences": 7
+  },
+  {
+    "accuracy": 0.9409722222222222,
+    "macro_f1": 0.9344119987461118,
+    "macro_f1_supported_classes": 0.9344119987461118,
+    "supported_labels": [
+      "seated_contact",
+      "table_lean",
+      "monitor_interaction"
+    ],
+    "per_class_recall": {
+      "seated_contact": 0.9114583333333334,
+      "table_lean": 1.0,
+      "monitor_interaction": 1.0
+    },
+    "class_support": {
+      "seated_contact": 192,
+      "table_lean": 48,
+      "monitor_interaction": 48
+    },
+    "holdout_subject": "Sub03",
+    "train_samples": 2160,
+    "test_samples": 288,
+    "train_sequences": 45,
+    "test_sequences": 6
+  },
+  {
+    "accuracy": 0.8601190476190477,
+    "macro_f1": 0.8240107294085339,
+    "macro_f1_supported_classes": 0.8240107294085339,
+    "supported_labels": [
+      "seated_contact",
+      "table_lean",
+      "monitor_interaction"
+    ],
+    "per_class_recall": {
+      "seated_contact": 0.8697916666666666,
+      "table_lean": 0.75,
+      "monitor_interaction": 0.8958333333333334
+    },
+    "class_support": {
+      "seated_contact": 384,
+      "table_lean": 96,
+      "monitor_interaction": 192
+    },
+    "holdout_subject": "Sub04",
+    "train_samples": 1776,
+    "test_samples": 672,
+    "train_sequences": 37,
+    "test_sequences": 14
+  },
+  {
+    "accuracy": 0.9821428571428571,
+    "macro_f1": 0.9788846175274388,
+    "macro_f1_supported_classes": 0.9788846175274388,
+    "supported_labels": [
+      "seated_contact",
+      "table_lean",
+      "monitor_interaction"
+    ],
+    "per_class_recall": {
+      "seated_contact": 0.9895833333333334,
+      "table_lean": 0.9375,
+      "monitor_interaction": 0.9895833333333334
+    },
+    "class_support": {
+      "seated_contact": 192,
+      "table_lean": 48,
+      "monitor_interaction": 96
+    },
+    "holdout_subject": "Sub06",
+    "train_samples": 2112,
+    "test_samples": 336,
+    "train_sequences": 44,
+    "test_sequences": 7
+  },
+  {
+    "accuracy": 0.9236111111111112,
+    "macro_f1": 0.9087042224297126,
+    "macro_f1_supported_classes": 0.9087042224297126,
+    "supported_labels": [
+      "seated_contact",
+      "table_lean",
+      "monitor_interaction"
+    ],
+    "per_class_recall": {
+      "seated_contact": 0.9270833333333334,
+      "table_lean": 0.8333333333333334,
+      "monitor_interaction": 1.0
+    },
+    "class_support": {
+      "seated_contact": 192,
+      "table_lean": 48,
+      "monitor_interaction": 48
+    },
+    "holdout_subject": "Sub07",
+    "train_samples": 2160,
+    "test_samples": 288,
+    "train_sequences": 45,
+    "test_sequences": 6
+  },
+  {
+    "accuracy": 0.9947916666666666,
+    "macro_f1": 0.6631943502518334,
+    "macro_f1_supported_classes": 0.9947915253777501,
+    "supported_labels": [
+      "seated_contact",
+      "monitor_interaction"
+    ],
+    "per_class_recall": {
+      "seated_contact": 1.0,
+      "table_lean": 0.0,
+      "monitor_interaction": 0.9895833333333334
+    },
+    "class_support": {
+      "seated_contact": 96,
+      "table_lean": 0,
+      "monitor_interaction": 96
+    },
+    "holdout_subject": "Sub08",
+    "train_samples": 2256,
+    "test_samples": 192,
+    "train_sequences": 47,
+    "test_sequences": 4
+  }
+]

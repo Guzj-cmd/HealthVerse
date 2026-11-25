@@ -1,0 +1,17 @@
+outer_test_subject,subject_id,role,days,frames
+office-1-participant-1,office-1-participant-1,test,1|2|3|4|5|6|7|8|9|10|11|12,236313
+office-1-participant-1,office-2-participant-2,development,13|14,54721
+office-1-participant-1,office-3-participant-3,development,15|16|17,77628
+office-1-participant-1,office-4-participant-4,development,18|19|20,87715
+office-2-participant-2,office-1-participant-1,development,1|2|3|4|5|6|7|8|9|10|11|12,236313
+office-2-participant-2,office-2-participant-2,test,13|14,54721
+office-2-participant-2,office-3-participant-3,development,15|16|17,77628
+office-2-participant-2,office-4-participant-4,development,18|19|20,87715
+office-3-participant-3,office-1-participant-1,development,1|2|3|4|5|6|7|8|9|10|11|12,236313
+office-3-participant-3,office-2-participant-2,development,13|14,54721
+office-3-participant-3,office-3-participant-3,test,15|16|17,77628
+office-3-participant-3,office-4-participant-4,development,18|19|20,87715
+office-4-participant-4,office-1-participant-1,development,1|2|3|4|5|6|7|8|9|10|11|12,236313
+office-4-participant-4,office-2-participant-2,development,13|14,54721
+office-4-participant-4,office-3-participant-3,development,15|16|17,77628
+office-4-participant-4,office-4-participant-4,test,18|19|20,87715

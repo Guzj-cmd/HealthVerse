@@ -1,0 +1,222 @@
+[
+  {
+    "fold": 1,
+    "winner": "random_forest",
+    "development_samples": 75,
+    "test_samples": 26,
+    "inner_candidates": [
+      {
+        "candidate": "random_forest",
+        "macro_f1": 0.5481146304675716,
+        "accuracy": 0.8933333333333333
+      },
+      {
+        "candidate": "extra_trees",
+        "macro_f1": 0.5481146304675716,
+        "accuracy": 0.8933333333333333
+      },
+      {
+        "candidate": "balanced_rbf_svc",
+        "macro_f1": 0.5481146304675716,
+        "accuracy": 0.8933333333333333
+      },
+      {
+        "candidate": "balanced_logistic",
+        "macro_f1": 0.5262222222222223,
+        "accuracy": 0.8533333333333334
+      }
+    ],
+    "test": {
+      "sample_count": 26,
+      "accuracy": 0.9230769230769231,
+      "macro_f1": 0.6038961038961039,
+      "per_class_recall": {
+        "lying": 0.75,
+        "sitting": 1.0,
+        "standing": 0.0
+      },
+      "confusion_matrix": [
+        [
+          3,
+          1,
+          0
+        ],
+        [
+          0,
+          21,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  {
+    "fold": 2,
+    "winner": "random_forest",
+    "development_samples": 76,
+    "test_samples": 25,
+    "inner_candidates": [
+      {
+        "candidate": "random_forest",
+        "macro_f1": 0.548425430778372,
+        "accuracy": 0.8947368421052632
+      },
+      {
+        "candidate": "balanced_rbf_svc",
+        "macro_f1": 0.548425430778372,
+        "accuracy": 0.8947368421052632
+      },
+      {
+        "candidate": "extra_trees",
+        "macro_f1": 0.5457266876216136,
+        "accuracy": 0.881578947368421
+      },
+      {
+        "candidate": "balanced_logistic",
+        "macro_f1": 0.512609649122807,
+        "accuracy": 0.8421052631578947
+      }
+    ],
+    "test": {
+      "sample_count": 25,
+      "accuracy": 0.88,
+      "macro_f1": 0.5322997416020672,
+      "per_class_recall": {
+        "lying": 0.5,
+        "sitting": 1.0,
+        "standing": 0.0
+      },
+      "confusion_matrix": [
+        [
+          2,
+          2,
+          0
+        ],
+        [
+          0,
+          20,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  {
+    "fold": 3,
+    "winner": "extra_trees",
+    "development_samples": 76,
+    "test_samples": 25,
+    "inner_candidates": [
+      {
+        "candidate": "extra_trees",
+        "macro_f1": 0.5191102756892231,
+        "accuracy": 0.881578947368421
+      },
+      {
+        "candidate": "random_forest",
+        "macro_f1": 0.4862354892205638,
+        "accuracy": 0.868421052631579
+      },
+      {
+        "candidate": "balanced_rbf_svc",
+        "macro_f1": 0.4862354892205638,
+        "accuracy": 0.868421052631579
+      },
+      {
+        "candidate": "balanced_logistic",
+        "macro_f1": 0.46062992125984253,
+        "accuracy": 0.8026315789473685
+      }
+    ],
+    "test": {
+      "sample_count": 25,
+      "accuracy": 0.92,
+      "macro_f1": 0.6031746031746031,
+      "per_class_recall": {
+        "lying": 0.75,
+        "sitting": 1.0,
+        "standing": 0.0
+      },
+      "confusion_matrix": [
+        [
+          3,
+          1,
+          0
+        ],
+        [
+          0,
+          20,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  {
+    "fold": 4,
+    "winner": "random_forest",
+    "development_samples": 76,
+    "test_samples": 25,
+    "inner_candidates": [
+      {
+        "candidate": "random_forest",
+        "macro_f1": 0.5326547921967769,
+        "accuracy": 0.881578947368421
+      },
+      {
+        "candidate": "extra_trees",
+        "macro_f1": 0.5326547921967769,
+        "accuracy": 0.881578947368421
+      },
+      {
+        "candidate": "balanced_rbf_svc",
+        "macro_f1": 0.5326547921967769,
+        "accuracy": 0.881578947368421
+      },
+      {
+        "candidate": "balanced_logistic",
+        "macro_f1": 0.5262222222222223,
+        "accuracy": 0.8552631578947368
+      }
+    ],
+    "test": {
+      "sample_count": 25,
+      "accuracy": 0.92,
+      "macro_f1": 0.5848484848484848,
+      "per_class_recall": {
+        "lying": 0.6666666666666666,
+        "sitting": 1.0,
+        "standing": 0.0
+      },
+      "confusion_matrix": [
+        [
+          2,
+          1,
+          0
+        ],
+        [
+          0,
+          21,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ]
+    }
+  }
+]

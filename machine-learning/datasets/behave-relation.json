@@ -1,0 +1,43 @@
+{
+  "dataset_id": "behave",
+  "dataset_name": "BEHAVE",
+  "source_url": "https://virtualhumans.mpi-inf.mpg.de/behave/",
+  "paper": "BEHAVE: Dataset and Method for Tracking Human Object Interactions, CVPR 2022",
+  "license": "Non-commercial scientific research only; no redistribution of source data; public images require face blurring",
+  "local_params": "ccfa-workfiles/datasets/healthverse-expansion/cache/behave/params",
+  "output_dir": "machine-learning/runs/behave-relation-v1",
+  "random_seed": 20261125,
+  "samples_per_sequence": 48,
+  "temporal_trim_fraction": 0.1,
+  "classes": {
+    "seated_contact": [
+      "chairblack_sit",
+      "chairwood_sit",
+      "stool_sit",
+      "tablesquare_sit"
+    ],
+    "table_lean": [
+      "tablesmall_lean"
+    ],
+    "monitor_interaction": [
+      "monitor_hand",
+      "monitor_move"
+    ]
+  },
+  "excluded_ambiguous_suffixes": [
+    "chairblack_sitstand",
+    "monitor_sit"
+  ],
+  "evaluation": "leave-one-subject-out; all frames from a SubXX identity remain in one fold",
+  "quality_gate": {
+    "minimum_aggregate_macro_f1": 0.85,
+    "minimum_aggregate_class_recall": 0.8
+  },
+  "estimator": {
+    "name": "ExtraTreesClassifier",
+    "n_estimators": 500,
+    "min_samples_leaf": 2,
+    "max_features": "sqrt",
+    "class_weight": "balanced"
+  }
+}

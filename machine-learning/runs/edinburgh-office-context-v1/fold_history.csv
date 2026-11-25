@@ -1,0 +1,5 @@
+test_subject,selected_candidate,train_frames,test_frames,accuracy,macro_f1
+office-1-participant-1,extra_trees,75453,236313,0.5844832912281592,0.5289137422108262
+office-2-participant-2,hist_gradient_boosting,89576,54721,0.16509201220737926,0.5064094919257558
+office-3-participant-3,hist_gradient_boosting,83964,77628,0.443899108569073,0.5715810782732449
+office-4-participant-4,extra_trees,76786,87715,0.9544433677250185,0.7941989815071655

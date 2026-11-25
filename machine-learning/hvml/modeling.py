@@ -18,7 +18,7 @@ from .io import PoseSample
 
 def grouped_split(samples: list[PoseSample], config: dict) -> dict[str, np.ndarray]:
     rng = np.random.default_rng(int(config["random_seed"]))
-    groups = np.asarray([sample.subject_id for sample in samples])
+    groups = np.asarray([f"{sample.dataset_id}:{sample.subject_id}" for sample in samples])
     unique = np.unique(groups)
     if unique.size < 6:
         raise ValueError("at least 6 distinct subject_id groups are required for train/validation/test")
@@ -38,6 +38,44 @@ def grouped_split(samples: list[PoseSample], config: dict) -> dict[str, np.ndarr
     if any(values.size == 0 for values in indices.values()):
         raise ValueError("group split produced an empty partition")
     return indices
+
+
+def leave_one_dataset_out_split(
+    samples: list[PoseSample], holdout_dataset_id: str, config: dict
+) -> dict[str, np.ndarray]:
+    """Use one complete dataset as test and split remaining subjects for development.
+
+    This is a domain-generalization protocol: no sample or subject from the
+    holdout dataset can influence model selection.
+    """
+
+    dataset_ids = np.asarray([sample.dataset_id for sample in samples])
+    unique_datasets = set(dataset_ids.tolist())
+    if holdout_dataset_id not in unique_datasets:
+        raise ValueError(f"unknown holdout dataset: {holdout_dataset_id}")
+    if len(unique_datasets) < 2:
+        raise ValueError("leave-one-dataset-out requires at least two datasets")
+    test = np.flatnonzero(dataset_ids == holdout_dataset_id)
+    development = np.flatnonzero(dataset_ids != holdout_dataset_id)
+    development_groups = np.asarray([
+        f"{samples[index].dataset_id}:{samples[index].subject_id}" for index in development
+    ])
+    unique_groups = np.unique(development_groups)
+    if unique_groups.size < 2:
+        raise ValueError("development datasets need at least two subject groups")
+    rng = np.random.default_rng(int(config["random_seed"]))
+    rng.shuffle(unique_groups)
+    validation_fraction = float(config["split"]["validation_fraction"])
+    validation_count = min(
+        unique_groups.size - 1,
+        max(1, int(round(unique_groups.size * validation_fraction))),
+    )
+    validation_groups = set(unique_groups[:validation_count])
+    validation = development[np.asarray([group in validation_groups for group in development_groups])]
+    train = development[np.asarray([group not in validation_groups for group in development_groups])]
+    if train.size == 0 or validation.size == 0 or test.size == 0:
+        raise ValueError("leave-one-dataset-out produced an empty partition")
+    return {"train": train, "validation": validation, "test": test}
 
 
 def candidate_models(config: dict) -> dict[str, object]:

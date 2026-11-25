@@ -16,6 +16,7 @@ class PoseSample:
     label: str
     source: str
     landmarks: np.ndarray  # (33, 4): x, y, z, visibility
+    dataset_id: str = "unknown"
 
 
 def _landmarks_from_json(value: object) -> np.ndarray:
@@ -66,6 +67,7 @@ def load_samples(path: str | Path) -> list[PoseSample]:
                     str(row.get("sample_id", offset)), str(row["subject_id"]),
                     str(row["label"]), str(row.get("source", source_path.name)),
                     _landmarks_from_json(row["landmarks"]),
+                    str(row.get("dataset_id", source_path.stem)),
                 ))
     elif source_path.suffix.lower() == ".csv":
         with source_path.open("r", encoding="utf-8-sig", newline="") as handle:
@@ -73,6 +75,7 @@ def load_samples(path: str | Path) -> list[PoseSample]:
                 samples.append(PoseSample(
                     row.get("sample_id") or str(offset), row["subject_id"], row["label"],
                     row.get("source") or source_path.name, _landmarks_from_csv(row),
+                    row.get("dataset_id") or source_path.stem,
                 ))
     else:
         raise ValueError("supported dataset formats are .csv and .jsonl")
@@ -87,6 +90,7 @@ def write_jsonl_sample(handle, sample: PoseSample) -> None:
         "subject_id": sample.subject_id,
         "label": sample.label,
         "source": sample.source,
+        "dataset_id": sample.dataset_id,
         "landmarks": [
             {"x": float(p[0]), "y": float(p[1]), "z": float(p[2]), "visibility": float(p[3])}
             for p in sample.landmarks

@@ -1,0 +1,133 @@
+{
+  "source_files": 20,
+  "included_frames": 456377,
+  "excluded_fallen_frames": 337,
+  "excluded_fallen_subjects": [
+    "office-1-participant-1"
+  ],
+  "annotation_row_counts": {
+    "3": 456657,
+    "4": 57
+  },
+  "day_counts": {
+    "1": {
+      "sitting": 4108,
+      "talking": 4626,
+      "standing_walking": 155,
+      "empty": 1158
+    },
+    "2": {
+      "sitting": 5299,
+      "standing_walking": 103,
+      "empty": 1317
+    },
+    "3": {
+      "empty": 7339,
+      "standing_walking": 206,
+      "sitting": 13656,
+      "talking": 6033
+    },
+    "4": {
+      "empty": 3186,
+      "standing_walking": 460,
+      "sitting": 4078,
+      "talking": 5358
+    },
+    "5": {
+      "empty": 7403,
+      "standing_walking": 193,
+      "sitting": 9090,
+      "talking": 5107
+    },
+    "6": {
+      "empty": 3746,
+      "standing_walking": 106,
+      "sitting": 4591,
+      "talking": 4180,
+      "fallen_excluded": 29
+    },
+    "7": {
+      "empty": 7439,
+      "standing_walking": 546,
+      "sitting": 12409,
+      "talking": 11312
+    },
+    "8": {
+      "empty": 11682,
+      "standing_walking": 402,
+      "sitting": 7593,
+      "talking": 9325
+    },
+    "9": {
+      "empty": 5640,
+      "standing_walking": 212,
+      "sitting": 8642,
+      "talking": 1756
+    },
+    "10": {
+      "empty": 4279,
+      "standing_walking": 120,
+      "sitting": 5804,
+      "talking": 6050
+    },
+    "11": {
+      "empty": 13788,
+      "standing_walking": 359,
+      "sitting": 14935,
+      "fallen_excluded": 308,
+      "talking": 178
+    },
+    "12": {
+      "empty": 7061,
+      "standing_walking": 278,
+      "sitting": 10888,
+      "talking": 4117
+    },
+    "13": {
+      "empty": 1707,
+      "standing_walking": 145,
+      "sitting": 23865
+    },
+    "14": {
+      "empty": 3963,
+      "standing_walking": 458,
+      "sitting": 21839,
+      "talking": 2744
+    },
+    "15": {
+      "empty": 8002,
+      "standing_walking": 1734,
+      "sitting": 13555,
+      "talking": 9
+    },
+    "16": {
+      "empty": 7957,
+      "standing_walking": 985,
+      "sitting": 21339,
+      "talking": 1425
+    },
+    "17": {
+      "empty": 9821,
+      "standing_walking": 476,
+      "sitting": 12325
+    },
+    "18": {
+      "empty": 10837,
+      "standing_walking": 865,
+      "sitting": 12787,
+      "talking": 3527
+    },
+    "19": {
+      "empty": 5762,
+      "standing_walking": 544,
+      "sitting": 18104,
+      "talking": 3583
+    },
+    "20": {
+      "empty": 12023,
+      "standing_walking": 398,
+      "sitting": 15964,
+      "talking": 3321
+    }
+  }
+}

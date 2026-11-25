@@ -88,6 +88,28 @@ python train_chi_inspired.py `
 
 论文训练方法与 CHI 反馈机制的边界见 `CHI_METHODS.md`。100% 只是优化目标；禁止根据冻结测试集反复调参，也禁止用帧级随机切分制造虚高结果。
 
+## BEHAVE 人体—物体关系辅助模型
+
+`train_behave_relation.py` 从 BEHAVE 官方 30fps SMPL/物体注册参数中抽取坐具接触、倚桌和显示器交互三类。它排除身份形状参数 `betas`，每段序列最多均匀取 48 帧，并按 `SubXX` 做留一参与者评估：
+
+```powershell
+python train_behave_relation.py --config datasets/behave-relation.json
+```
+
+输出保存在 `runs/behave-relation-v1/`。原始数据不进入 Git；`model.joblib` 也保持本地，直至 BEHAVE 数据所有者明确允许衍生权重再分发。该模型依赖 SMPL/物体拟合变换，是关系头实验，不是原始摄像头端到端模型，也不是健康诊断模型。
+
+## Edinburgh Office 跨场景情境实验
+
+`train_office_context.py` 使用 20 天真实办公室真值框训练空房、站/走、坐、交谈四类辅助头。评估采用嵌套的“整位参与者 + 整间办公室留一”，候选选择不能看到外层测试办公室：
+
+```powershell
+python train_office_context.py `
+  --gt-dir ../ccfa-workfiles/datasets/healthverse-expansion/cache/edinburgh-office/GT `
+  --output runs/edinburgh-office-context-v1
+```
+
+本轮结果为 **REJECTED**：Accuracy 0.5814、Macro-F1 0.6050、坐姿 Recall 0.2128，未达到 Accuracy ≥ 0.80、Macro-F1 ≥ 0.80、每类 Recall ≥ 0.50。脚本在门槛失败时不会生成 `model.joblib`；该模型未接入网页。337 个跌倒正例全部来自同一参与者/办公室，因此排除在四类正式指标之外，也不能宣称已经验证跌倒检测。结论是检测框几何本身不足以跨办公室泛化，下一轮必须加入图像、人体姿态或场景标定证据。
+
 ## 浏览器模型导出与一致性验证
 
 通过的 sklearn HGB / RandomForest 会被转换为纯 JSON 树结构，网页在本地计算 456 维特征并执行同一模型。120 个冻结测试样本的 Python 与 JavaScript 预测标签必须完全一致，概率绝对误差小于 `1e-5`：
