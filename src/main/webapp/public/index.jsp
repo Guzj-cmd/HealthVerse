@@ -5,13 +5,31 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="app-context" content="${pageContext.request.contextPath}">
-  <meta name="theme-color" content="#eef4f1">
+  <meta name="theme-color" content="#f3f7fa">
   <link rel="icon" href="data:,">
   <title>HealthVerse · 个人健康 AI 工作台</title>
   <meta name="description" content="一个以视觉感知、空间协同设计和自我实验为核心的个人健康 AI 工作台概念原型。">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/healthverse.css?v=20261126-cool-paper-2">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/healthverse-figure2.css?v=20261126-figure2-rebuild-1">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/healthverse-soft-blue.css?v=20261126-dream-field-1">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/healthverse-spatial.css?v=1">
+  <script type="importmap">{"imports":{"three":"${pageContext.request.contextPath}/assets/vendor/three/build/three.module.js","three/addons/":"${pageContext.request.contextPath}/assets/vendor/three/jsm/"}}</script>
 </head>
 <body>
+  <div id="spatialWorld" aria-hidden="true"></div>
+  <div class="dream-field" aria-hidden="true">
+    <div class="dream-grid"></div>
+    <i class="dream-aura aura-one"></i>
+    <i class="dream-aura aura-two"></i>
+    <i class="dream-aura aura-three"></i>
+    <div class="dream-orbit orbit-one"><span></span><span></span><span></span></div>
+    <div class="dream-orbit orbit-two"><span></span><span></span></div>
+    <div class="dream-ribbon ribbon-one"></div>
+    <div class="dream-ribbon ribbon-two"></div>
+    <span class="dream-node node-person"><i></i></span>
+    <span class="dream-node node-object"><i></i></span>
+    <span class="dream-node node-task"><i></i></span>
+    <span class="dream-node node-time"><i></i></span>
+  </div>
   <div class="app-shell">
     <header class="chrome" aria-label="应用标题栏">
       <div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -29,7 +47,7 @@
       <aside class="sidebar">
         <div class="sidebar-brand">
           <div class="home-glyph" aria-hidden="true"></div>
-          <div><strong>HealthVerse</strong><span>PERSONAL HEALTH AI</span></div>
+          <div><strong>HealthVerse</strong><span>STUDENT WELLBEING</span></div>
         </div>
 
         <nav class="main-nav" aria-label="主功能">
@@ -38,8 +56,7 @@
           <button class="nav-item" data-view="design" type="button"><i class="nav-icon">◇</i><span>环境协同设计</span><em>03</em></button>
           <button class="nav-item" data-view="experiment" type="button"><i class="nav-icon">∿</i><span>健康自我实验</span><em>04</em></button>
           <button class="nav-item" data-view="memory" type="button"><i class="nav-icon">⌘</i><span>个人健康记忆</span><em>05</em></button>
-          <button class="nav-item" data-view="architecture" type="button"><i class="nav-icon">⌬</i><span>Agent 闭环架构</span><em>06</em></button>
-          <button class="nav-item course" data-view="research" type="button"><i class="nav-icon">▤</i><span>课程设计档案</span><em>07</em></button>
+          <button class="nav-item course" data-view="research" type="button"><i class="nav-icon">▤</i><span>课程设计档案</span><em>06</em></button>
         </nav>
 
         <div class="privacy-card">
@@ -52,7 +69,7 @@
       <main class="content" id="mainContent">
         <section class="view active" data-screen="sense" aria-labelledby="senseTitle">
           <div class="screen-head">
-            <div><span class="eyebrow">PAPER-GROUNDED LIVE WORKSPACE</span><h1 id="senseTitle">从情境观察到可撤销验证</h1><p>把人、物体、任务与时机组织成一条可求证、可纠正的空间健康闭环。</p></div>
+            <div><span class="eyebrow">YOUR SPACE TO LEARN & GROW</span><h1 id="senseTitle">让学习空间，更适合你</h1><p>一起看看坐姿、书桌和屏幕，试试更舒服的学习方式。每一步都由你决定。</p></div>
             <div class="status-cluster"><span class="status-pill live"><i></i><span id="visionStatusPill">等待视觉输入</span></span><button class="secondary-btn" id="pauseBtn" type="button" disabled>暂停分析</button></div>
           </div>
 
@@ -274,78 +291,6 @@
           </div>
         </section>
 
-        <section class="view" data-screen="architecture" aria-labelledby="architectureTitle">
-          <div class="screen-head"><div><span class="eyebrow">PAPER-GROUNDED SYSTEM ARCHITECTURE</span><h1 id="architectureTitle">从情境理解到可撤回的个人学习闭环</h1><p>用顶会论文的机制语言重绘 HealthVerse，而不是把“视觉模型＋聊天框”拼在一起。</p></div><button class="secondary-btn" id="downloadArch" type="button">下载 SVG 架构图</button></div>
-          <article class="paper-figure panel">
-            <div class="figure-title"><span>(a)</span><strong>HealthVerse · Self-Evolving Spatial Health Agent</strong><small>概念原型 / paper-grounded redesign</small></div>
-            <svg id="architectureSvg" viewBox="0 0 1480 860" role="img" aria-labelledby="archSvgTitle archSvgDesc">
-              <title id="archSvgTitle">HealthVerse Agent 闭环架构</title>
-              <desc id="archSvgDesc">包含共享视觉感知、BDI 意图模型、反事实协同设计、现实验证和可修正记忆五个阶段。</desc>
-              <defs>
-                <filter id="rough" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" seed="7" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="1.4"/></filter>
-                <filter id="rough2" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="turbulence" baseFrequency="0.009 0.018" numOctaves="2" seed="19" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="2.1"/></filter>
-                <filter id="rough3" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.017" numOctaves="1" seed="31" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="1.8"/></filter>
-                <filter id="rough4" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="turbulence" baseFrequency="0.006 0.02" numOctaves="2" seed="43" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5"/></filter>
-                <marker id="archArrow" markerWidth="12" markerHeight="12" refX="10" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#151515"/></marker>
-                <marker id="archArrowOpen" markerWidth="14" markerHeight="14" refX="11" refY="6" orient="auto"><path d="M1,1 L12,6 L1,11" fill="none" stroke="#151515" stroke-width="2.2"/></marker>
-                <marker id="archArrowWide" markerWidth="16" markerHeight="14" refX="13" refY="6" orient="auto"><path d="M0,0 Q7,6 14,6 Q7,6 0,12 Z" fill="#151515"/></marker>
-                <pattern id="hatchBlue" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M0 10L10 0" stroke="#76a8d8" stroke-width="2" opacity=".45"/></pattern>
-                <pattern id="hatchMint" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M0 10L10 0" stroke="#75b38c" stroke-width="2" opacity=".5"/></pattern>
-              </defs>
-
-              <g class="rough-box panel-blue" filter="url(#rough)"><rect x="20" y="28" width="350" height="770" rx="22"/><rect class="inner-line" x="30" y="38" width="330" height="750" rx="18"/></g>
-              <text class="panel-label" x="40" y="75">(a) Shared Spatial Perception</text>
-              <g class="paper-card observation-card"><rect x="48" y="102" width="294" height="104" rx="16"/><text x="195" y="135">REAL-WORLD OBSERVATION</text><text class="zh" x="195" y="174">人体 · 物体 · 任务 · 时间</text></g>
-              <g class="film-strip" transform="translate(62 232)"><rect width="268" height="112" rx="12"/><rect class="frame" x="12" y="12" width="70" height="72"/><rect class="frame" x="99" y="12" width="70" height="72"/><rect class="frame active" x="186" y="12" width="70" height="72"/><path d="M30 65l16-28 18 28M118 65l16-28 18 28M205 65l16-28 18 28"/><text x="134" y="103">Oₜ₋₂ · Oₜ₋₁ · Oₜ</text></g>
-              <path class="arch-arrow down-a" d="M195 350c-7 18 8 38 0 58"/>
-              <g class="paper-card attention-card"><rect x="48" y="416" width="294" height="135" rx="16"/><text x="195" y="452">JOINT ATTENTION</text><text class="zh" x="195" y="488">指向 / 凝视 / 语言共同定位</text><g class="attention-dots"><circle cx="104" cy="520" r="13"/><circle cx="150" cy="520" r="13"/><circle cx="196" cy="520" r="13"/><path d="M218 520h78"/></g></g>
-              <path class="arch-arrow down-b" d="M195 558c8 18-6 37 0 58"/>
-              <g class="paper-card evidence-card"><rect x="48" y="624" width="294" height="136" rx="16"/><text x="195" y="658">EVIDENCE CARDS</text><text class="zh" x="195" y="696">来源 · 置信度 · 状态 · 有效期</text><g transform="translate(74 716)"><rect width="72" height="26" rx="7"/><rect x="84" width="72" height="26" rx="7"/><rect x="168" width="72" height="26" rx="7"/></g></g>
-
-              <g class="rough-box panel-peach" filter="url(#rough2)"><rect x="397" y="28" width="660" height="352" rx="22"/><rect class="inner-line" x="407" y="38" width="640" height="332" rx="18"/></g>
-              <text class="panel-label" x="420" y="75">(b) BDI Intent Model · Observe → Infer → Confirm</text>
-              <g class="bdi-box belief"><rect x="432" y="108" width="170" height="202" rx="18"/><text x="517" y="140">BELIEF</text><text class="zh" x="517" y="175">我知道什么？</text><text class="small" x="455" y="215">H  身体能力</text><text class="small" x="455" y="246">E  环境状态</text><text class="small" x="455" y="277">R  人–物关系</text></g>
-              <path class="arch-arrow h-a" d="M610 208c22-8 39 7 62 0"/>
-              <g class="bdi-box desire"><rect x="680" y="108" width="170" height="202" rx="18"/><text x="765" y="140">DESIRE</text><text class="zh" x="765" y="175">用户想实现什么？</text><text class="small" x="702" y="222">任务目标</text><text class="small" x="702" y="254">明确限制</text><text class="small" x="702" y="286">用户确认</text></g>
-              <path class="arch-arrow h-b" d="M858 208c18 2 35-7 62 0"/>
-              <g class="bdi-box intention"><rect x="928" y="108" width="96" height="202" rx="18"/><text x="976" y="140">INTENT</text><text class="zh" x="976" y="180">下一步</text><text class="small center" x="976" y="225">提醒</text><text class="small center" x="976" y="257">求证</text><text class="small center" x="976" y="289">静默</text></g>
-              <path class="confirm-loop" d="M976 324c0 36-420 36-420 0"/>
-              <text class="loop-label" x="742" y="355">low confidence → ask first</text>
-
-              <g class="rough-box panel-lilac" filter="url(#rough3)"><rect x="397" y="405" width="660" height="393" rx="22"/><rect class="inner-line" x="407" y="415" width="640" height="373" rx="18"/></g>
-              <text class="panel-label" x="420" y="452">(c) Counterfactual Spatial Co-Design</text>
-              <g class="plan-box plan-a"><rect x="436" y="486" width="170" height="174" rx="16"/><text x="521" y="518">PLAN A</text><path d="M470 616h102M481 552h80v54M520 552v-30"/><rect x="500" y="540" width="40" height="32" fill="url(#hatchBlue)"/><text class="zh" x="521" y="646">仅抬高显示器</text></g>
-              <text class="plus" x="628" y="582">+</text>
-              <g class="plan-box plan-b"><rect x="662" y="486" width="170" height="174" rx="16"/><text x="747" y="518">PLAN B</text><path d="M696 616h102M707 552h80v54M746 552v-30"/><rect x="726" y="540" width="40" height="32" fill="url(#hatchMint)"/><circle cx="785" cy="590" r="12"/><text class="zh" x="747" y="646">显示器＋物品移动</text></g>
-              <path class="arch-arrow h-c" d="M846 576c18-12 44 10 64 0"/>
-              <g class="paper-card compare-card"><rect x="918" y="486" width="106" height="174" rx="16"/><text x="971" y="520">COMPARE</text><text class="small center" x="971" y="558">effort</text><text class="small center" x="971" y="590">comfort</text><text class="small center" x="971" y="622">constraint</text></g>
-              <g class="constraint-note"><rect x="454" y="694" width="552" height="64" rx="14"/><text x="730" y="720">USER CONSTRAINT</text><text class="zh" x="730" y="748">“右侧保留手写区域” · 可拖动 · 可拒绝 · 可撤销</text></g>
-
-              <g class="rough-box panel-yellow" filter="url(#rough4)"><rect x="1084" y="28" width="376" height="770" rx="22"/><rect class="inner-line" x="1094" y="38" width="356" height="750" rx="18"/></g>
-              <text class="panel-label" x="1108" y="75">(d) Verify & Evolve</text>
-              <g class="verify-step step-a"><rect x="1122" y="108" width="300" height="92" rx="16"/><text x="1272" y="140">1 · ACT IN SPACE</text><text class="zh" x="1272" y="176">用户执行选定方案</text></g>
-              <path class="arch-arrow down-c" d="M1272 206c-5 13 7 29 0 48"/>
-              <g class="verify-step step-b"><rect x="1122" y="262" width="300" height="92" rx="16"/><text x="1272" y="294">2 · VISUAL VERIFY</text><text class="zh" x="1272" y="330">同一证据标准检查结果</text></g>
-              <path class="arch-arrow down-d" d="M1272 360c9 14-8 30 0 48"/>
-              <g class="verify-step step-c"><rect x="1122" y="416" width="300" height="112" rx="16"/><text x="1272" y="448">3 · SELF-EXPERIMENT</text><text class="zh" x="1272" y="484">假设 · 干预 · 指标 · 停止条件</text><text class="small center" x="1272" y="510">short-term evidence only</text></g>
-              <path class="arch-arrow down-e" d="M1272 534c-8 16 6 31 0 48"/>
-              <g class="memory-stack"><rect x="1148" y="590" width="244" height="140" rx="18"/><rect x="1136" y="602" width="244" height="140" rx="18"/><rect x="1124" y="614" width="244" height="140" rx="18"/><text x="1246" y="650">REVISABLE MEMORY</text><text class="zh" x="1246" y="688">确认 / 拒绝 / 过期 / 删除</text><g transform="translate(1165 708)"><rect width="50" height="25" rx="7"/><rect x="62" width="62" height="25" rx="7"/><rect x="136" width="58" height="25" rx="7"/></g></g>
-
-              <path class="arch-arrow cross one" d="M370 206h58"/>
-              <path class="arch-arrow cross two" d="M1058 210h54"/>
-              <path class="arch-arrow cross three" d="M1058 602h54"/>
-              <path class="return-loop" d="M1304 780c-80 68-970 72-1086 10"/>
-              <text class="loop-label return" x="760" y="836">user feedback updates evidence and memory — never the base model automatically</text>
-            </svg>
-            <div class="figure-caption"><strong>机制来源：</strong><a href="https://doi.org/10.1145/3706598.3714188" target="_blank" rel="noreferrer">Satori / BDI</a><span>·</span><a href="https://doi.org/10.1145/3772318.3791059" target="_blank" rel="noreferrer">Eye2Eye / 共同注意与可修正记忆</a><span>·</span><a href="https://doi.org/10.1145/3772318.3791551" target="_blank" rel="noreferrer">CASEbot / 自我实验</a><span>·</span><a href="https://doi.org/10.1145/3613904.3642140" target="_blank" rel="noreferrer">RASSAR / 空间证据</a><p>本图为 HealthVerse 重新组织与绘制；术语沿用论文机制，版式与文字均非原图复制。</p></div>
-          </article>
-          <div class="architecture-notes">
-            <article class="panel"><span>核心对象</span><h3>Evidence Card</h3><p>每个判断保存来源、置信度、状态、有效期和纠正历史。</p></article>
-            <article class="panel"><span>主动策略</span><h3>Observe / Ask / Act</h3><p>高置信度给轻量提示；低置信度先求证；高打断成本保持静默。</p></article>
-            <article class="panel"><span>闭环边界</span><h3>Verify before Memory</h3><p>只有现实执行结果和用户确认，才能更新个人模型。</p></article>
-          </div>
-        </section>
-
         <section class="view" data-screen="research" aria-labelledby="researchTitle">
           <div class="screen-head"><div><span class="eyebrow">COURSE DESIGN FILE</span><h1 id="researchTitle">从人物角色到关键任务，一条可评估的设计链</h1><p>课程要求已经落实到三类角色、情境剧本、核心需求与可点击任务路径。</p></div><span class="status-pill complete"><i></i>课程要素已覆盖</span></div>
           <div class="research-stack">
@@ -403,6 +348,7 @@
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="${pageContext.request.contextPath}/assets/js/healthverse.js?v=20261126-cool-paper-2"></script>
+  <script src="${pageContext.request.contextPath}/assets/js/healthverse.js?v=20261126-dream-field-1"></script>
+  <script type="module" src="${pageContext.request.contextPath}/assets/js/healthverse-spatial.js?v=1"></script>
 </body>
 </html>

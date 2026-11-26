@@ -18,13 +18,13 @@ The later user-supplied scientific-method diagram is used only as line-language 
 
 | Role | Token | Value | Meaning |
 |---|---|---:|---|
-| Canvas | `--canvas` | `#F5F7F6` | A-style quiet gray workspace |
+| Canvas | `--canvas` | `#F7F9FF` | quiet pale-blue workspace |
 | Main surface | `--paper` | `#FFFFFF` | A-style white task surface |
-| Perception | `--mist-blue` | `#F1F5F6` | near-white blue-gray input tint |
-| Verification | `--soft-mint` | `#F1F5F6` | legacy token name; same blue-gray paper tint |
-| Constraint | `--warning-yellow` | `#F1F5F6` | legacy token name; same blue-gray paper tint |
-| Ink | `--ink` | `#242B2A` | A-style text and primary buttons |
-| Micro accent | `--orange` | `#9FB3BA` | muted blue-gray focus marker only |
+| Perception | `--mist-blue` | `#EEF4FF` | near-white powder-blue input tint |
+| Verification | `--soft-mint` | `#EEF4FF` | legacy token name; same powder-blue paper tint |
+| Constraint | `--warning-yellow` | `#EEF4FF` | legacy token name; same powder-blue paper tint |
+| Ink | `--ink` | `#8395B4` | light slate-blue text and line work |
+| Micro accent | `--orange` | `#AAB9D5` | pale periwinkle focus marker only |
 
 ## Typography
 

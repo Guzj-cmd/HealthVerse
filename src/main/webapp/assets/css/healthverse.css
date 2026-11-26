@@ -3,7 +3,7 @@
 @import url("https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/lxgwwenkai-bold.css");
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
   --bg: #080c10;
   --shell: #0e171d;
   --chrome: #18232c;
@@ -2873,3 +2873,998 @@ body {
 .agent .consent-note { border-left-color: #9fb3ba; }
 .agent .consent-note span,
 .toast.show { color: #43585f; }
+
+/* Final neutral pass: graphite accents only, with no teal/green interaction color. */
+:root {
+  --mint: #747c7f;
+  --mint-ink: #62696b;
+  --mint-soft: #eef0f0;
+  --mint-dark: #dfe3e4;
+  --orange: #929b9e;
+}
+.eyebrow { color: #6f7779; }
+.status-pill.live,
+.status-pill.complete {
+  border-color: #b9c0c2;
+  background: #f2f4f4;
+  color: #596164;
+}
+.status-pill.live i,
+.status-pill.complete i,
+.pulse-dot,
+.run-dot {
+  background: #7f898c;
+  color: #7f898c;
+  box-shadow: 0 0 0 4px rgba(127,137,140,.09);
+}
+#pauseBtn {
+  border-color: #b9c0c2;
+  background: #fff;
+  color: #596164;
+}
+#pauseBtn:hover { border-color: #8f999c; background: #f2f4f4; color: #3f4749; }
+.privacy-card button,
+.privacy-card button:hover,
+.text-btn {
+  color: #596164;
+  text-decoration-color: #8f999c;
+}
+.card-kicker,
+.reasoning-card .evidence-row b,
+.consent-note span,
+.prompt-box button,
+.metric-card strong.mint,
+.range-label b,
+.compare-head span,
+.compare-controls label b { color: #62696b; }
+
+/* Light-only typography and controls: no black/dark color blocks or text. */
+:root {
+  --ink: #6b7477;
+  --text: #6f787b;
+  --muted: #929a9d;
+  --muted-2: #a3aaac;
+  --line: #b8c0c2;
+}
+body,
+button,
+input,
+textarea,
+select,
+.nav-item,
+.screen-head p,
+.agent,
+.panel,
+.metric-card,
+.privacy-card,
+.source-privacy {
+  color: #737c7f;
+}
+h1,
+h2,
+h3,
+h4,
+strong,
+b,
+.sidebar-brand span,
+.screen-head h1,
+.agent-title h2,
+.reasoning-card h3,
+.plan-card strong {
+  color: #677174;
+}
+.primary-btn,
+.primary-btn:hover {
+  border-color: #b4bdc0;
+  background: #e9edef;
+  color: #657073;
+  box-shadow: none;
+}
+.secondary-btn,
+.quiet-btn,
+.icon-btn,
+#pauseBtn {
+  border-color: #c0c7c9;
+  background: #fafbfb;
+  color: #737c7f;
+}
+.status-pill.live,
+.status-pill.complete,
+.toast,
+.agent .consent-note,
+.vision-hud span {
+  color: #737c7f;
+}
+
+/* Agent column follows the same light-pencil hierarchy. */
+body,
+button,
+input,
+textarea,
+select,
+.agent,
+.reasoning-card,
+.reasoning-card p,
+.evidence-row,
+.interrupt-note,
+.correction-row,
+.consent-note p,
+.prompt-box input,
+.prompt-box input::placeholder {
+  color: #8a9396;
+}
+h1,
+h2,
+h3,
+h4,
+strong,
+b,
+.screen-head h1,
+.agent-title h2,
+.reasoning-card h3,
+.method-panel-label strong {
+  color: #788285;
+}
+.agent-orb {
+  border-color: #b9c1c4;
+  background: #edf1f2;
+  box-shadow: 0 0 0 6px rgba(185,193,196,.10);
+}
+.reasoning-card,
+.model-evidence,
+.agent .correction-row button,
+.prompt-box,
+.agent .consent-note,
+.primary-btn,
+.secondary-btn {
+  border-color: #c3cacc;
+}
+.agent .correction-row button,
+.prompt-box,
+.prompt-box input,
+.agent .consent-note,
+.primary-btn,
+.secondary-btn {
+  background: #fafbfb;
+}
+.primary-btn,
+.primary-btn:hover {
+  background: #edf0f1;
+  color: #747e81;
+}
+.confidence { border-color: #bcc4c6; }
+.confidence i { background: #b1babd; }
+
+/* Coherent pastel system: powder blue + pale lavender + white paper.
+   No green, yellow, or dark filled surfaces. */
+:root {
+  --canvas: #f7f8fc;
+  --paper: #ffffff;
+  --mist-blue: #edf3f8;
+  --soft-peach: #f0eff8;
+  --soft-mint: #edf3f8;
+  --warning-yellow: #edf3f8;
+  --pale-lilac: #f0eff8;
+  --ink: #66748c;
+  --text: #718098;
+  --muted: #919caf;
+  --muted-2: #a8b0bf;
+  --line: #bdc8d6;
+  --mint: #8797b0;
+  --mint-ink: #7888a2;
+  --mint-soft: #edf1f7;
+  --mint-dark: #dbe4ee;
+  --orange: #9aa8be;
+}
+body {
+  color: #748198;
+  background:
+    radial-gradient(circle at 100% 0, rgba(227,232,246,.58), transparent 30rem),
+    var(--canvas);
+}
+.content { background-color: #fbfcfe; }
+body,
+button,
+input,
+textarea,
+select,
+.agent,
+.reasoning-card,
+.reasoning-card p,
+.evidence-row,
+.interrupt-note,
+.correction-row,
+.consent-note p,
+.prompt-box input,
+.prompt-box input::placeholder,
+.nav-item,
+.screen-head p,
+.source-privacy {
+  color: #7f8ba0;
+}
+h1,
+h2,
+h3,
+h4,
+strong,
+b,
+.screen-head h1,
+.agent-title h2,
+.reasoning-card h3,
+.method-panel-label strong,
+.sidebar-brand span,
+.plan-card strong {
+  color: #68768f;
+}
+.eyebrow,
+.card-kicker,
+.reasoning-card .evidence-row b,
+.consent-note span,
+.prompt-box button,
+.privacy-card button,
+.text-btn {
+  color: #8090aa;
+  text-decoration-color: #aab7ca;
+}
+.panel,
+.camera-card,
+.agent,
+.reasoning-card,
+.model-evidence,
+.privacy-card,
+.metric-card,
+.plan-card,
+.constraint,
+.prompt-box,
+.agent .correction-row button {
+  border-color: #c1cbd8;
+}
+.reasoning-card,
+.privacy-card,
+.prompt-box,
+.agent .correction-row button { background: #fbfcff; }
+.model-evidence,
+.vision-hud span,
+.plan-card,
+.plan-card:nth-of-type(2n),
+.plan-card:nth-of-type(3n),
+.plan-card.active,
+.constraint { background: #edf3f8 !important; }
+.agent-orb {
+  border-color: #b8c5d6;
+  background: #e5edf6;
+  box-shadow: 0 0 0 6px rgba(216,226,239,.34);
+}
+.status-pill.live,
+.status-pill.complete,
+.toast,
+.agent .consent-note {
+  border-color: #c0c8da;
+  background: #f0eff8;
+  color: #7c879e;
+}
+.status-pill.live i,
+.status-pill.complete i,
+.pulse-dot,
+.run-dot,
+.confidence i {
+  background: #a7b5ca;
+  box-shadow: 0 0 0 4px rgba(167,181,202,.12);
+}
+.primary-btn,
+.primary-btn:hover {
+  border-color: #b9c6d7;
+  background: #e2ebf5;
+  color: #718099;
+}
+.secondary-btn,
+.secondary-btn:hover,
+.quiet-btn,
+.icon-btn,
+#pauseBtn,
+#pauseBtn:hover {
+  border-color: #c0cad8;
+  background: #fafcff;
+  color: #7a879c;
+}
+.window-dots i:nth-child(1) { background: #dce6f2; }
+.window-dots i:nth-child(2) { background: #e4e2f1; }
+.window-dots i:nth-child(3) { background: #ccd9e8; }
+
+/* Pastel typography is built from light mist-blue, not dark gray tinted down. */
+.app-shell :where(p, span, small, em, label, button, input, textarea, a, li) {
+  color: #a0aabb;
+}
+.app-shell :where(h1, h2, h3, h4, strong, b) {
+  color: #8d99ac;
+}
+.app-shell :where(.eyebrow, .card-kicker, .text-btn, .privacy-card button, .prompt-box button) {
+  color: #98a5b9;
+  text-decoration-color: #bdc7d6;
+}
+.app-shell input::placeholder { color: #b2bac7; }
+.primary-btn,
+.primary-btn:hover,
+.secondary-btn,
+.secondary-btn:hover,
+.quiet-btn,
+.icon-btn,
+#pauseBtn,
+#pauseBtn:hover {
+  color: #96a2b4;
+}
+.primary-btn,
+.primary-btn:hover { background: #eef3f8; }
+
+/* Final hue: true pale blue (B clearly higher than G), never cyan/green. */
+:root {
+  --canvas: #f7f9ff;
+  --paper: #ffffff;
+  --mist-blue: #eef4ff;
+  --soft-peach: #f2f3ff;
+  --soft-mint: #eef4ff;
+  --warning-yellow: #eef4ff;
+  --pale-lilac: #f2f3ff;
+  --ink: #8395b4;
+  --text: #8e9fbb;
+  --muted: #a6b2c7;
+  --muted-2: #b8c1d1;
+  --line: #cbd7e8;
+  --mint: #9badd0;
+  --mint-ink: #8da1c4;
+  --mint-soft: #eef4ff;
+  --mint-dark: #dce7f7;
+  --orange: #aab9d5;
+}
+body {
+  background:
+    radial-gradient(circle at 100% 0, rgba(224,232,250,.60), transparent 30rem),
+    var(--canvas);
+}
+.content { background-color: #fbfcff; }
+.app-shell :where(p, span, small, em, label, button, input, textarea, a, li) {
+  color: #9aa9c1;
+}
+.app-shell :where(h1, h2, h3, h4, strong, b) {
+  color: #8496b4;
+}
+.app-shell :where(.eyebrow, .card-kicker, .text-btn, .privacy-card button, .prompt-box button) {
+  color: #91a4c4;
+  text-decoration-color: #c2cfe4;
+}
+.panel,
+.camera-card,
+.agent,
+.reasoning-card,
+.model-evidence,
+.privacy-card,
+.metric-card,
+.plan-card,
+.constraint,
+.prompt-box,
+.agent .correction-row button {
+  border-color: #cad6e7;
+}
+.model-evidence,
+.vision-hud span,
+.plan-card,
+.plan-card:nth-of-type(2n),
+.plan-card:nth-of-type(3n),
+.plan-card.active,
+.constraint,
+.primary-btn,
+.primary-btn:hover {
+  background: #eef4ff !important;
+}
+.status-pill.live,
+.status-pill.complete,
+.toast,
+.agent .consent-note {
+  border-color: #cad5e7;
+  background: #f2f3ff;
+  color: #95a3bc;
+}
+.agent-orb {
+  border-color: #c1cde0;
+  background: #e7effc;
+  box-shadow: 0 0 0 6px rgba(221,231,248,.42);
+}
+.status-pill.live i,
+.status-pill.complete i,
+.pulse-dot,
+.run-dot,
+.confidence i {
+  background: #a8b8d4;
+  box-shadow: 0 0 0 4px rgba(168,184,212,.13);
+}
+.primary-btn,
+.primary-btn:hover,
+.secondary-btn,
+.secondary-btn:hover,
+.quiet-btn,
+.icon-btn,
+#pauseBtn,
+#pauseBtn:hover {
+  border-color: #c5d1e4;
+  color: #91a2bf;
+}
+.secondary-btn,
+.secondary-btn:hover,
+.quiet-btn,
+.icon-btn,
+#pauseBtn,
+#pauseBtn:hover { background: #fbfcff; }
+.window-dots i:nth-child(1) { background: #dce7f8; }
+.window-dots i:nth-child(2) { background: #e7e8fb; }
+.window-dots i:nth-child(3) { background: #cfddf2; }
+
+/* Light-blue pencil outlines across all authored UI artwork. */
+.app-shell :where(button, input, .panel, .camera-card, .agent, .reasoning-card, .model-evidence,
+  .privacy-card, .metric-card, .plan-card, .constraint, .prompt-box, .impact-chips span,
+  .angle-badge, .segmented, .compare, .compare-scene) {
+  border-color: #c5d1e4;
+}
+.app-shell svg :where(path, rect, circle, line, polyline, polygon) {
+  stroke: #9fb1cc;
+}
+.app-shell svg :where(text, tspan) {
+  fill: #91a3c0;
+}
+.compare-head { border-color: #c5d1e4; }
+.segmented button.active {
+  border-color: #b9c7dc;
+  background: #eef4ff;
+  color: #91a2bf;
+}
+.mini-person i,
+.mini-person b,
+.mini-person em,
+.mini-desk,
+.mini-monitor,
+.mini-cup,
+.ghost-monitor {
+  border-color: #b8c6dc;
+  outline-color: #b8c6dc;
+}
+.mini-person i { background: #f2f6ff; }
+.mini-person b,
+.mini-person em { background: #e5eefb; }
+.mini-desk { background: #dce7f6; }
+.mini-desk::before,
+.mini-desk::after { background: #c6d4e8; }
+.mini-monitor { border-color: #aebfd8; background: #f8fbff; }
+.mini-monitor::after { background: #b8c9df; }
+.mini-cup { background: #e9f0fb; }
+.compare-scene::after {
+  border-color: #b8c6dc;
+  background: #dce7f6;
+  box-shadow: 0 150px 0 -3px #c6d4e8;
+}
+.status-pill,
+.status-pill:nth-child(2n),
+.status-pill.live,
+.status-pill.complete {
+  border-color: #c5d1e4;
+  background: #f2f5fb;
+  color: #95a4bd;
+}
+.impact-chips span,
+.angle-badge,
+.segmented,
+.segmented button.active,
+.compare-scene,
+.compare-head {
+  border-color: #c2cfe2;
+}
+.impact-chips span,
+.impact-chips span.good,
+.angle-badge,
+.segmented,
+.segmented button.active {
+  background: #f4f7fd;
+  color: #96a5bd;
+}
+.compare-controls input[type="range"],
+.range-label input[type="range"] {
+  color-scheme: light;
+  accent-color: #a6b8d8;
+}
+.app-shell button,
+.app-shell .source-button,
+.app-shell .toolbar-chip,
+.app-shell .correction-row button,
+.app-shell .impact-chips span {
+  border-color: #c5d1e4 !important;
+}
+.pulse-dot,
+.run-dot {
+  border-color: #c1cee1;
+  background: #a8b8d4;
+}
+.plan-card.active {
+  border-color: #b8c6dc;
+  box-shadow: inset 5px 0 #b7c7df, 3px 4px 0 rgba(177,193,216,.12);
+}
+.compare-controls input[type="range"],
+.range-label input[type="range"] {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 6px;
+  border: 0;
+  border-radius: 999px;
+  background: #dce6f5;
+}
+.compare-controls input[type="range"]::-webkit-slider-thumb,
+.range-label input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f8fbff;
+  border-radius: 50%;
+  background: #a6b8d8;
+  box-shadow: 0 1px 3px rgba(145,164,195,.18);
+}
+.compare-controls input[type="range"]::-moz-range-track,
+.range-label input[type="range"]::-moz-range-track {
+  height: 6px;
+  border: 0;
+  border-radius: 999px;
+  background: #dce6f5;
+}
+.compare-controls input[type="range"]::-moz-range-thumb,
+.range-label input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #f8fbff;
+  border-radius: 50%;
+  background: #a6b8d8;
+}
+
+/* Balanced final hierarchy: pale blue surfaces, neutral readable type. */
+:root {
+  --ink: #5f6873;
+  --text: #707985;
+  --muted: #8c949f;
+  --muted-2: #a3aab3;
+}
+.app-shell :where(p, span, small, em, label, button, input, textarea, a, li) {
+  color: #7a838e;
+}
+.app-shell :where(h1, h2, h3, h4, strong, b) {
+  color: #5f6975;
+}
+.app-shell :where(.eyebrow, .card-kicker, .text-btn, .privacy-card button, .prompt-box button) {
+  color: #8297b6;
+  text-decoration-color: #b9c7dc;
+}
+.primary-btn,
+.primary-btn:hover {
+  background: #eaf1fb !important;
+  color: #67778e;
+}
+.secondary-btn,
+.secondary-btn:hover,
+.quiet-btn,
+.icon-btn,
+#pauseBtn,
+#pauseBtn:hover {
+  background: #ffffff;
+  color: #6f7987;
+}
+.status-pill,
+.status-pill.live,
+.status-pill.complete,
+.toast,
+.agent .consent-note {
+  color: #6f7c90;
+}
+
+/* CapeFormer Figure 2 palette — near-white paper with continuous mist-blue stages. */
+:root {
+  /* Sampled directly from the supplied CapeFormer Figure 2 screenshot. */
+  --cape-paper: #fefffe;
+  --cape-canvas: #f2f8fe;
+  --cape-stage: #f2f8fe;
+  --cape-module: #dae6f4;
+  --cape-stage-soft: #f2f8fe;
+  --cape-stage-lilac: #f6eef7;
+  --cape-line: #a1adbe;
+  --cape-line-soft: #dae6f4;
+  --cape-ink: #5c6577;
+  --cape-muted: #a7b0c0;
+  --bg: var(--cape-canvas);
+  --shell: var(--cape-paper);
+  --chrome: var(--cape-stage);
+  --sidebar: var(--cape-stage-soft);
+  --surface: var(--cape-stage);
+  --surface-2: var(--cape-stage);
+  --surface-3: var(--cape-stage-lilac);
+  --text: var(--cape-ink);
+  --muted: var(--cape-muted);
+  --line: var(--cape-line);
+}
+
+html { background: var(--cape-canvas); }
+
+body {
+  background:
+    linear-gradient(90deg,
+      rgba(242, 248, 254, .78) 0 18%,
+      transparent 18% 19%,
+      rgba(218, 230, 244, .34) 19% 77%,
+      transparent 77% 78%,
+      rgba(246, 238, 247, .52) 78% 100%),
+    linear-gradient(180deg, #fefffe 0%, #f2f8fe 100%);
+  color: var(--cape-ink);
+}
+
+.app-shell {
+  border-color: var(--cape-line);
+  background: rgba(254, 255, 254, .96);
+  box-shadow: 0 18px 52px rgba(161, 173, 190, .13);
+}
+
+.chrome {
+  border-color: var(--cape-line);
+  background: rgba(242, 248, 254, .96);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, .88);
+}
+
+.sidebar {
+  border-color: var(--cape-line);
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.30), transparent 82%),
+    var(--cape-stage-soft);
+}
+
+.content {
+  background:
+    linear-gradient(90deg,
+      rgba(242,248,254,.72) 0 66%,
+      rgba(246,238,247,.42) 66% 100%),
+    var(--cape-paper);
+}
+
+.panel,
+.camera-card,
+.agent,
+.body-visual,
+.calibration,
+.plan-list,
+.compare,
+.experiment-main,
+.experiment-side,
+.graph,
+.memory-list,
+.section-block,
+.metric-card,
+.paper-figure {
+  border-color: var(--cape-line) !important;
+  background: var(--cape-stage) !important;
+  box-shadow: 0 8px 22px rgba(161, 173, 190, .10);
+}
+
+.agent,
+.experiment-side,
+.graph,
+.research-stack .section-block:nth-child(2),
+.research-stack .section-block:nth-child(4) {
+  background: var(--cape-stage-lilac) !important;
+}
+
+.metric-card:nth-child(1),
+.metric-card:nth-child(2),
+.metric-card:nth-child(3),
+.architecture-notes article:nth-child(1),
+.architecture-notes article:nth-child(2),
+.architecture-notes article:nth-child(3),
+.principle-grid article:nth-child(1),
+.principle-grid article:nth-child(2),
+.principle-grid article:nth-child(3),
+.principle-grid article:nth-child(4) {
+  background: var(--cape-module) !important;
+  border-color: var(--cape-line) !important;
+}
+
+.app-shell :where(p, span, small, em, label, button, input, textarea, a, li) {
+  color: var(--cape-muted);
+}
+
+.app-shell :where(h1, h2, h3, h4, strong, b) {
+  color: var(--cape-ink);
+}
+
+.app-shell :where(.eyebrow, .card-kicker, .text-btn, .privacy-card button, .prompt-box button) {
+  color: var(--cape-ink);
+  text-decoration-color: var(--cape-line);
+}
+
+.camera-card::before,
+.agent::before,
+.body-visual::before,
+.calibration::before,
+.plan-list::before,
+.compare::before,
+.experiment-main::before,
+.experiment-side::before,
+.graph::before,
+.memory-list::before,
+.section-block::before,
+.paper-figure::before,
+.camera-card::after,
+.agent::after,
+.body-visual::after,
+.calibration::after,
+.compare::after,
+.experiment-main::after,
+.graph::after,
+.section-block::after {
+  border-color: var(--cape-line);
+  opacity: .34;
+}
+
+/* Full-page Figure 2 hierarchy: paper -> stage -> module -> evidence. */
+body { background: var(--cape-paper); }
+
+.app-shell {
+  margin: 10px auto;
+  border: 1px solid var(--cape-line);
+  border-radius: 22px 18px 20px 16px;
+  background: var(--cape-paper);
+  box-shadow: none;
+}
+
+.chrome {
+  min-height: 66px;
+  border-bottom: 1px solid var(--cape-line);
+  background: var(--cape-stage);
+  box-shadow: none;
+}
+
+.sidebar {
+  border-right: 1px solid var(--cape-line);
+  background: var(--cape-stage);
+}
+
+.content { background: var(--cape-paper); }
+
+.window-dots i,
+.brand-mark span,
+.pulse-dot,
+.run-dot,
+.status-pill i,
+.status-pill.live i,
+.status-pill.complete i {
+  border-color: var(--cape-line);
+  background: var(--cape-module);
+  box-shadow: none;
+}
+
+.window-dots i:nth-child(2) { background: var(--cape-stage-lilac); }
+.window-dots i:nth-child(3) { background: var(--cape-stage); }
+.brand-mark::before,
+.home-glyph,
+.home-glyph::before { border-color: var(--cape-line); }
+
+.nav-item,
+.nav-item:nth-child(2n),
+.nav-item:nth-child(3n) {
+  border-width: 1px;
+  border-color: transparent;
+  color: var(--cape-ink);
+}
+
+.nav-item:hover,
+.nav-item.active {
+  border: 1px solid var(--cape-line);
+  background: var(--cape-module);
+  color: var(--cape-ink);
+  box-shadow: none;
+}
+
+.nav-item .nav-icon,
+.nav-item.active .nav-icon,
+.nav-item em,
+.nav-item.active em { color: var(--cape-muted); }
+
+.privacy-card,
+.status-pill,
+.status-pill:nth-child(2n),
+.status-pill.live,
+.status-pill.complete {
+  border-width: 1px;
+  border-color: var(--cape-line);
+  background: var(--cape-stage);
+  color: var(--cape-ink);
+  box-shadow: none;
+}
+
+.panel,
+.camera-card,
+.agent,
+.body-visual,
+.calibration,
+.plan-list,
+.compare,
+.experiment-main,
+.experiment-side,
+.graph,
+.memory-list,
+.section-block,
+.paper-figure {
+  border-width: 1px;
+  border-color: var(--cape-line) !important;
+  background: var(--cape-stage) !important;
+  box-shadow: none;
+}
+
+.agent,
+.experiment-side,
+.graph,
+.research-stack .section-block:nth-child(2),
+.research-stack .section-block:nth-child(4) {
+  background: var(--cape-stage) !important;
+}
+
+.camera-toolbar,
+.reasoning-card,
+.model-evidence,
+.consent-note,
+.prompt-box,
+.cal-step,
+.plan-card,
+.constraint,
+.compare-head,
+.compare-controls,
+.experiment-top,
+.experiment-note,
+.memory-item,
+.persona-card,
+.storyboard article,
+.needs,
+.task-flow button,
+.architecture-notes article,
+.principle-grid article,
+.modal {
+  border-color: var(--cape-line) !important;
+  background: var(--cape-paper) !important;
+  box-shadow: none !important;
+}
+
+.metric-card,
+.metric-card:nth-child(1),
+.metric-card:nth-child(2),
+.metric-card:nth-child(3),
+.metric-card:nth-child(4),
+.metric-card:nth-child(5),
+.metric-card:nth-child(6) {
+  border-width: 1px;
+  border-color: var(--cape-line) !important;
+  background: var(--cape-module) !important;
+  box-shadow: none;
+}
+
+.primary-btn,
+.primary-btn:hover,
+.segmented button.active,
+.toolbar-chip.active,
+.plan-card.active,
+.cal-step.active,
+.storyboard article.active,
+.task-flow button:hover,
+.impact-chips span.good,
+.toggle.on {
+  border-color: var(--cape-line) !important;
+  background: var(--cape-module) !important;
+  color: var(--cape-ink) !important;
+  box-shadow: none !important;
+}
+
+.secondary-btn,
+.secondary-btn:hover,
+.quiet-btn,
+.quiet-btn:hover,
+.icon-btn,
+.icon-btn:hover,
+.toolbar-chip,
+.text-btn,
+.segmented,
+.impact-chips span,
+.angle-badge,
+.agent .correction-row button,
+.metric-card button,
+.delete-memory {
+  border-color: var(--cape-line) !important;
+  background: var(--cape-paper) !important;
+  color: var(--cape-ink) !important;
+  box-shadow: none !important;
+}
+
+.agent-orb,
+.story-icon,
+.cal-step i,
+.experiment-side li i,
+.toggle,
+.toggle i {
+  border-color: var(--cape-line);
+  background: var(--cape-module);
+  color: var(--cape-ink);
+  box-shadow: none;
+}
+
+.confidence,
+.bar-group > div,
+.compare-controls input[type="range"],
+.range-label input[type="range"] { background: var(--cape-module); }
+
+.confidence i,
+.bar-group i,
+.bar-group .candidate i {
+  background: var(--cape-line);
+}
+
+.scene,
+.body-stage,
+.compare-scene {
+  border-color: var(--cape-line);
+  background-color: var(--cape-stage);
+}
+
+.scene-caption,
+.object-tag,
+.object-tag.warning,
+.axis-note,
+.angle-badge {
+  border-color: var(--cape-line);
+  background: rgba(254, 255, 254, .94);
+  color: var(--cape-ink);
+  box-shadow: none;
+}
+
+.scene svg .skeleton,
+.scene svg .skeleton.accent,
+.scene svg > path:nth-last-of-type(2),
+.scene svg > path:last-of-type { stroke: var(--cape-line) !important; }
+.scene svg .joints { fill: var(--cape-module) !important; stroke: var(--cape-line); }
+.scanline { background: linear-gradient(180deg, transparent, rgba(218,230,244,.20), transparent); }
+
+.camera-card::before,
+.agent::before,
+.body-visual::before,
+.calibration::before,
+.plan-list::before,
+.compare::before,
+.experiment-main::before,
+.experiment-side::before,
+.graph::before,
+.memory-list::before,
+.section-block::before,
+.paper-figure::before {
+  border-width: 1px;
+  border-color: var(--cape-line);
+  opacity: .18;
+}
+
+.camera-card::after,
+.agent::after,
+.body-visual::after,
+.calibration::after,
+.compare::after,
+.experiment-main::after,
+.graph::after,
+.section-block::after { display: none; }
+
+#architectureSvg {
+  border-color: var(--cape-line);
+  background: var(--cape-paper);
+}
+#architectureSvg .panel-blue > rect:first-child,
+#architectureSvg .panel-peach > rect:first-child,
+#architectureSvg .panel-yellow > rect:first-child { fill: var(--cape-stage); }
+#architectureSvg .panel-lilac > rect:first-child { fill: var(--cape-stage-lilac); }
+#architectureSvg .paper-card > rect,
+#architectureSvg .bdi-box > rect,
+#architectureSvg .plan-box > rect,
+#architectureSvg .compare-card > rect,
+#architectureSvg .verify-step > rect,
+#architectureSvg .constraint-note > rect { fill: var(--cape-paper); stroke: var(--cape-line); }

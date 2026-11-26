@@ -1,0 +1,43 @@
+/* Full viewport WebGL world, with accessible HTML surfaces at different depths. */
+#spatialWorld{position:fixed;inset:0;z-index:0;pointer-events:none;background:#eaf2ff}
+#spatialWorld canvas{display:block;width:100%;height:100%}
+.spatial-ready .dream-field{display:none}
+.spatial-ready .app-shell,.spatial-ready .workspace,.spatial-ready .content{background:transparent}
+.spatial-ready .content{padding:32px 36px 60px;perspective:1800px}
+.spatial-ready .chrome{background:rgba(246,250,255,.9);border-bottom:1px solid #fff;box-shadow:0 10px 50px #477cc51a}
+.spatial-ready .sidebar{background:linear-gradient(120deg,#ffffffd9,#eaf3ffb8);backdrop-filter:blur(18px);box-shadow:12px 0 50px #507dcc13}
+.spatial-ready .panel{background:linear-gradient(135deg,#f4f8fff5,#cfe1fff0);border:1px solid #f3f8ff;border-radius:26px;box-shadow:0 22px 45px #3c70bd38,inset 0 2px 0 #fff,0 3px 0 #a5c2f0;transform:rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg));transition:transform .45s ease,box-shadow .45s ease;backdrop-filter:blur(12px)}
+.spatial-ready .panel:hover{box-shadow:0 28px 60px #517cbd30,inset 0 2px 0 #fff,0 3px 0 #bdcff080}
+.spatial-ready .camera-card,.spatial-ready .body-visual,.spatial-ready .compare{background:transparent;backdrop-filter:none;transform:none;overflow:hidden}
+.spatial-ready .camera-toolbar,.spatial-ready .source-controls,.spatial-ready .method-panel-label,.spatial-ready .compare-head,.spatial-ready .compare-controls,.spatial-ready .compare-footer,.spatial-ready .stage-legend{background:rgba(222,235,255,.96)}
+.spatial-ready .scene,.spatial-ready #scenePlaceholder,.spatial-ready .body-stage,.spatial-ready .compare-scene{background:transparent!important;backdrop-filter:none;isolation:auto}
+.spatial-ready #scenePlaceholder{height:540px;position:relative}
+.spatial-ready #scenePlaceholder>svg,.spatial-ready #scenePlaceholder>.scanline,.spatial-ready #scenePlaceholder>.object-tag,.spatial-ready .body-avatar,.spatial-ready .reach-field,.spatial-ready .axis-note,.spatial-ready .compare-scene>.mini-person,.spatial-ready .compare-scene>.mini-desk,.spatial-ready .compare-scene>.mini-monitor,.spatial-ready .compare-scene>.mini-cup,.spatial-ready .compare-scene>.sightline,.spatial-ready .compare-scene>.ghost-monitor,.spatial-ready .compare-scene>.angle-badge{display:none!important}
+.spatial-slot{position:relative;min-height:460px;touch-action:pan-y;cursor:grab}
+.spatial-slot:active{cursor:grabbing}
+.spatial-tools{position:absolute;top:18px;left:18px;right:18px;display:flex;gap:6px;align-items:center;z-index:3;font-size:12px;pointer-events:auto}
+.spatial-tools>span{margin-right:auto;padding:8px 12px;color:#5675b5;background:#f8fbffde;border-radius:30px}
+.spatial-tools button{border:1px solid #fff;background:#f7fbffec;color:#315fae;border-radius:20px;padding:7px 12px;box-shadow:0 5px 12px #749ad022}
+.spatial-hint{position:absolute;left:20px;bottom:22px;z-index:2;font-size:12px;color:#4770b5;background:#f4f8ffdb;padding:8px 12px;border:1px solid white;border-radius:30px;pointer-events:none}
+.spatial-model-status{position:absolute;right:20px;bottom:60px;color:#6281b6;font-size:11px;z-index:2}
+.spatial-ready .scene-caption{position:relative;background:#f6faffee;border:0;border-top:1px solid white;bottom:auto;left:auto;right:auto;border-radius:0}
+.spatial-ready .agent-orb{background:radial-gradient(circle at 30% 20%,#fff,#aac9ff 38%,#5987eb 80%);box-shadow:inset -3px -5px 8px #3b66c35c,0 8px 18px #6998f447;animation:none}
+.spatial-ready .nav-item{border-radius:16px;transition:transform .3s,background .3s,box-shadow .3s}
+.spatial-ready .nav-item:hover{transform:translate3d(4px,-2px,0);background:#ffffffce;box-shadow:0 10px 20px #7296d221}
+.spatial-ready .nav-item.active{background:linear-gradient(135deg,#fff,#d9e8ff);box-shadow:0 8px 20px #7296d22b,inset 0 1px white;color:#416bd0}
+.spatial-ready .primary-btn{background:linear-gradient(135deg,#83acff,#5b88ed);border:1px solid #b9d2ff;box-shadow:inset 0 1px #e3edff,0 5px 0 #5279c9,0 12px 22px #6694e73d;transition:transform .25s}
+.spatial-ready .primary-btn:hover{transform:translateY(-2px)}
+.spatial-ready .primary-btn:active{transform:translateY(2px)}
+.spatial-ready .screen-head h1{letter-spacing:.01em;color:#36558f;text-shadow:0 2px white}
+.spatial-ready .metric-card,.spatial-ready .method-stage{background:linear-gradient(135deg,#fff,#eaf3ffdd);box-shadow:0 12px 24px #6286bf1c,inset 0 1px white;border:1px solid white}
+.spatial-ready .method-loop-map{background:#dbeaff45;border:1px solid #ffffff8c;backdrop-filter:blur(6px)}
+.spatial-ready .method-flow-arrow{transform:none!important;filter:drop-shadow(0 3px 2px #b6cdf3)}
+.graph-node text{text-anchor:middle;transform:none;font-size:15px}
+.graph-node.main text{font-size:17px}
+.graph-node circle{filter:drop-shadow(0 8px 8px #638ed027)}
+.spatial-tools{flex-wrap:wrap}
+.spatial-tools button{font-size:12px}
+.spatial-ready .body-stage{height:520px}.spatial-ready .compare-scene{height:500px}
+.spatial-unavailable #spatialWorld{display:none}
+@media(max-width:1000px){.spatial-ready .content{padding:24px 16px}.spatial-tools>span{display:none}.spatial-ready #scenePlaceholder{height:430px}.spatial-slot{min-height:380px}}
+@media(prefers-reduced-motion:reduce){.spatial-ready .panel{transform:none!important;transition:none}.spatial-ready .nav-item{transition:none}}

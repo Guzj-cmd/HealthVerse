@@ -11,7 +11,6 @@
     design: '环境协同设计',
     experiment: '健康自我实验',
     memory: '个人健康记忆',
-    architecture: 'Agent 闭环架构',
     research: '课程设计档案'
   };
 
@@ -420,7 +419,7 @@
       const boxWidth = item.box.width * width;
       const boxHeight = item.box.height * height;
       const label = `${item.label} ${Math.round(item.score * 100)}%`;
-      context.strokeStyle = index % 2 ? '#8b819e' : '#6f8992';
+      context.strokeStyle = index % 2 ? '#a69bc1' : '#91a9d0';
       context.fillStyle = 'rgba(251, 248, 241, .92)';
       context.lineWidth = Math.max(2, width / 500);
       context.setLineDash(index % 2 ? [9, 5] : [15, 4, 3, 4]);
@@ -571,7 +570,7 @@
 
     context.lineCap = 'round';
     context.lineJoin = 'round';
-    context.strokeStyle = '#6f8992';
+    context.strokeStyle = '#91a9d0';
     context.fillStyle = '#fbf8f1';
     context.lineWidth = Math.max(3, width / 360);
     POSE_CONNECTIONS.forEach(([from, to]) => {
@@ -884,7 +883,6 @@
     { view: 'design', message: '第 2 步：比较多个方案，用户仍可拖动参数。' },
     { view: 'experiment', message: '第 3 步：用短时自我实验验证哪种方案更适合。' },
     { view: 'memory', message: '第 4 步：只在用户确认后更新个人健康记忆。' },
-    { view: 'architecture', message: '第 5 步：查看从感知、意图到验证与记忆的完整 Agent 闭环。' },
     { view: 'research', message: '最后：查看人物角色、情境剧本和关键任务路径。' }
   ];
 
@@ -1533,20 +1531,6 @@
     }, 900);
   });
 
-  $('#downloadArch')?.addEventListener('click', () => {
-    const svg = $('#architectureSvg');
-    if (!svg) return;
-    const source = new XMLSerializer().serializeToString(svg);
-    const blob = new Blob([`<?xml version="1.0" encoding="UTF-8"?>\n${source}`], { type: 'image/svg+xml;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'healthverse-agent-architecture.svg';
-    link.click();
-    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-    toast('架构图 SVG 已生成，可继续在 Figma 或 Illustrator 中编辑。');
-  });
-
   modalClose?.addEventListener('click', closeModal);
   modalBackdrop?.addEventListener('click', (event) => {
     if (event.target === modalBackdrop) closeModal();
@@ -1658,6 +1642,31 @@
     window.clearInterval(state.storyboardHandle);
   });
 
+  function initializeDreamField() {
+    const field = $('.dream-field');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (!field || reducedMotion.matches) return;
+    let frame = 0;
+    let targetX = 0;
+    let targetY = 0;
+    const render = () => {
+      frame = 0;
+      document.documentElement.style.setProperty('--dream-x', targetX.toFixed(3));
+      document.documentElement.style.setProperty('--dream-y', targetY.toFixed(3));
+    };
+    window.addEventListener('pointermove', (event) => {
+      targetX = (event.clientX / Math.max(window.innerWidth, 1) - .5) * 2;
+      targetY = (event.clientY / Math.max(window.innerHeight, 1) - .5) * 2;
+      if (!frame) frame = window.requestAnimationFrame(render);
+    }, { passive: true });
+    document.documentElement.addEventListener('mouseleave', () => {
+      targetX = 0;
+      targetY = 0;
+      if (!frame) frame = window.requestAnimationFrame(render);
+    });
+  }
+
+  initializeDreamField();
   state.localProfile = loadLocalProfile();
   if (state.localProfile.calibration) {
     updateVisionMetric('#calibrationSummary', '已本地校准');
