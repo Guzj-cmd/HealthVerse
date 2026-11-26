@@ -34,6 +34,7 @@
     visionFilesetPromise: null,
     objectDetector: null,
     objectModelPromise: null,
+    objectTracker: null,
     lastObjectInferenceAt: 0,
     objectDetections: [],
     latestLandmarks: null,
@@ -244,6 +245,7 @@
       state.spatialRuntimePromise = import(runtimeUrl).then((runtime) => {
         state.spatialRuntime = runtime;
         state.temporalTracker = new runtime.TemporalEvidenceTracker();
+        state.objectTracker = new runtime.ObjectEvidenceTracker({ minimumHits: 2, ttlMs: 1800 });
         return runtime;
       });
     }
@@ -289,20 +291,17 @@
       const { visionModule, vision } = await ensureVisionRuntime();
       const options = {
         baseOptions: {
-          modelAssetPath: `${appContext}/assets/models/mediapipe/efficientdet_lite0.tflite`,
-          delegate: 'GPU'
+          modelAssetPath: `${appContext}/assets/models/mediapipe/efficientdet_lite0.tflite`
         },
         runningMode: 'VIDEO',
         maxResults: 12,
-        scoreThreshold: 0.35,
-        categoryAllowlist: ['tv', 'laptop', 'chair', 'dining table', 'keyboard', 'mouse', 'cup', 'bottle', 'book', 'cell phone']
+        scoreThreshold: 0.18,
+        categoryAllowlist: [
+          'tv', 'laptop', 'chair', 'dining table', 'keyboard', 'mouse', 'cup', 'bottle', 'book', 'cell phone',
+          'remote', 'backpack', 'handbag', 'couch', 'bed', 'clock', 'potted plant'
+        ]
       };
-      try {
-        state.objectDetector = await visionModule.ObjectDetector.createFromOptions(vision, options);
-      } catch (gpuError) {
-        delete options.baseOptions.delegate;
-        state.objectDetector = await visionModule.ObjectDetector.createFromOptions(vision, options);
-      }
+      state.objectDetector = await visionModule.ObjectDetector.createFromOptions(vision, options);
       return state.objectDetector;
     })();
     try {
@@ -519,6 +518,7 @@
     state.inferenceFrames = 0;
     state.lastObjectInferenceAt = 0;
     state.objectDetections = [];
+    state.objectTracker?.reset();
     state.latestLandmarks = null;
     state.spatialRelations = [];
     if (state.temporalTracker) {
@@ -655,9 +655,12 @@
         state.lastObjectInferenceAt = timestamp;
         try {
           const rawObjects = state.objectDetector.detectForVideo(visionVideo, performance.now());
-          state.objectDetections = state.spatialRuntime
-            ? state.spatialRuntime.normalizeDetections(rawObjects, visionVideo.videoWidth, visionVideo.videoHeight)
+          const normalizedObjects = state.spatialRuntime
+            ? state.spatialRuntime.normalizeDetections(rawObjects, visionVideo.videoWidth, visionVideo.videoHeight, 0.18)
             : [];
+          state.objectDetections = state.objectTracker
+            ? state.objectTracker.update(normalizedObjects, timestamp)
+            : normalizedObjects;
           updateSpatialEvidence();
         } catch (error) {
           console.warn('HealthVerse object inference failed for the current frame.', error);

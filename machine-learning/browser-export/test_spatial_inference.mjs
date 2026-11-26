@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {
   TemporalEvidenceTracker,
+  ObjectEvidenceTracker,
   deriveBodyProfile,
   inferSpatialRelations,
   normalizeDetections,
@@ -12,11 +13,13 @@ const result = {
     { boundingBox: { originX: 600, originY: 300, width: 200, height: 120 }, categories: [{ categoryName: 'tv', score: 0.91 }] },
     { boundingBox: { originX: 300, originY: 470, width: 380, height: 240 }, categories: [{ categoryName: 'chair', score: 0.86 }] },
     { boundingBox: { originX: 830, originY: 520, width: 80, height: 90 }, categories: [{ categoryName: 'cup', score: 0.77 }] },
+    { boundingBox: { originX: 360, originY: 430, width: 360, height: 180 }, categories: [{ categoryName: 'dining table', score: 0.24 }] },
+    { boundingBox: { originX: 250, originY: 430, width: 500, height: 300 }, categories: [{ categoryName: 'couch', score: 0.62 }] },
     { boundingBox: { originX: 20, originY: 20, width: 90, height: 90 }, categories: [{ categoryName: 'cat', score: 0.99 }] }
   ]
 };
 const detections = normalizeDetections(result, 1000, 800);
-assert.deepEqual(detections.map((item) => item.type), ['screen', 'chair', 'cup']);
+assert.deepEqual(detections.map((item) => item.type), ['screen', 'chair', 'cup', 'couch', 'table']);
 assert.match(summarizeObjects(detections), /显示屏/);
 
 const landmarks = Array.from({ length: 33 }, () => ({ x: 0.5, y: 0.5, visibility: 0.95 }));
@@ -33,6 +36,13 @@ const relations = inferSpatialRelations(landmarks, detections);
 assert.equal(relations.some((item) => item.type === 'screen_below_eye'), true);
 assert.equal(relations.some((item) => item.type === 'seated_contact'), true);
 assert.equal(relations.some((item) => item.objectId === 'cup-2'), true);
+assert.equal(relations.some((item) => item.type === 'table_work_area_aligned'), true);
+assert.equal(relations.some((item) => item.type === 'body_support_contact'), true);
+
+const objectTracker = new ObjectEvidenceTracker({ minimumHits: 2, ttlMs: 1500 });
+assert.equal(objectTracker.update(detections, 1000).length, 4);
+assert.equal(objectTracker.update(detections, 1500).some((item) => item.type === 'table'), true);
+assert.equal(objectTracker.update([], 3200).length, 0);
 
 const tracker = new TemporalEvidenceTracker();
 tracker.update('TLF', 0.8, 1000);
@@ -51,4 +61,4 @@ assert.equal(bodyProfile.sampleCount, 2);
 assert.deepEqual(bodyProfile.capturedActions, ['natural', 'reach']);
 assert.equal(bodyProfile.source, 'local-mediapipe-landmarks');
 
-console.log('spatial inference: 11 assertions passed');
+console.log('spatial inference: 16 assertions passed');

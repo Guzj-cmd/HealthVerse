@@ -8,7 +8,14 @@ const OBJECT_TYPES = {
   cup: ['cup', '水杯'],
   bottle: ['bottle', '水瓶'],
   book: ['book', '书本'],
-  'cell phone': ['phone', '手机']
+  'cell phone': ['phone', '手机'],
+  remote: ['remote', '遥控器'],
+  backpack: ['backpack', '背包'],
+  handbag: ['bag', '包袋'],
+  couch: ['couch', '沙发'],
+  bed: ['bed', '床'],
+  clock: ['clock', '时钟'],
+  'potted plant': ['plant', '绿植']
 };
 
 const clamp = (value, low = 0, high = 1) => Math.min(high, Math.max(low, value));
@@ -31,7 +38,7 @@ function confidenceOf(...values) {
   return finite.length ? Math.min(...finite.map((value) => clamp(value))) : 0;
 }
 
-export function normalizeDetections(result, width, height, minimumScore = 0.35) {
+export function normalizeDetections(result, width, height, minimumScore = 0.18) {
   if (!width || !height) return [];
   const detections = Array.isArray(result?.detections) ? result.detections : [];
   return detections.flatMap((detection, index) => {
@@ -57,6 +64,51 @@ export function normalizeDetections(result, width, height, minimumScore = 0.35) 
       center: { x: normalized.x + normalized.width / 2, y: normalized.y + normalized.height / 2 }
     }];
   }).sort((first, second) => second.score - first.score);
+}
+
+export class ObjectEvidenceTracker {
+  constructor({ minimumHits = 2, ttlMs = 1800, maximumCenterShift = 0.35, immediateScore = 0.25 } = {}) {
+    this.minimumHits = minimumHits;
+    this.ttlMs = ttlMs;
+    this.maximumCenterShift = maximumCenterShift;
+    this.immediateScore = immediateScore;
+    this.tracks = new Map();
+  }
+
+  update(detections, atMs) {
+    if (!Number.isFinite(atMs)) return this.snapshot();
+    const strongestByType = new Map();
+    (detections || []).forEach((item) => {
+      const previous = strongestByType.get(item.type);
+      if (!previous || item.score > previous.score) strongestByType.set(item.type, item);
+    });
+
+    strongestByType.forEach((item, type) => {
+      const previous = this.tracks.get(type);
+      const sameRegion = previous && distance(previous.center, item.center) <= this.maximumCenterShift;
+      this.tracks.set(type, {
+        ...item,
+        hits: sameRegion ? previous.hits + 1 : 1,
+        firstSeenAt: sameRegion ? previous.firstSeenAt : atMs,
+        lastSeenAt: atMs
+      });
+    });
+
+    this.tracks.forEach((item, type) => {
+      if (atMs - item.lastSeenAt > this.ttlMs) this.tracks.delete(type);
+    });
+    return this.snapshot();
+  }
+
+  snapshot() {
+    return [...this.tracks.values()]
+      .filter((item) => item.hits >= this.minimumHits || item.score >= this.immediateScore)
+      .sort((first, second) => second.score - first.score);
+  }
+
+  reset() {
+    this.tracks.clear();
+  }
 }
 
 function containsWithMargin(box, point, margin = 0) {
@@ -135,7 +187,39 @@ export function inferSpatialRelations(landmarks, detections) {
     });
   }
 
-  const reachTargets = detections.filter((item) => ['keyboard', 'mouse', 'cup', 'bottle', 'book', 'phone'].includes(item.type));
+  detections.filter((item) => ['couch', 'bed'].includes(item.type)).slice(0, 2).forEach((support) => {
+    if (!hips) return;
+    const inSupportRegion = containsWithMargin(support.box, hips, 0.1);
+    relations.push({
+      id: `person-support-${support.id}`,
+      type: inSupportRegion ? 'body_support_contact' : 'support_nearby',
+      label: inSupportRegion ? `身体与${support.label}区域重合` : `${support.label}位于当前活动空间`,
+      severity: inSupportRegion ? 'ok' : 'uncertain',
+      confidence: confidenceOf(support.score, poseConfidence), objectId: support.id,
+      evidence: inSupportRegion ? `髋部中点落在${support.label}检测框的扩展区域内` : `检测到${support.label}，但尚未确认身体接触`,
+      recommendation: inSupportRegion ? '已建立二维身体—环境支撑关系。' : '这是环境共现证据，需要更多帧或用户确认。',
+      measures: { hipInsideSupportRegion: inSupportRegion }
+    });
+  });
+
+  const table = firstObject(detections, 'table');
+  if (table && shoulders && hips) {
+    const bodyCenter = midpoint(shoulders, hips);
+    const horizontalOffset = Math.abs(table.center.x - bodyCenter.x) / shoulderWidth;
+    const aligned = horizontalOffset <= 2.2;
+    relations.push({
+      id: 'person-table-alignment',
+      type: aligned ? 'table_work_area_aligned' : 'table_work_area_off_center',
+      label: aligned ? '身体与桌面工作区已建立关系' : '桌面工作区偏离身体中线',
+      severity: aligned ? 'ok' : 'review',
+      confidence: confidenceOf(table.score, poseConfidence), objectId: table.id,
+      evidence: `桌面中心与身体中线的二维水平偏移为 ${horizontalOffset.toFixed(2)} 个肩宽`,
+      recommendation: aligned ? '已确认二维画面中的人–桌关系。' : '如果需要持续使用桌面，可预览让主要工作区靠近身体中线的方案。',
+      measures: { horizontalOffsetShoulderWidths: horizontalOffset }
+    });
+  }
+
+  const reachTargets = detections.filter((item) => ['keyboard', 'mouse', 'cup', 'bottle', 'book', 'phone', 'remote', 'backpack', 'bag'].includes(item.type));
   const wrists = [landmarks[15], landmarks[16]].filter(visible);
   if (wrists.length) {
     reachTargets.slice(0, 4).forEach((target) => {
