@@ -1,0 +1,26 @@
+HealthVerse 最终构建与回归测试
+日期：2026-11-26
+
+命令：.\mvnw.cmd -Dmaven.repo.local=D:\CodexData\HealthVerse\m2 clean package
+结果：BUILD SUCCESS
+Java 测试：4 passed, 0 failures, 0 errors, 0 skipped
+  AgentServiceEvidenceTest：2 passed
+  FederatedStatusServiceTest：2 passed
+WAR：target\HealthVerse_Submission.war
+
+命令：node --check src\main\webapp\assets\js\healthverse.js
+结果：通过（退出码 0）
+
+命令：node machine-learning\browser-export\test_spatial_inference.mjs
+结果：spatial inference: 11 assertions passed
+
+命令：python -m unittest discover -s machine-learning\federated\tests -v
+结果：Ran 8 tests ... OK
+
+浏览器验收：
+- 真实视频可导入；33 点骨架、姿态模型与时序状态可见。
+- 无视觉证据实验保存为 evidenceStatus=insufficient，memories=[]。
+- Agent 远端不可用时 source=local-rule:remote_unavailable，回复不引入未观察对象。
+- 联邦状态显示 round=2、registered_clients=2、distinct_device_fingerprints=1、completed_rounds=1，未冒充真实多设备。
+
+说明：以上为本机实际运行与命令结果，不是预填演示值。

@@ -1,0 +1,47 @@
+HealthVerse 运行与提交说明
+
+GitHub
+https://github.com/Guzj-cmd/HealthVerse
+
+环境
+- JDK 8+
+- Maven 3.8+（仓库已含 Maven Wrapper）
+- Python 3.10+（训练和联邦模块）
+- Chrome/Edge（摄像头、视频与浏览器推理）
+
+构建
+1. 在 HealthVerse 根目录打开 PowerShell。
+2. 执行：
+   .\mvnw.cmd clean package
+3. 成功后生成：
+   target\HealthVerse_Submission.war
+
+开发运行
+.\mvnw.cmd org.eclipse.jetty:jetty-maven-plugin:9.4.57.v20241219:run -Djetty.http.port=8090
+浏览器打开：http://127.0.0.1:8090/public/index.jsp
+
+核心回归测试
+node machine-learning\browser-export\test_spatial_inference.mjs
+python -m unittest discover -s machine-learning\federated\tests -v
+.\mvnw.cmd test
+
+远端 Agent（可选）
+- 兼容 Anthropic Messages API。
+- 密钥和端点只放环境变量或本机忽略配置，不写入 Git。
+- 未配置或不可达时，系统返回经过测试的证据约束本地回退，并标记 degraded=true。
+
+联邦协调器（可选）
+- 使用 machine-learning\federated\coordinator.py 启动。
+- Web 后端通过 HV_FED_STATUS_URL 读取白名单状态字段。
+- 真实多设备验证需至少两台物理设备；同机多进程不会升级为多设备状态。
+
+视觉输入
+- 点击“启用摄像头”或“导入视频”。
+- 原始画面只在当前浏览器会话中处理。
+- 停止输入会关闭摄像头轨道并释放本地视频缓存。
+
+提交包边界
+- 不含受许可限制的 Charades/BEHAVE/Edinburgh 原始数据。
+- 不含密钥、令牌或个人原始摄像头画面。
+- 包含源码、构建脚本、模型指标、模型卡、混淆矩阵、迭代记录、前后截图和课程报告。
+- 项目为课程与研究原型，不是医疗器械。
