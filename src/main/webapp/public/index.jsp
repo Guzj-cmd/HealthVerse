@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="app-context" content="${pageContext.request.contextPath}">
-  <meta name="theme-color" content="#f7f1e5">
+  <meta name="theme-color" content="#eef4f1">
   <link rel="icon" href="data:,">
   <title>HealthVerse · 个人健康 AI 工作台</title>
   <meta name="description" content="一个以视觉感知、空间协同设计和自我实验为核心的个人健康 AI 工作台概念原型。">

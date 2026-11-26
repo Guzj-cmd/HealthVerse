@@ -9,6 +9,7 @@ target/
 !.env.example
 .claude/
 .playwright-cli/
+output/playwright/
 
 # Python caches and environments
 __pycache__/

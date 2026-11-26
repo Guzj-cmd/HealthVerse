@@ -420,7 +420,7 @@
       const boxWidth = item.box.width * width;
       const boxHeight = item.box.height * height;
       const label = `${item.label} ${Math.round(item.score * 100)}%`;
-      context.strokeStyle = index % 2 ? '#87669b' : '#e0a800';
+      context.strokeStyle = index % 2 ? '#8b819e' : '#6f8992';
       context.fillStyle = 'rgba(251, 248, 241, .92)';
       context.lineWidth = Math.max(2, width / 500);
       context.setLineDash(index % 2 ? [9, 5] : [15, 4, 3, 4]);
@@ -571,7 +571,7 @@
 
     context.lineCap = 'round';
     context.lineJoin = 'round';
-    context.strokeStyle = '#3b9c7a';
+    context.strokeStyle = '#6f8992';
     context.fillStyle = '#fbf8f1';
     context.lineWidth = Math.max(3, width / 360);
     POSE_CONNECTIONS.forEach(([from, to]) => {
