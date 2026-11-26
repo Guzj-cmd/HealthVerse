@@ -196,11 +196,20 @@ public class AgentService {
     }
 
     private AgentResponse localFallback(AgentRequest request, String reason) {
+        return evidenceBoundLocalFallback(request, reason);
+    }
+
+    static AgentResponse evidenceBoundLocalFallback(AgentRequest request, String reason) {
         String message = request.getMessage().trim();
+        String evidence = GSON.toJson(request.getContext());
         String title = "已把你的限制加入方案";
         String reply;
         if (containsAny(message, "右侧", "手写", "写字")) {
-            reply = "依据：你明确要求保留右侧手写区域。可以先只抬高显示器，并保持键盘与书写区不变；若需要移动水杯，优先放到左前方的舒适可达区。两种调整都应先预览，再由你决定是否执行。";
+            if (containsAny(evidence, "screen", "屏幕", "显示器")) {
+                reply = "依据：你明确要求保留右侧手写区域，当前证据只支持屏幕的二维相对位置。可以保持右侧物品不动，仅比较屏幕相对位置的可撤销预览；执行前仍需你实测。现有证据不能给出真实厘米、深度或长期健康结论。";
+            } else {
+                reply = "依据：你明确要求保留右侧手写区域，但当前没有可靠的屏幕或物体关系证据。我会先固定“右侧不动”这一约束；请补充摄像头或视频视角，再比较可撤销方案，不会自行假设物体位置。";
+            }
         } else if (containsAny(message, "不提醒", "打断", "专注")) {
             reply = "已记录你当前更重视任务连续性。Agent 会在自然停顿时再提示，并保留“立即静默”和“本次不再提醒”。这只是会话级偏好，不会在未确认时写入长期记忆。";
         } else {

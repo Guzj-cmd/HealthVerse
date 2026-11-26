@@ -2,16 +2,30 @@
 
 HealthVerse 是一个面向现实空间的交互设计课程原型。系统将视觉观察、用户任务、环境约束、反事实方案和短时自我实验组织成可纠正、可撤销的协同闭环。AI 被设计为协作者，而不是自动诊断或替用户作决定的裁判。
 
-## 核心演示路径
+## 真实运行路径
 
-1. 在“实时空间感知”中查看人物、物体和空间关系，并点击显示器查看证据；
-2. 纠正 AI、说明任务需要，或暂停本次提醒；
-3. 在“环境协同设计”中比较方案 A / B，拖动显示器高度并保留桌面约束；
-4. 在“健康自我实验”中比较短时姿态、操作效率和主观舒适度；
-5. 由用户确认是否把结果保存为可见、可停用、可删除的个人记忆；
-6. 在“Agent 闭环架构”和“课程设计档案”中查看论文机制、人物角色、场景剧本和关键任务路径。
+1. 启用摄像头或导入本地视频；浏览器用 MediaPipe Pose、训练后的姿态分类器和 EfficientDet-Lite0 处理真实画面；
+2. 查看姿态、工作区物体、人—物二维关系和按真实帧时间累计的时序证据；
+3. 纠正 AI、说明任务需要，或暂停本次提醒；证据约束 Agent 不得虚构厘米、深度或长期健康结论；
+4. 在“个人身体模型”中采集真实关键点并只保存归一化比例；
+5. 在“环境协同设计”中比较可撤销方案，再以独立基线阶段和方案阶段做短时验证；
+6. 两个阶段各达到最小姿态证据门槛后，用户确认的结果才可进入可见、可停用、可删除的个人记忆；
+7. 在隐私控制中查看真实联邦协调器状态，并区分加入意愿、本机联邦测试和已验证多设备轮次。
 
-页面中的人物、数据和实验结果均为课程概念原型的示意内容，不是医疗检测结果。
+页面占位插图和课程人物角色会明确标注“示意/虚构”；摄像头、导入视频、关键点、目标框、时序、校准和用户实验记录来自当前真实会话。所有输出均为非医疗辅助信息。
+
+## 当前模型与冻结评估
+
+| 能力 | 数据与切分 | 冻结结果 | 网页状态 |
+|---|---|---:|---|
+| 上身姿态 | MultiPosture，按受试者隔离；3 名未见受试者测试 | Accuracy 0.9874，Macro-F1 0.9813 | 已导出并在浏览器接入 |
+| 下身姿态 | MultiPosture，同一受试者隔离测试 | Accuracy 0.9347，Macro-F1 0.9598 | 已导出并在浏览器接入 |
+| 跨场景关系 | Charades 官方训练分区，留场景且移除重叠参与者 | Macro-mAP 0.3695；相对基线 +0.1080 | 作为泛化证据；不替代浏览器目标检测 |
+| 低打扰证据门 | BEHAVE，参与者留一 | Accuracy 0.9574，Macro-F1 0.8220 | 用于“无动作/请求确认”安全边界 |
+| 活动建议策略 | HeartSteps V1，37 人、6112 决策点、5 折参与者隔离 | DR uplift 0.1092，95% cluster CI [0.0046, 0.2134] | 研究模块；不冒充人体工学建议 |
+| 联邦姿态模型 | MultiPosture 真实受试者客户端，本机 FedAvg | Accuracy 0.9271，Macro-F1 0.9117 | 联邦客户端/协调端可联网运行；多设备需真实设备验证 |
+
+100% 是优化方向，不是预设结论。冻结测试集不得反复用于调参；当前错误与限制保留在各运行目录的 `metrics.json`、`model_card.md` 和迭代记录中。
 
 ## 项目结构
 
@@ -20,7 +34,9 @@ HealthVerse/
 ├─ pom.xml
 ├─ README.md
 ├─ SUBMISSION_GUIDE.md
+├─ IMPLEMENTATION_STATUS.md            当前功能、证据与限制
 ├─ database/                         持久化扩展说明
+├─ machine-learning/                 真实数据训练、评估、联邦与浏览器导出
 ├─ mobile/HealthVerseCompanion/      移动端扩展占位
 ├─ samples/                          Agent 请求示例
 ├─ scripts/                          本地烟雾测试与 Satori 规划桥
@@ -49,6 +65,7 @@ HealthVerse/
 - JDK 8 或兼容版本；
 - Maven 3.8+，或项目随附的 Maven Wrapper；
 - Tomcat 9。
+- 支持 WebAssembly/WebGL 的现代浏览器；首次加载 MediaPipe 与 EfficientDet 模型时需要网络。
 
 ## Agent 配置
 
@@ -77,6 +94,19 @@ $env:SATORI_BRIDGE_URL = "http://127.0.0.1:8788/plan"
 ```
 
 Java 后端会把侧车返回的 `Belief / Desire / Intention`、结构化步骤和检查点作为远程模型的附加上下文。未启动侧车时自动跳过，不影响主 Agent；本地回环地址也不会经过模型网关代理。复用范围、固定的上游提交和许可证见 `scripts/satori-bridge/README.md`、`NOTICE.md` 与 `LICENSE-SATORI`。
+
+## 联邦学习运行与网页状态
+
+协调器与客户端位于 `machine-learning/federated/`。不同设备使用同一 TLS 协调器和独立本地数据；原始视频、图像、关键点和特征不会进入协调器。网页只读取协调器的非敏感 `/status`：
+
+```powershell
+$env:HV_FED_SECRET = "替换为随机长密钥"
+python machine-learning/federated/coordinator.py --host 0.0.0.0 --port 8787 `
+  --secret $env:HV_FED_SECRET --tls-cert server.crt --tls-key server.key --min-clients 2
+$env:HV_FED_STATUS_URL = "https://coordinator.example:8787"
+```
+
+每台设备运行 `client.py`。只有同一轮收到至少两个不同设备指纹后，协调器才返回 `multi_device_federated_run`。同一电脑上的多个进程始终保持 `local_federated_test`。当前协议不把 HMAC/TLS 误称为安全聚合或差分隐私；完整边界见 `machine-learning/federated/README.md`。
 
 ## 构建与部署
 
@@ -123,4 +153,8 @@ http://localhost:8080/HealthVerse_Submission/
 - 低置信度时先求证，不自动执行空间调整；
 - 用户可以纠正、拒绝、暂停、撤销和删除；
 - Agent 输入限制长度，远程接口失败时降级为本地规则；
-- 摄像头、视觉证据与人物角色均为概念演示，不在当前提交版中上传或持久化。
+- 摄像头或导入视频在当前浏览器处理；停止输入会释放媒体轨道与 Blob URL；
+- 个人校准只在用户确认后保存归一化比例，不保存原始视频或关键点序列；
+- 证据不足的短时实验只作为审计记录，不进入个性化偏好记忆；
+- 单目二维画面不能提供真实厘米、深度或医疗结论；
+- 课程人物角色是明确标注的虚构设计材料，不作为模型输入或真实用户数据。

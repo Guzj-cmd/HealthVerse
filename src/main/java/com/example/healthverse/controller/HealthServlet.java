@@ -1,6 +1,7 @@
 package com.example.healthverse.controller;
 
 import com.example.healthverse.config.AgentConfig;
+import com.example.healthverse.service.FederatedStatusService;
 import com.google.gson.Gson;
 
 import javax.servlet.annotation.WebServlet;
@@ -23,6 +24,7 @@ public class HealthServlet extends HttpServlet {
         status.put("agentConfigured", config.isRemoteReady());
         status.put("provider", config.isRemoteReady() ? config.getProvider() : "local-rule");
         status.put("safetyMode", "non-diagnostic-human-confirmation");
+        status.put("federated", FederatedStatusService.fromEnvironment().readStatus());
 
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");

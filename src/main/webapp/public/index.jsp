@@ -44,7 +44,7 @@
 
         <div class="privacy-card">
           <div class="privacy-top"><span class="pulse-dot"></span><strong>本地感知</strong></div>
-          <p>画面仅用于当前演示。你可以随时暂停、纠正或删除记录。</p>
+            <p>画面仅用于当前会话。你可以随时暂停、纠正或删除记录。</p>
           <button id="privacyBtn" type="button">隐私控制</button>
         </div>
       </aside>
@@ -109,9 +109,9 @@
                   <path d="M350 205h260" stroke="#7ef1d8" stroke-width="3" stroke-dasharray="10 10"/>
                   <path d="M610 205v-42h186v161" stroke="#f0b35f" stroke-width="3" stroke-dasharray="10 8" fill="none"/>
                 </svg>
-                <button class="object-tag warning" data-object="monitor" style="left:62%;top:18%" type="button"><span>显示器</span><b>待确认</b></button>
-                <button class="object-tag" data-object="cup" style="left:82%;top:53%" type="button"><span>水杯</span><b>常用</b></button>
-                <button class="object-tag" data-object="chair" style="left:22%;top:74%" type="button"><span>座椅</span><b>已识别</b></button>
+                <button class="object-tag warning" data-object="monitor" style="left:62%;top:18%" type="button"><span>显示器</span><b>画面示意</b></button>
+                <button class="object-tag" data-object="cup" style="left:82%;top:53%" type="button"><span>水杯</span><b>画面示意</b></button>
+                <button class="object-tag" data-object="chair" style="left:22%;top:74%" type="button"><span>座椅</span><b>画面示意</b></button>
                 </div>
                 <div class="scene-caption"><span id="visionSourceMetric">尚未启用视觉输入</span><span id="visionPoseMetric">姿态关键点 —</span><span id="visionFpsMetric">分析帧率 —</span><span id="temporalMetric">时序事件等待中</span></div>
               </div>
@@ -123,8 +123,8 @@
               <div class="reasoning-card" aria-live="polite">
                 <div class="card-kicker">观察 → 推断 → 求证</div>
                 <div class="model-evidence" id="modelEvidence">真实姿态模型 · 等待视觉输入</div>
-                <h3 id="agentFinding">显示器可能低于舒适视线</h3>
-                <p id="agentReason">你持续注视屏幕，并在过去 18 分钟出现 6 次颈部前倾。屏幕位置可能需要调整，但我还需要侧面视角确认。</p>
+                <h3 id="agentFinding">等待真实视觉与任务输入</h3>
+                <p id="agentReason">启用摄像头或导入视频后，Agent 才会依据实际姿态、物体关系和持续时间给出可撤销建议。</p>
                 <div class="evidence-row"><span>模型置信度</span><div class="confidence"><i id="confidenceBar" style="width:0%"></i></div><b id="confidenceText">—</b></div>
                 <div class="interrupt-note"><b>为什么现在提醒？</b><span id="interruptReason">等待真实姿态、物体和持续时间证据。</span></div>
               </div>
@@ -176,7 +176,7 @@
             <article class="metric-card"><span>人–物空间关系</span><strong id="spatialSummary">尚未建立关系</strong><p id="spatialSummaryDetail">需要同时看到人体和工作区物体</p></article>
             <article class="metric-card"><span>时序行为</span><strong id="sessionBehavior">等待会话</strong><p>持续姿态使用真实帧时间累计</p></article>
             <article class="metric-card"><span>个人模型</span><strong id="calibrationSummary">待校准</strong><p id="calibrationDetail">使用真实关键点采集个人活动范围</p><button data-go="body" type="button">开始校准</button></article>
-            <article class="metric-card"><span>Agent 工作状态</span><strong class="mint">主动求证</strong><p>正在等待补充侧面视角</p></article>
+            <article class="metric-card"><span>Agent 工作状态</span><strong class="mint" id="agentStatusSummary">等待证据</strong><p id="agentStatusDetail">尚未形成建议</p></article>
           </div>
         </section>
 
@@ -189,13 +189,13 @@
                 <div class="body-avatar"><span class="head"></span><span class="torso"></span><span class="arm left"></span><span class="arm right"></span><span class="leg left"></span><span class="leg right"></span></div>
                 <div class="axis-note top">舒适可达区</div><div class="axis-note bottom">扩展可达区</div>
               </div>
-              <div class="stage-legend"><span><i class="legend-dot comfort"></i>舒适 65%</span><span><i class="legend-dot extended"></i>扩展 82%</span><span>示意模型 · 非医疗测量</span></div>
+              <div class="stage-legend"><span><i class="legend-dot comfort"></i><b id="comfortReachLabel">舒适范围待校准</b></span><span><i class="legend-dot extended"></i><b id="extendedReachLabel">扩展范围待校准</b></span><span>归一化模型 · 非医疗测量</span></div>
             </article>
             <aside class="calibration panel">
               <span class="eyebrow">2 分钟自主采集</span><h2>活动范围校准</h2><p>按你觉得舒适的幅度完成动作。随时可以跳过。</p>
               <div class="step-list">
-                <button class="cal-step done" type="button"><i>✓</i><span><b>自然坐姿</b><small>已采集 · 24 秒</small></span></button>
-                <button class="cal-step active" type="button"><i>2</i><span><b>向前触及</b><small>缓慢伸手触碰虚拟目标</small></span></button>
+                <button class="cal-step active" type="button"><i>1</i><span><b>自然坐姿</b><small>等待采集当前真实关键点</small></span></button>
+                <button class="cal-step" type="button"><i>2</i><span><b>向前触及</b><small>缓慢伸手触碰虚拟目标</small></span></button>
                 <button class="cal-step" type="button"><i>3</i><span><b>左右转身</b><small>只需达到舒适位置</small></span></button>
               </div>
               <label class="range-label"><span>活动范围缩放预览</span><b id="rangeValue">65%</b><input id="rangeInput" type="range" min="45" max="90" value="65"></label>
@@ -226,7 +226,7 @@
                 <label><span>相对调整量</span><b id="heightValue">+12% 画面高度</b><input id="heightInput" type="range" min="0" max="20" value="12"></label>
                 <div class="impact-chips"><span class="good">调整后重新检测</span><span>手写区域不变</span><span>可随时撤销</span></div>
               </div>
-              <div class="compare-footer"><button class="text-btn hidden" id="undoPlan" type="button">撤销，恢复原始布局</button><button class="secondary-btn" id="rejectPlan" type="button">换一个方案</button><button class="primary-btn" id="applyPlan" type="button">选择方案并开始验证</button></div>
+              <div class="compare-footer"><button class="text-btn hidden" id="undoPlan" type="button" hidden>撤销，恢复原始布局</button><button class="secondary-btn" id="rejectPlan" type="button">换一个方案</button><button class="primary-btn" id="applyPlan" type="button">选择方案并开始验证</button></div>
             </article>
           </div>
         </section>
@@ -235,7 +235,7 @@
           <div class="screen-head"><div><span class="eyebrow">PERSONAL SELF-EXPERIMENT</span><h1 id="experimentTitle">验证“更适合我”，而不是证明“长期有效”</h1><p>比较两个短时学习场景，观察姿态、操作效率和主观舒适度。</p></div><button class="secondary-btn" id="protocolBtn" type="button">查看实验方案</button></div>
           <div class="experiment-grid">
             <article class="experiment-main panel">
-              <div class="experiment-top"><div><span class="run-dot"></span><b id="experimentState">准备阶段</b><small>预计 12 分钟</small></div><div class="timer" id="timer">12:00</div></div>
+              <div class="experiment-top"><div><span class="run-dot"></span><b id="experimentState">准备阶段</b><small>3 分钟基线 + 6 分钟方案 + 主观评分</small></div><div class="timer" id="timer">03:00</div></div>
               <div class="comparison-bars">
                 <div class="bar-group"><span>非中性躯干姿态时长</span><div><i id="baselinePostureBar" style="width:0"></i><b id="baselinePostureValue">基线：等待记录</b></div><div class="candidate"><i id="candidatePostureBar" style="width:0"></i><b id="candidatePostureValue">方案：等待记录</b></div></div>
                 <div class="bar-group"><span>工作区物体关系</span><div><i id="relationEvidenceBar" style="width:0"></i><b id="relationEvidenceValue">尚无可比较证据</b></div></div>
@@ -245,8 +245,8 @@
             </article>
             <aside class="experiment-side panel">
               <span class="eyebrow">实验协议</span><h2>显示器高度对比</h2>
-              <ol><li class="done"><i>✓</i><span><b>记录原始布局</b><small>3 分钟</small></span></li><li class="active"><i>2</i><span><b>体验方案 A</b><small>6 分钟</small></span></li><li><i>3</i><span><b>填写主观感受</b><small>1 分钟</small></span></li><li><i>4</i><span><b>确认是否保存</b><small>可撤销</small></span></li></ol>
-              <button class="primary-btn wide" id="experimentBtn" type="button">开始体验方案 A</button>
+              <ol><li class="active"><i>1</i><span><b>记录原始布局</b><small>开始后按真实帧时间记录</small></span></li><li><i>2</i><span><b>体验所选方案</b><small>保持同一任务</small></span></li><li><i>3</i><span><b>填写主观感受</b><small>用户本人评分</small></span></li><li><i>4</i><span><b>确认是否保存</b><small>可撤销</small></span></li></ol>
+              <button class="primary-btn wide" id="experimentBtn" type="button">开始记录原始布局基线</button>
               <button class="text-btn" id="skipExperiment" type="button">跳过并保留原始布局</button>
             </aside>
           </div>
@@ -258,11 +258,11 @@
             <article class="graph panel" aria-label="个人健康世界模型关系图">
               <svg viewBox="0 0 760 500" aria-hidden="true">
                 <g stroke="#38515d" stroke-width="2"><path d="M375 250L190 122M375 250L591 127M375 250L190 382M375 250L580 386M190 122L591 127M190 382L580 386"/></g>
-                <g class="graph-node main"><circle cx="375" cy="250" r="74"/><text x="375" y="242">林然</text><text x="375" y="270">个人模型</text></g>
-                <g class="graph-node"><circle cx="190" cy="122" r="58"/><text x="190" y="115">学习任务</text><text x="190" y="141">深度专注</text></g>
-                <g class="graph-node"><circle cx="591" cy="127" r="58"/><text x="591" y="120">环境</text><text x="591" y="146">书房桌面</text></g>
-                <g class="graph-node"><circle cx="190" cy="382" r="58"/><text x="190" y="375">身体偏好</text><text x="190" y="401">舒适优先</text></g>
-                <g class="graph-node"><circle cx="580" cy="386" r="64"/><text x="580" y="379">实验反馈</text><text x="580" y="405">方案 A 更佳</text></g>
+                <g class="graph-node main"><circle cx="375" cy="250" r="74"/><text id="profileGraphUser" x="375" y="242">当前用户</text><text id="profileGraphCalibration" x="375" y="270">尚未校准</text></g>
+                <g class="graph-node"><circle cx="190" cy="122" r="58"/><text x="190" y="115">当前任务</text><text id="profileGraphTask" x="190" y="141">尚未确认</text></g>
+                <g class="graph-node"><circle cx="591" cy="127" r="58"/><text x="591" y="120">视觉环境</text><text id="profileGraphEnvironment" x="591" y="146">等待输入</text></g>
+                <g class="graph-node"><circle cx="190" cy="382" r="58"/><text x="190" y="375">可控记忆</text><text id="profileGraphMemories" x="190" y="401">0 条启用</text></g>
+                <g class="graph-node"><circle cx="580" cy="386" r="64"/><text x="580" y="379">实验反馈</text><text id="profileGraphExperiment" x="580" y="405">尚无记录</text></g>
               </svg>
               <div class="graph-legend"><span><i></i>用户确认</span><span><i></i>视觉推断</span><span><i></i>实验结果</span></div>
             </article>

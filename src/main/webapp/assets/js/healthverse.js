@@ -22,7 +22,7 @@
     tourIndex: -1,
     experimentPhase: 'ready',
     appliedPlan: false,
-    timerSeconds: 720,
+    timerSeconds: 180,
     timerHandle: null,
     storyboardHandle: null,
     lastFocus: null,
@@ -48,8 +48,10 @@
     calibrationSamples: [],
     pendingCalibration: null,
     experimentBaseline: null,
+    experimentCandidateStart: null,
     experimentResult: null,
     sessionCorrections: [],
+    federatedBackend: null,
     localProfile: null,
     visionMode: null,
     lastVideoTime: -1,
@@ -91,6 +93,8 @@
     TLL: '左倾已持续出现，可以尝试把常用物品移近身体中线；先确认是否由任务造成。',
     TLR: '右倾已持续出现，可以尝试把常用物品移近身体中线；先确认是否由任务造成。'
   };
+
+  const MIN_PHASE_EVIDENCE_MS = 5000;
 
   const PROFILE_STORAGE_KEY = 'healthverse.profile.v1';
 
@@ -139,6 +143,7 @@
     if (!container || !state.localProfile) return;
     const memories = state.localProfile.memories;
     updateVisionMetric('#memoryCount', `已保存 ${memories.length} 条`);
+    renderPersonalModelSummary();
     if (!memories.length) {
       container.innerHTML = '<p class="empty-memory">尚无经用户确认的个人记忆。</p>';
       return;
@@ -149,6 +154,28 @@
         <button class="toggle ${memory.enabled ? 'on' : ''}" data-memory-toggle="${escapeHtml(memory.id)}" type="button" aria-label="${memory.enabled ? '停用' : '启用'}该记忆"><i></i></button>
         <button class="delete-memory" data-memory-delete="${escapeHtml(memory.id)}" type="button">删除</button>
       </div>`).join('');
+  }
+
+  function renderPersonalModelSummary() {
+    if (!state.localProfile) return;
+    const calibration = state.localProfile.calibration;
+    const enabledMemories = state.localProfile.memories.filter((memory) => memory.enabled).length;
+    const latestExperiment = state.localProfile.experiments.at?.(-1)
+      || state.localProfile.experiments[state.localProfile.experiments.length - 1];
+    updateVisionMetric('#profileGraphCalibration', calibration ? `${calibration.sampleCount} 次校准` : '尚未校准');
+    updateVisionMetric('#profileGraphTask', state.sessionStartedAt ? '当前视觉会话' : '尚未确认');
+    updateVisionMetric('#profileGraphEnvironment', state.objectDetections.length ? `${state.objectDetections.length} 个物体` : '等待输入');
+    updateVisionMetric('#profileGraphMemories', `${enabledMemories} 条启用`);
+    updateVisionMetric('#profileGraphExperiment', latestExperiment?.evidenceStatus === 'qualified'
+      ? `舒适度 ${latestExperiment.comfort}/10`
+      : (latestExperiment ? '证据不足记录' : '尚无记录'));
+    if (calibration) {
+      updateVisionMetric('#comfortReachLabel', `舒适范围 · ${calibration.sampleCount} 次采集`);
+      updateVisionMetric('#extendedReachLabel', '扩展范围 · 仅作比例预览');
+    } else {
+      updateVisionMetric('#comfortReachLabel', '舒适范围待校准');
+      updateVisionMetric('#extendedReachLabel', '扩展范围待校准');
+    }
   }
 
   function escapeHtml(value) {
@@ -183,6 +210,11 @@
   function updateVisionMetric(id, text) {
     const node = $(id);
     if (node) node.textContent = text;
+  }
+
+  function updateAgentStatus(summary, detail) {
+    updateVisionMetric('#agentStatusSummary', summary);
+    updateVisionMetric('#agentStatusDetail', detail);
   }
 
   async function ensureVisionRuntime() {
@@ -350,6 +382,7 @@
       state.postureCandidateSince = 0;
       $('#agentFinding').textContent = '模型正在等待更多证据';
       $('#agentReason').textContent = '当前分类置信度不足，因此不生成姿态建议。可以继续活动或调整摄像头视角。';
+      updateAgentStatus('收集证据', '当前模型置信度未达到部署阈值');
       return;
     }
     if (upper.label === 'TUP') {
@@ -357,6 +390,7 @@
       state.postureCandidateSince = 0;
       $('#agentFinding').textContent = '当前躯干关系较稳定';
       $('#agentReason').textContent = `真实训练模型识别为“${POSTURE_LABELS[upper.label]}”（${confidence}%）。姿态变化本身是正常的，系统不会要求你始终保持同一姿势。`;
+      updateAgentStatus('保持观察', '当前无需生成姿态建议');
       return;
     }
     if (state.postureCandidate !== upper.label) {
@@ -367,10 +401,12 @@
     if (sustained < 5) {
       $('#agentFinding').textContent = `正在确认“${POSTURE_LABELS[upper.label]}”是否持续`;
       $('#agentReason').textContent = `真实模型置信度 ${confidence}%，已持续 ${sustained.toFixed(1)} / 5.0 秒。按照 CHI 的低打扰反馈方法，单帧或短暂动作不会触发建议。`;
+      updateAgentStatus('低打扰等待', `持续 ${sustained.toFixed(1)} / 5.0 秒，尚未触发`);
       return;
     }
     $('#agentFinding').textContent = `${POSTURE_LABELS[upper.label]}已持续 5 秒`;
     $('#agentReason').textContent = `${POSTURE_GUIDANCE[upper.label]} 这是基于关键点关系的非医疗建议，原始画面仍只在本机处理。`;
+    updateAgentStatus('建议可用', '已有姿态置信度与持续时间证据');
   }
 
   function renderObjects(context, width, height) {
@@ -417,7 +453,9 @@
     if (review && (!state.latestPosture || state.latestPosture.upper.label === 'TUP')) {
       $('#agentFinding').textContent = review.label;
       $('#agentReason').textContent = `${review.evidence}。${review.recommendation} 这是二维单目证据，不声称真实厘米距离。`;
+      updateAgentStatus('请求确认', '已形成二维人–物关系证据');
     }
+    renderPersonalModelSummary();
   }
 
   function setLiveStage(active) {
@@ -495,7 +533,9 @@
     }
     updateVisionMetric('#visionStatusPill', '等待视觉输入');
     updateVisionMetric('#taskDuration', '当前会话：等待真实输入');
+    updateAgentStatus('等待证据', '尚未形成建议');
     state.sessionStartedAt = null;
+    renderPersonalModelSummary();
     if (videoFileInput) videoFileInput.value = '';
     if (announce) toast('视觉输入已停止，摄像头轨道与视频缓存已释放。');
   }
@@ -636,6 +676,8 @@
       pauseBtn.disabled = false;
     }
     updateVisionMetric('#visionStatusPill', mode === 'camera' ? '摄像头在线' : '视频分析中');
+    updateAgentStatus('分析中', '正在收集姿态、物体关系与持续时间');
+    renderPersonalModelSummary();
     if (state.visionRaf) cancelAnimationFrame(state.visionRaf);
     state.visionRaf = requestAnimationFrame(visionLoop);
     ensurePoseLandmarker().then(() => {
@@ -782,22 +824,60 @@
     </div>
   `));
 
-  $('#privacyBtn')?.addEventListener('click', () => openModal(`
-    <span class="modal-kicker">PRIVACY CONTROL</span>
-    <h2 id="modalTitle">你的数据，你来决定</h2>
-    <p>摄像头或导入视频只在当前浏览器内处理。停止输入时会立即关闭摄像头轨道并释放本地视频缓存；保存任何实验结论前仍需你的确认。</p>
-    <div class="privacy-options">
-      <label><span><b>实时画面分析</b><small>仅在当前会话处理</small></span><input id="privacyVision" type="checkbox" checked disabled></label>
-      <label><span><b>保存实验结果</b><small>保存前必须由你确认</small></span><input id="privacyExperiments" type="checkbox" ${state.localProfile?.privacy.saveExperiments ? 'checked' : ''}></label>
-      <label><span><b>个性化记忆</b><small>可随时停用或删除</small></span><input id="privacyPersonalization" type="checkbox" ${state.localProfile?.privacy.personalization ? 'checked' : ''}></label>
-      <label><span><b>联邦学习</b><small>默认关闭；仅显式选择加入</small></span><input id="privacyFederated" type="checkbox" ${state.localProfile?.privacy.federatedOptIn ? 'checked' : ''}></label>
-    </div>
-    <div class="modal-actions privacy-actions">
-      <button class="secondary-btn" data-modal-action="stop-camera" type="button">停止摄像头</button>
-      <button class="danger-btn" data-modal-action="delete-session" type="button">删除本次会话数据</button>
-    </div>
-    <button class="primary-btn wide" data-modal-action="save-privacy" type="button">保存隐私设置</button>
-  `));
+  async function refreshFederatedStatus() {
+    const target = $('#federatedStatus');
+    if (!target) return;
+    try {
+      const response = await fetch(`${appContext}/api/health`, { headers: { Accept: 'application/json' }, cache: 'no-store' });
+      if (!response.ok) throw new Error(`health HTTP ${response.status}`);
+      const payload = await response.json();
+      const federated = payload.federated || {};
+      state.federatedBackend = federated;
+      if (!federated.configured) {
+        target.dataset.state = 'idle';
+        target.innerHTML = '<b>协调器未配置</b><span>开关只保存加入意愿；当前不会上传更新。</span><small>部署时设置 HV_FED_STATUS_URL，并在各设备运行独立联邦客户端。</small>';
+        return;
+      }
+      if (!federated.reachable) {
+        target.dataset.state = 'warning';
+        target.innerHTML = '<b>协调器暂不可达</b><span>没有训练更新从本浏览器发出。</span><small>请检查协调端、TLS 与网络配置。</small>';
+        return;
+      }
+      const multiDevice = federated.runType === 'multi_device_federated_run';
+      const privacy = federated.secureAggregation
+        ? '协调器报告已启用安全聚合'
+        : '协调器可见单个参数更新；不等于安全聚合或差分隐私';
+      target.dataset.state = multiDevice ? 'verified' : 'online';
+      target.innerHTML = `<b>${multiDevice ? '已验证真实多设备轮次' : '协调器在线 · 尚未验证多设备轮次'}</b>`
+        + `<span>第 ${Number(federated.round || 0)} 轮 · 注册 ${Number(federated.registeredClients || 0)} 客户端 · ${Number(federated.distinctDevices || 0)} 个设备指纹</span>`
+        + `<small>${escapeHtml(privacy)}；原始画面与关键点不由状态接口上传。</small>`;
+    } catch (error) {
+      state.federatedBackend = { configured: false, reachable: false, state: 'health_unavailable' };
+      target.dataset.state = 'warning';
+      target.innerHTML = '<b>无法读取联邦状态</b><span>当前不会上传更新。</span><small>网页后端健康接口不可用。</small>';
+    }
+  }
+
+  $('#privacyBtn')?.addEventListener('click', () => {
+    openModal(`
+      <span class="modal-kicker">PRIVACY CONTROL</span>
+      <h2 id="modalTitle">你的数据，你来决定</h2>
+      <p>摄像头或导入视频只在当前浏览器内处理。停止输入时会立即关闭摄像头轨道并释放本地视频缓存；保存任何实验结论前仍需你的确认。</p>
+      <div class="privacy-options">
+        <label><span><b>实时画面分析</b><small>仅在当前会话处理</small></span><input id="privacyVision" type="checkbox" checked disabled></label>
+        <label><span><b>保存实验结果</b><small>保存前必须由你确认</small></span><input id="privacyExperiments" type="checkbox" ${state.localProfile?.privacy.saveExperiments ? 'checked' : ''}></label>
+        <label><span><b>个性化记忆</b><small>可随时停用或删除</small></span><input id="privacyPersonalization" type="checkbox" ${state.localProfile?.privacy.personalization ? 'checked' : ''}></label>
+        <label><span><b>联邦训练加入意愿</b><small>默认关闭；保存意愿不等于已上传更新</small></span><input id="privacyFederated" type="checkbox" ${state.localProfile?.privacy.federatedOptIn ? 'checked' : ''}></label>
+      </div>
+      <div class="federated-status" id="federatedStatus" data-state="loading"><b>正在查询协调器</b><span>等待后端真实状态…</span></div>
+      <div class="modal-actions privacy-actions">
+        <button class="secondary-btn" data-modal-action="stop-camera" type="button">停止摄像头</button>
+        <button class="danger-btn" data-modal-action="delete-session" type="button">删除本次会话数据</button>
+      </div>
+      <button class="primary-btn wide" data-modal-action="save-privacy" type="button">保存隐私设置</button>
+    `);
+    refreshFederatedStatus();
+  });
 
   const tourSteps = [
     { view: 'sense', message: '第 1 步：AI 观察现实空间，并说明判断依据。' },
@@ -841,8 +921,8 @@
 
   const objectCopy = {
     monitor: {
-      title: '显示器可能低于舒适视线',
-      reason: '你持续注视屏幕，并在过去 18 分钟出现 6 次颈部前倾。屏幕位置可能需要调整，但我还需要侧面视角确认。'
+      title: '显示器占位图',
+      reason: '这是等待真实输入时的画面示意，不是当前检测结果。启用摄像头或导入视频后，系统才会建立眼部与屏幕的二维关系。'
     },
     cup: {
       title: '水杯位于惯用手一侧',
@@ -858,6 +938,13 @@
     $$('.object-tag').forEach((tag) => tag.classList.remove('selected'));
     button.classList.add('selected');
     const copy = objectCopy[button.dataset.object];
+    if (!state.visionMode) {
+      if ($('#agentFinding')) $('#agentFinding').textContent = '占位插图不构成视觉证据';
+      if ($('#agentReason')) $('#agentReason').textContent = '当前尚无真实视觉输入，因此这些标签只说明系统支持的物体类型，不代表已经识别你的环境。';
+      updateAgentStatus('等待证据', '占位插图未进入 Agent 推理');
+      toast('这是占位示意；请先启用摄像头或导入视频。');
+      return;
+    }
     if ($('#agentFinding')) $('#agentFinding').textContent = copy.title;
     if ($('#agentReason')) $('#agentReason').textContent = copy.reason;
     toast(`已查看${$('span', button)?.textContent || '物体'}与人的空间关系`);
@@ -904,6 +991,11 @@
     const temporalEvidence = state.temporalSnapshot?.current
       ? `${POSTURE_LABELS[state.temporalSnapshot.current.label] || state.temporalSnapshot.current.label}持续 ${formatDuration(state.temporalSnapshot.current.durationMs)}`
       : '尚未形成持续行为事件';
+    const upperEvaluation = state.postureModel?.upper?.evaluation;
+    const lowerEvaluation = state.postureModel?.lower?.evaluation;
+    const modelEvaluation = upperEvaluation && lowerEvaluation
+      ? `上身 Accuracy ${(upperEvaluation.accuracy * 100).toFixed(2)}%、Macro-F1 ${(upperEvaluation.macro_f1 * 100).toFixed(2)}%；下身 Accuracy ${(lowerEvaluation.accuracy * 100).toFixed(2)}%、Macro-F1 ${(lowerEvaluation.macro_f1 * 100).toFixed(2)}%。测试受试者与开发受试者隔离。`
+      : '训练分类器尚未加载，不能报告冻结评估。';
     openModal(`
       <span class="modal-kicker">REAL VISUAL EVIDENCE</span>
       <h2 id="modalTitle">当前判断使用了什么真实证据？</h2>
@@ -912,6 +1004,7 @@
         <ol>
           <li><b>输入来源</b><span>${hasLiveEvidence ? `${escapeHtml(source)}，原始画面未上传` : '尚未启用摄像头或导入视频'}</span></li>
           <li><b>姿态检测</b><span>${escapeHtml($('#poseMetric')?.textContent || '无检测结果')}</span></li>
+          <li><b>部署模型冻结评估</b><span>${escapeHtml(modelEvaluation)}</span></li>
           <li><b>头肩线索</b><span>${escapeHtml([$('#neckMetric')?.textContent, $('#shoulderMetric')?.textContent].filter(Boolean).join(' · ') || '无检测结果')}</span></li>
           <li><b>真实物体检测</b><span>${escapeHtml(objectEvidence)}</span></li>
           <li><b>人–物关系</b><span>${escapeHtml(relationEvidence)}</span></li>
@@ -1038,6 +1131,8 @@
     current?.classList.add('done');
     const marker = $('i', current);
     if (marker) marker.textContent = '✓';
+    const stepDetail = $('small', current);
+    if (stepDetail) stepDetail.textContent = '已采集 · 当前真实关键点';
     const next = steps[Math.min(activeIndex + 1, steps.length - 1)];
     if (activeIndex < steps.length - 1) {
       next.classList.add('active');
@@ -1130,8 +1225,12 @@
     $('#experimentState') && ($('#experimentState').textContent = '准备阶段');
     if ($('#experimentBtn')) {
       $('#experimentBtn').disabled = false;
-      $('#experimentBtn').textContent = '开始体验方案 A';
+        $('#experimentBtn').textContent = '开始记录原始布局基线';
     }
+      state.timerSeconds = 180;
+      state.experimentBaseline = null;
+      state.experimentCandidateStart = null;
+      renderTimer();
     toast('已撤销方案，空间与个人记忆均恢复到原始状态。', 3400);
     window.setTimeout(() => showView('design'), 320);
   });
@@ -1159,6 +1258,20 @@
     state.timerHandle = null;
   }
 
+  function startExperimentTimer(seconds, onComplete) {
+    stopTimer();
+    state.timerSeconds = seconds;
+    renderTimer();
+    state.timerHandle = window.setInterval(() => {
+      state.timerSeconds = Math.max(0, state.timerSeconds - 1);
+      renderTimer();
+      if (state.timerSeconds === 0) {
+        stopTimer();
+        onComplete();
+      }
+    }, 1000);
+  }
+
   function temporalRatio(snapshot, baselineTotals = null) {
     const totals = snapshot?.totals || {};
     const entries = Object.entries(totals).map(([label, value]) => [label, Math.max(0, value - (baselineTotals?.[label] || 0))]);
@@ -1181,26 +1294,39 @@
       $('#comfortBar')?.style.setProperty('width', `${result.comfort * 10}%`);
       updateVisionMetric('#comfortValue', `用户评分 ${result.comfort}/10`);
     }
+    const note = $('.experiment-note');
+    if (note && result.evidenceStatus === 'insufficient') {
+      const title = $('strong', note);
+      const detail = $('p', note);
+      if (title) title.textContent = '视觉时序证据不足';
+      if (detail) detail.textContent = `基线与方案阶段各至少需要 ${MIN_PHASE_EVIDENCE_MS / 1000} 秒有效姿态证据；本次记录不会进入个性化偏好记忆。`;
+    } else if (note && result.evidenceStatus === 'qualified') {
+      const title = $('strong', note);
+      const detail = $('p', note);
+      if (title) title.textContent = '两个计时阶段均达到证据门槛';
+      if (detail) detail.textContent = '结果仍是短时会话证据；是否保存以及如何解释由用户决定。';
+    }
   }
 
-  function finishExperiment() {
+  function cloneTemporalSnapshot() {
+    return JSON.parse(JSON.stringify(state.temporalSnapshot || { totals: {} }));
+  }
+
+  function beginCandidateExperiment() {
     stopTimer();
-    const baselineTotals = state.experimentBaseline?.snapshot?.totals || {};
-    state.experimentResult = {
-      id: `experiment-${Date.now()}`,
-      plan: state.selectedPlan,
-      startedAt: state.experimentBaseline?.startedAt || null,
-      finishedAt: new Date().toISOString(),
-      baseline: temporalRatio(state.experimentBaseline?.snapshot),
-      candidate: temporalRatio(state.temporalSnapshot, baselineTotals),
-      relations: state.spatialRelations.map((item) => ({ type: item.type, label: item.label, confidence: item.confidence })),
-      comfort: null,
-      source: 'live-browser-evidence'
-    };
-    renderExperimentEvidence(state.experimentResult);
-    state.experimentPhase = 'rating';
-    $('#experimentState').textContent = '等待主观评分';
-    $('#experimentBtn').textContent = '填写舒适度并查看结果';
+    const finishedBaseline = cloneTemporalSnapshot();
+    const baselineStartTotals = state.experimentBaseline?.startSnapshot?.totals || {};
+    state.experimentBaseline.result = temporalRatio(finishedBaseline, baselineStartTotals);
+    state.experimentBaseline.finishedAt = new Date().toISOString();
+    state.experimentCandidateStart = { snapshot: finishedBaseline, startedAt: new Date().toISOString() };
+    state.experimentPhase = 'candidate';
+    $('#experimentState').textContent = `正在体验${planData[state.selectedPlan].label}`;
+    $('#experimentBtn').textContent = '结束方案体验并填写评分';
+    startExperimentTimer(360, finishExperiment);
+    toast(`基线阶段已记录；现在开始${planData[state.selectedPlan].label}。`);
+  }
+
+  function openComfortRating() {
     openModal(`
       <span class="modal-kicker">SUBJECTIVE RATING</span>
       <h2 id="modalTitle">这次短时体验感受如何？</h2>
@@ -1210,34 +1336,73 @@
     `, '#comfortInput');
   }
 
+  function finishExperiment() {
+    stopTimer();
+    const baselineResult = state.experimentBaseline?.result
+      || temporalRatio(state.temporalSnapshot, state.experimentBaseline?.startSnapshot?.totals || {});
+    const candidateTotals = state.experimentCandidateStart?.snapshot?.totals || {};
+    const baselineEvidence = baselineResult.total || 0;
+    const candidateResult = temporalRatio(state.temporalSnapshot, candidateTotals);
+    state.experimentResult = {
+      id: `experiment-${Date.now()}`,
+      plan: state.selectedPlan,
+      startedAt: state.experimentBaseline?.startedAt || null,
+      finishedAt: new Date().toISOString(),
+      baseline: baselineResult,
+      candidate: candidateResult,
+      relations: state.spatialRelations.map((item) => ({ type: item.type, label: item.label, confidence: item.confidence })),
+      comfort: null,
+      source: 'live-browser-evidence',
+      evidenceStatus: baselineEvidence >= MIN_PHASE_EVIDENCE_MS && candidateResult.total >= MIN_PHASE_EVIDENCE_MS
+        ? 'qualified'
+        : 'insufficient'
+    };
+    renderExperimentEvidence(state.experimentResult);
+    state.experimentPhase = 'rating';
+    $('#experimentState').textContent = '等待主观评分';
+    $('#experimentBtn').textContent = '填写舒适度并查看结果';
+    openComfortRating();
+  }
+
   $('#experimentBtn')?.addEventListener('click', (event) => {
     if (state.experimentPhase === 'ready') {
-      state.experimentPhase = 'running';
-      $('#experimentState').textContent = '正在体验方案 A';
-      event.currentTarget.textContent = '结束体验并查看结果';
-      state.experimentBaseline = { snapshot: JSON.parse(JSON.stringify(state.temporalSnapshot || { totals: {} })), startedAt: new Date().toISOString() };
-      state.timerSeconds = 720;
-      renderTimer();
-      state.timerHandle = window.setInterval(() => {
-        state.timerSeconds = Math.max(0, state.timerSeconds - 1);
-        renderTimer();
-        if (state.timerSeconds === 0) finishExperiment();
-      }, 1000);
-      toast('实验已开始；你可以随时提前结束。');
-    } else if (state.experimentPhase === 'running') {
+      const note = $('.experiment-note');
+      if (note) {
+        const title = $('strong', note);
+        const detail = $('p', note);
+        if (title) title.textContent = '等待真实体验记录';
+        if (detail) detail.textContent = '启动短时体验后，本页才记录当前会话数据；短期变化不能直接推断长期健康收益。';
+      }
+      state.experimentPhase = 'baseline';
+      $('#experimentState').textContent = '正在记录原始布局基线';
+      event.currentTarget.textContent = `结束基线并开始${planData[state.selectedPlan].label}`;
+      state.experimentBaseline = { startSnapshot: cloneTemporalSnapshot(), startedAt: new Date().toISOString() };
+      state.experimentCandidateStart = null;
+      startExperimentTimer(180, beginCandidateExperiment);
+      toast('基线记录已开始；请保持与方案阶段相同的任务。');
+    } else if (state.experimentPhase === 'baseline') {
+      beginCandidateExperiment();
+    } else if (state.experimentPhase === 'candidate') {
       finishExperiment();
     } else if (state.experimentPhase === 'rating') {
-      finishExperiment();
+      openComfortRating();
     } else {
       state.experimentPhase = 'saved';
       event.currentTarget.textContent = '结果已保存';
       event.currentTarget.disabled = true;
-      if (state.localProfile?.privacy.saveExperiments && state.experimentResult) {
+      const shouldSave = Boolean(state.localProfile?.privacy.saveExperiments && state.experimentResult);
+      if (shouldSave) {
         state.localProfile.experiments.push(state.experimentResult);
         persistLocalProfile();
-        addConfirmedMemory(`${planData[state.selectedPlan].label}的短时舒适度 ${state.experimentResult.comfort}/10`, '用户确认的自我实验', '来自真实会话的姿态时序与主观评分');
+        if (state.experimentResult.evidenceStatus === 'qualified') {
+          addConfirmedMemory(`${planData[state.selectedPlan].label}的短时舒适度 ${state.experimentResult.comfort}/10`, '用户确认的自我实验', '来自两个真实计时阶段的姿态时序与主观评分');
+        }
       }
-      toast('已保存真实短时体验记录；你可以在记忆页面停用或删除。');
+      toast(!shouldSave
+        ? '根据你的隐私设置，本次实验没有写入本地存储。'
+        : (state.experimentResult?.evidenceStatus === 'qualified'
+          ? '已保存证据达标的短时体验记录；你可以在记忆页面停用或删除。'
+          : '已保存为证据不足的审计记录，不会写入个性化偏好记忆。'));
       window.setTimeout(() => showView('memory'), 420);
     }
   });
@@ -1245,6 +1410,12 @@
   $('#skipExperiment')?.addEventListener('click', () => {
     stopTimer();
     state.experimentPhase = 'ready';
+    state.experimentBaseline = null;
+    state.experimentCandidateStart = null;
+    state.timerSeconds = 180;
+    renderTimer();
+    $('#experimentState') && ($('#experimentState').textContent = '准备阶段');
+    if ($('#experimentBtn')) $('#experimentBtn').textContent = '开始记录原始布局基线';
     toast('已跳过实验，空间和个人记忆均未改变。');
     window.setTimeout(() => showView('sense'), 360);
   });
@@ -1389,7 +1560,9 @@
       state.localProfile.privacy.personalization = Boolean($('#privacyPersonalization')?.checked);
       state.localProfile.privacy.federatedOptIn = Boolean($('#privacyFederated')?.checked);
       persistLocalProfile();
-      toast('隐私设置已保存在当前浏览器。');
+      toast(state.localProfile.privacy.federatedOptIn
+        ? '已保存联邦训练加入意愿；网页没有自动上传任何更新。'
+        : '隐私设置已保存，联邦训练保持关闭。');
     }
     if (action === 'stop-camera') {
       stopVisionInput();
@@ -1440,7 +1613,9 @@
         renderExperimentEvidence(state.experimentResult);
         state.experimentPhase = 'confirm';
         $('#experimentState').textContent = '等待用户确认';
-        $('#experimentBtn').textContent = `确认${planData[state.selectedPlan].label}并保存记录`;
+        $('#experimentBtn').textContent = state.experimentResult.evidenceStatus === 'qualified'
+          ? `确认${planData[state.selectedPlan].label}并保存记录`
+          : '保存为证据不足记录';
         $('#experimentBtn').classList.add('confirm');
         toast('真实时序证据与主观评分已组合，请确认是否保存。');
       }
