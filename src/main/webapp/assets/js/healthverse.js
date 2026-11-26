@@ -53,6 +53,8 @@
     federatedBackend: null,
     localProfile: null,
     visionMode: null,
+    visionLabel: null,
+    visionSessionToken: 0,
     lastVideoTime: -1,
     lastInferenceAt: 0,
     inferenceFrames: 0,
@@ -217,16 +219,22 @@
   }
 
   async function ensureVisionRuntime() {
-    if (!state.visionModulePromise) {
-      state.visionModulePromise = import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.3/+esm');
+    try {
+      if (!state.visionModulePromise) {
+        state.visionModulePromise = import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.3/+esm');
+      }
+      const visionModule = await state.visionModulePromise;
+      if (!state.visionFilesetPromise) {
+        state.visionFilesetPromise = visionModule.FilesetResolver.forVisionTasks(
+          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.3/wasm'
+        );
+      }
+      return { visionModule, vision: await state.visionFilesetPromise };
+    } catch (error) {
+      state.visionModulePromise = null;
+      state.visionFilesetPromise = null;
+      throw error;
     }
-    const visionModule = await state.visionModulePromise;
-    if (!state.visionFilesetPromise) {
-      state.visionFilesetPromise = visionModule.FilesetResolver.forVisionTasks(
-        'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.3/wasm'
-      );
-    }
-    return { visionModule, vision: await state.visionFilesetPromise };
   }
 
   async function ensureSpatialRuntime() {
@@ -249,7 +257,7 @@
       const { visionModule, vision } = await ensureVisionRuntime();
       const options = {
         baseOptions: {
-          modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task',
+          modelAssetPath: `${appContext}/assets/models/mediapipe/pose_landmarker_lite.task`,
           delegate: 'GPU'
         },
         runningMode: 'VIDEO',
@@ -281,7 +289,7 @@
       const { visionModule, vision } = await ensureVisionRuntime();
       const options = {
         baseOptions: {
-          modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/int8/1/efficientdet_lite0.tflite',
+          modelAssetPath: `${appContext}/assets/models/mediapipe/efficientdet_lite0.tflite`,
           delegate: 'GPU'
         },
         runningMode: 'VIDEO',
@@ -482,6 +490,7 @@
   }
 
   function stopVisionInput({ announce = true } = {}) {
+    state.visionSessionToken += 1;
     if (state.visionRaf) cancelAnimationFrame(state.visionRaf);
     state.visionRaf = null;
     if (visionVideo) {
@@ -504,6 +513,7 @@
       context?.clearRect(0, 0, visionCanvas.width, visionCanvas.height);
     }
     state.visionMode = null;
+    state.visionLabel = null;
     state.paused = false;
     state.lastVideoTime = -1;
     state.inferenceFrames = 0;
@@ -630,14 +640,6 @@
       if (state.poseLandmarker) {
         try {
           renderPose(state.poseLandmarker.detectForVideo(visionVideo, performance.now()));
-          if (state.objectDetector && timestamp - state.lastObjectInferenceAt >= 500) {
-            state.lastObjectInferenceAt = timestamp;
-            const rawObjects = state.objectDetector.detectForVideo(visionVideo, performance.now());
-            state.objectDetections = state.spatialRuntime
-              ? state.spatialRuntime.normalizeDetections(rawObjects, visionVideo.videoWidth, visionVideo.videoHeight)
-              : [];
-            updateSpatialEvidence();
-          }
           state.inferenceFrames += 1;
           const elapsed = timestamp - state.inferenceWindowStarted;
           if (elapsed >= 1000) {
@@ -649,12 +651,26 @@
           setSourceStatus('画面播放中 · 姿态分析暂不可用', 'warning');
         }
       }
+      if (state.objectDetector && timestamp - state.lastObjectInferenceAt >= 500) {
+        state.lastObjectInferenceAt = timestamp;
+        try {
+          const rawObjects = state.objectDetector.detectForVideo(visionVideo, performance.now());
+          state.objectDetections = state.spatialRuntime
+            ? state.spatialRuntime.normalizeDetections(rawObjects, visionVideo.videoWidth, visionVideo.videoHeight)
+            : [];
+          updateSpatialEvidence();
+        } catch (error) {
+          console.warn('HealthVerse object inference failed for the current frame.', error);
+        }
+      }
     }
     state.visionRaf = requestAnimationFrame(visionLoop);
   }
 
   function beginVision(mode, label) {
+    const sessionToken = ++state.visionSessionToken;
     state.visionMode = mode;
+    state.visionLabel = label;
     state.paused = false;
     state.lastVideoTime = -1;
     state.inferenceFrames = 0;
@@ -680,11 +696,11 @@
     if (state.visionRaf) cancelAnimationFrame(state.visionRaf);
     state.visionRaf = requestAnimationFrame(visionLoop);
     ensurePoseLandmarker().then(() => {
-      if (state.visionMode !== mode) return;
+      if (state.visionSessionToken !== sessionToken) return;
       setSourceStatus(`${label} · MediaPipe 本地分析中`, 'live');
       toast('真实视觉输入已启用，姿态关键点仅在本机浏览器中处理。', 3600);
     }).catch(() => {
-      if (state.visionMode !== mode) return;
+      if (state.visionSessionToken !== sessionToken) return;
       setSourceStatus(`${label} · 视频正常播放，姿态模型加载失败`, 'warning');
       toast('视频输入已启用；姿态模型暂不可用，原始画面仍不会上传。', 3600);
     });
@@ -692,11 +708,11 @@
       toast('MediaPipe 仍可工作，但训练后的姿态分类器没有加载成功。', 3600);
     });
     ensureSpatialRuntime().then(() => ensureObjectDetector()).then(() => {
-      if (state.visionMode !== mode) return;
+      if (state.visionSessionToken !== sessionToken) return;
       updateVisionMetric('#objectMetric', 'EfficientDet 已加载，等待物体');
       toast('真实物体检测已启用，检测框与原始画面一样只在浏览器内处理。', 3600);
     }).catch(() => {
-      if (state.visionMode !== mode) return;
+      if (state.visionSessionToken !== sessionToken) return;
       updateVisionMetric('#objectMetric', '物体模型加载失败');
       toast('姿态分析仍可使用，物体检测模型暂未加载。', 3600);
     });
@@ -730,19 +746,34 @@
 
   async function importVideo(file) {
     if (!file || !visionVideo) return;
-    if (!file.type.startsWith('video/')) {
+    const supportedExtension = /\.(mp4|webm|mov|m4v|ogv)$/i.test(file.name || '');
+    if (!file.type.startsWith('video/') && !supportedExtension) {
       toast('请选择浏览器支持的视频文件。');
       return;
     }
     stopVisionInput({ announce: false });
+    const importToken = state.visionSessionToken;
     state.mediaObjectUrl = URL.createObjectURL(file);
     visionVideo.controls = true;
-    visionVideo.src = state.mediaObjectUrl;
     try {
-      await new Promise((resolve, reject) => {
+      const loaded = new Promise((resolve, reject) => {
         visionVideo.addEventListener('loadeddata', resolve, { once: true });
         visionVideo.addEventListener('error', reject, { once: true });
       });
+      visionVideo.src = state.mediaObjectUrl;
+      visionVideo.load();
+      await loaded;
+      setLiveStage(true);
+      setSourceStatus(`本地视频 · ${file.name} · 正在准备本地分析模型`, 'loading');
+      updateVisionMetric('#visionSourceMetric', `本地视频 · ${file.name}`);
+      updateVisionMetric('#visionStatusPill', '正在准备分析模型');
+      await Promise.allSettled([
+        ensurePoseLandmarker(),
+        ensurePostureClassifier(),
+        ensureSpatialRuntime().then(() => ensureObjectDetector())
+      ]);
+      if (state.visionSessionToken !== importToken || !state.mediaObjectUrl) return;
+      visionVideo.currentTime = 0;
       await visionVideo.play();
       beginVision('file', `本地视频 · ${file.name}`);
     } catch (error) {
@@ -755,6 +786,19 @@
   startCameraBtn?.addEventListener('click', startCamera);
   videoFileInput?.addEventListener('change', () => importVideo(videoFileInput.files?.[0]));
   stopSourceBtn?.addEventListener('click', () => stopVisionInput());
+  visionVideo?.addEventListener('ended', () => {
+    if (state.visionMode !== 'file') return;
+    if (state.visionRaf) cancelAnimationFrame(state.visionRaf);
+    state.visionRaf = null;
+    state.paused = true;
+    setSourceStatus(`${state.visionLabel || '本地视频'} · 播放与分析完成`, 'complete');
+    updateVisionMetric('#visionStatusPill', '视频分析完成');
+    if (pauseBtn) {
+      pauseBtn.textContent = '分析完成';
+      pauseBtn.setAttribute('aria-pressed', 'true');
+      pauseBtn.disabled = true;
+    }
+  });
 
   function showView(view, announce = false) {
     if (!labels[view]) return;
