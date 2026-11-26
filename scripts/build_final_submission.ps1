@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string]$DestinationBase = 'D:\CodexData\HealthVerse\deliverables'
+    [string]$DestinationBase = 'D:\CodexData\HealthVerse\deliverables-final'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -10,8 +10,8 @@ $buildRoot = Join-Path $destinationBaseFull 'HealthVerse_最终提交文件夹'
 $zipPath = Join-Path $destinationBaseFull 'HealthVerse_最终提交文件夹_2026-11-26.zip'
 $sourceArchive = Join-Path $destinationBaseFull '__healthverse_source.zip'
 
-if (-not $destinationBaseFull.StartsWith('D:\CodexData\HealthVerse\deliverables', [System.StringComparison]::OrdinalIgnoreCase)) {
-    throw "DestinationBase must stay under D:\CodexData\HealthVerse\deliverables"
+if (-not $destinationBaseFull.StartsWith('D:\CodexData\HealthVerse\deliverables-final', [System.StringComparison]::OrdinalIgnoreCase)) {
+    throw "DestinationBase must stay under D:\CodexData\HealthVerse\deliverables-final"
 }
 if (Test-Path -LiteralPath $buildRoot) {
     throw "Build directory already exists: $buildRoot"
@@ -43,13 +43,13 @@ try {
 Remove-Item -LiteralPath $sourceArchive
 
 Copy-Item -LiteralPath (Join-Path $repoRoot 'output\pdf\HealthVerse_课程作业报告_最终版.pdf') -Destination (Join-Path $buildRoot '01_课程作业报告')
-Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\submission\00_提交清单与课程要求对应.txt') -Destination $buildRoot
-Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\submission\02_模型与数据来源说明.md') -Destination (Join-Path $buildRoot '02_模型与影像来源')
-Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\submission\03_演示影像说明.md') -Destination (Join-Path $buildRoot '03_演示视频与截图')
-Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\submission\04_测试与评估报告.md') -Destination (Join-Path $buildRoot '04_测试结果')
-Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\submission\04_构建与回归测试.txt') -Destination (Join-Path $buildRoot '04_测试结果')
-Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\submission\05_改进前后对照.md') -Destination (Join-Path $buildRoot '05_改进前后对照')
-Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\submission\06_运行与提交说明.txt') -Destination (Join-Path $buildRoot '06_使用与提交说明')
+Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\submission\00_提交清单与课程要求对应.txt') -Destination (Join-Path $buildRoot 'HealthVerse_提交清单与课程要求对应.txt')
+Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\submission\02_模型与数据来源说明.md') -Destination (Join-Path $buildRoot '02_模型与影像来源\HealthVerse_模型与数据来源说明.md')
+Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\submission\03_演示影像说明.md') -Destination (Join-Path $buildRoot '03_演示视频与截图\HealthVerse_演示影像说明.md')
+Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\submission\04_测试与评估报告.md') -Destination (Join-Path $buildRoot '04_测试结果\HealthVerse_测试与评估报告.md')
+Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\submission\04_构建与回归测试.txt') -Destination (Join-Path $buildRoot '04_测试结果\HealthVerse_构建与回归测试.txt')
+Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\submission\05_改进前后对照.md') -Destination (Join-Path $buildRoot '05_改进前后对照\HealthVerse_改进前后对照.md')
+Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\submission\06_运行与提交说明.txt') -Destination (Join-Path $buildRoot '06_使用与提交说明\HealthVerse_运行与提交说明.txt')
 
 Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\screenshots\before-static-prototype.jpg') -Destination (Join-Path $buildRoot '03_演示视频与截图\截图\01_修改前_静态原型.jpg')
 Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\screenshots\after-live-video.png') -Destination (Join-Path $buildRoot '03_演示视频与截图\截图\02_修改后_真实视频推理.png')
@@ -97,6 +97,13 @@ foreach ($relative in $evidenceFiles) {
 Copy-Item -LiteralPath (Join-Path $repoRoot 'README.md') -Destination (Join-Path $buildRoot '06_使用与提交说明\HealthVerse_README.md')
 Copy-Item -LiteralPath (Join-Path $repoRoot 'SUBMISSION_GUIDE.md') -Destination (Join-Path $buildRoot '06_使用与提交说明\HealthVerse_源码提交说明.md')
 Copy-Item -LiteralPath (Join-Path $repoRoot 'IMPLEMENTATION_STATUS.md') -Destination (Join-Path $buildRoot '06_使用与提交说明\HealthVerse_实现与迭代记录.md')
+
+$sourceCommit = (git -C $repoRoot rev-parse HEAD).Trim()
+[System.IO.File]::WriteAllLines(
+    (Join-Path $buildRoot '06_使用与提交说明\HealthVerse_源码提交.txt'),
+    @("GitHub: https://github.com/Guzj-cmd/HealthVerse", "Commit: $sourceCommit"),
+    [System.Text.UTF8Encoding]::new($false)
+)
 
 $warSource = Join-Path $repoRoot 'target\HealthVerse_Submission.war'
 if (-not (Test-Path -LiteralPath $warSource)) { throw "Missing WAR: run Maven package first" }
