@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!doctype html>
 <html lang="zh-CN">
 <head>
@@ -5,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="app-context" content="${pageContext.request.contextPath}">
   <meta name="theme-color" content="#f7f1e5">
+  <link rel="icon" href="data:,">
   <title>HealthVerse · 个人健康 AI 工作台</title>
   <meta name="description" content="一个以视觉感知、空间协同设计和自我实验为核心的个人健康 AI 工作台概念原型。">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/healthverse.css">
@@ -76,6 +78,8 @@
                     <span id="poseMetric">等待人体</span>
                     <span id="neckMetric">头颈偏移 —</span>
                     <span id="shoulderMetric">肩线角度 —</span>
+                    <span id="objectMetric">工作区物体 —</span>
+                    <span id="relationMetric">等待人–物关系</span>
                   </div>
                 </div>
                 <div class="scene-placeholder" id="scenePlaceholder">
@@ -109,20 +113,20 @@
                 <button class="object-tag" data-object="cup" style="left:82%;top:53%" type="button"><span>水杯</span><b>常用</b></button>
                 <button class="object-tag" data-object="chair" style="left:22%;top:74%" type="button"><span>座椅</span><b>已识别</b></button>
                 </div>
-                <div class="scene-caption"><span id="visionSourceMetric">尚未启用视觉输入</span><span id="visionPoseMetric">姿态关键点 —</span><span id="visionFpsMetric">分析帧率 —</span></div>
+                <div class="scene-caption"><span id="visionSourceMetric">尚未启用视觉输入</span><span id="visionPoseMetric">姿态关键点 —</span><span id="visionFpsMetric">分析帧率 —</span><span id="temporalMetric">时序事件等待中</span></div>
               </div>
             </article>
 
             <aside class="agent panel" aria-label="Health Agent 分析面板">
               <div class="method-panel-label label-b"><b>(b)</b><strong>BDI Intent Model</strong><span>Observe → Infer → Confirm</span></div>
-              <div class="agent-title"><span class="agent-orb"></span><div><h2>Health Agent</h2><p>当前任务：深度学习 · 42 分钟</p></div></div>
+              <div class="agent-title"><span class="agent-orb"></span><div><h2>Health Agent</h2><p id="taskDuration">当前会话：等待真实输入</p></div></div>
               <div class="reasoning-card" aria-live="polite">
                 <div class="card-kicker">观察 → 推断 → 求证</div>
                 <div class="model-evidence" id="modelEvidence">真实姿态模型 · 等待视觉输入</div>
                 <h3 id="agentFinding">显示器可能低于舒适视线</h3>
                 <p id="agentReason">你持续注视屏幕，并在过去 18 分钟出现 6 次颈部前倾。屏幕位置可能需要调整，但我还需要侧面视角确认。</p>
                 <div class="evidence-row"><span>模型置信度</span><div class="confidence"><i id="confidenceBar" style="width:0%"></i></div><b id="confidenceText">—</b></div>
-                <div class="interrupt-note"><b>为什么现在提醒？</b><span>你已连续学习 42 分钟，当前处于自然停顿，预计打断成本较低。</span></div>
+                <div class="interrupt-note"><b>为什么现在提醒？</b><span id="interruptReason">等待真实姿态、物体和持续时间证据。</span></div>
               </div>
               <div class="correction-row" aria-label="纠正 AI 的判断">
                 <span>这个判断不准确？</span>
@@ -169,7 +173,9 @@
 
           <div class="metric-grid">
             <article class="metric-card"><span>真实视觉输入</span><strong id="visionSummary">等待连接</strong><p id="visionSummaryDetail">启用摄像头或导入视频后开始本地分析</p></article>
-            <article class="metric-card"><span>个人模型</span><strong>待校准</strong><p>完成 2 分钟活动范围采集</p><button data-go="body" type="button">开始校准</button></article>
+            <article class="metric-card"><span>人–物空间关系</span><strong id="spatialSummary">尚未建立关系</strong><p id="spatialSummaryDetail">需要同时看到人体和工作区物体</p></article>
+            <article class="metric-card"><span>时序行为</span><strong id="sessionBehavior">等待会话</strong><p>持续姿态使用真实帧时间累计</p></article>
+            <article class="metric-card"><span>个人模型</span><strong id="calibrationSummary">待校准</strong><p id="calibrationDetail">使用真实关键点采集个人活动范围</p><button data-go="body" type="button">开始校准</button></article>
             <article class="metric-card"><span>Agent 工作状态</span><strong class="mint">主动求证</strong><p>正在等待补充侧面视角</p></article>
           </div>
         </section>
@@ -204,8 +210,8 @@
           <div class="design-layout">
             <aside class="plan-list panel">
               <div class="plan-intro"><span class="eyebrow">反事实方案</span><h2>两个可撤销方案</h2><p>均满足“保持桌面整洁，不移动主机”的限制。</p></div>
-              <button class="plan-card active" data-plan="a" type="button"><span>A · 轻量调整</span><strong>抬高显示器 12 cm</strong><small>预计 3 分钟 · 不改变桌面分区</small></button>
-              <button class="plan-card" data-plan="b" type="button"><span>B · 深度调整</span><strong>显示器升高 + 水杯左移</strong><small>预计 7 分钟 · 缩短常用物品距离</small></button>
+                <button class="plan-card active" data-plan="a" type="button"><span>A · 轻量调整</span><strong>显示器相对抬高</strong><small>按画面比例预览 · 执行前需用户实测</small></button>
+                <button class="plan-card" data-plan="b" type="button"><span>B · 组合调整</span><strong>屏幕对齐 + 常用物体靠近</strong><small>仅使用当前二维关系 · 不伪造厘米距离</small></button>
               <div class="constraint"><span>你的限制</span><p>“桌面右侧需要保留手写区域。”</p><button id="editConstraint" type="button">编辑</button></div>
             </aside>
             <article class="compare panel">
@@ -213,12 +219,12 @@
               <div class="compare-scene after" id="compareScene">
                 <div class="mini-person"><i></i><b></b><em></em></div>
                 <div class="mini-desk"></div><div class="mini-monitor"><span></span></div><div class="mini-cup"></div>
-                <div class="sightline"></div><div class="angle-badge">视线夹角 <b id="angleValue">8°</b></div>
+                <div class="sightline"></div><div class="angle-badge">二维对齐 <b id="angleValue">偏移级别 8</b></div>
                 <div class="ghost-monitor"></div>
               </div>
               <div class="compare-controls">
-                <label><span>显示器高度</span><b id="heightValue">+12 cm</b><input id="heightInput" type="range" min="0" max="20" value="12"></label>
-                <div class="impact-chips"><span class="good">颈部前倾 ↓</span><span>手写区域不变</span><span>3 分钟完成</span></div>
+                <label><span>相对调整量</span><b id="heightValue">+12% 画面高度</b><input id="heightInput" type="range" min="0" max="20" value="12"></label>
+                <div class="impact-chips"><span class="good">调整后重新检测</span><span>手写区域不变</span><span>可随时撤销</span></div>
               </div>
               <div class="compare-footer"><button class="text-btn hidden" id="undoPlan" type="button">撤销，恢复原始布局</button><button class="secondary-btn" id="rejectPlan" type="button">换一个方案</button><button class="primary-btn" id="applyPlan" type="button">选择方案并开始验证</button></div>
             </article>
@@ -231,9 +237,9 @@
             <article class="experiment-main panel">
               <div class="experiment-top"><div><span class="run-dot"></span><b id="experimentState">准备阶段</b><small>预计 12 分钟</small></div><div class="timer" id="timer">12:00</div></div>
               <div class="comparison-bars">
-                <div class="bar-group"><span>颈部前倾时长</span><div><i style="width:72%"></i><b>原始布局 72%</b></div><div class="candidate"><i style="width:38%"></i><b>方案 A 38%</b></div></div>
-                <div class="bar-group"><span>常用物品触达</span><div><i style="width:58%"></i><b>原始布局 5.8 s</b></div><div class="candidate"><i style="width:41%"></i><b>方案 A 4.1 s</b></div></div>
-                <div class="bar-group"><span>主观舒适度</span><div><i style="width:54%"></i><b>原始布局 5.4</b></div><div class="candidate"><i style="width:81%"></i><b>方案 A 8.1</b></div></div>
+                <div class="bar-group"><span>非中性躯干姿态时长</span><div><i id="baselinePostureBar" style="width:0"></i><b id="baselinePostureValue">基线：等待记录</b></div><div class="candidate"><i id="candidatePostureBar" style="width:0"></i><b id="candidatePostureValue">方案：等待记录</b></div></div>
+                <div class="bar-group"><span>工作区物体关系</span><div><i id="relationEvidenceBar" style="width:0"></i><b id="relationEvidenceValue">尚无可比较证据</b></div></div>
+                <div class="bar-group"><span>主观舒适度</span><div class="candidate"><i id="comfortBar" style="width:0"></i><b id="comfortValue">完成后由用户输入</b></div></div>
               </div>
               <div class="experiment-note"><strong>等待真实体验记录</strong><p>启动短时体验后，本页才记录当前会话数据；短期变化不能直接推断长期健康收益。</p></div>
             </article>
@@ -261,11 +267,8 @@
               <div class="graph-legend"><span><i></i>用户确认</span><span><i></i>视觉推断</span><span><i></i>实验结果</span></div>
             </article>
             <aside class="memory-list panel">
-              <span class="eyebrow">可控记忆</span><h2>已保存 4 条</h2>
-              <div class="memory-item"><div><b>右侧保留手写区域</b><small>用户明确说明 · 长期</small></div><button class="toggle on" type="button" aria-label="停用该记忆"><i></i></button></div>
-              <div class="memory-item"><div><b>方案 A 更舒适</b><small>自我实验确认 · 30 天</small></div><button class="toggle on" type="button" aria-label="停用该记忆"><i></i></button></div>
-              <div class="memory-item"><div><b>水杯通常放在右侧</b><small>视觉推断 · 7 天</small></div><button class="toggle on" type="button" aria-label="停用该记忆"><i></i></button></div>
-              <div class="memory-item"><div><b>下午更容易前倾</b><small>待用户确认 · 本次会话</small></div><button class="delete-memory" type="button">删除</button></div>
+              <span class="eyebrow">可控记忆</span><h2 id="memoryCount">已保存 0 条</h2>
+              <div id="memoryItems"><p class="empty-memory">尚无经用户确认的个人记忆。</p></div>
               <button class="secondary-btn wide" id="clearMemory" type="button">管理全部记忆</button>
             </aside>
           </div>

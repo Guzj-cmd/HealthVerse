@@ -31,6 +31,26 @@
     visionRaf: null,
     poseLandmarker: null,
     poseModelPromise: null,
+    visionModulePromise: null,
+    visionFilesetPromise: null,
+    objectDetector: null,
+    objectModelPromise: null,
+    lastObjectInferenceAt: 0,
+    objectDetections: [],
+    latestLandmarks: null,
+    spatialRelations: [],
+    spatialRuntime: null,
+    spatialRuntimePromise: null,
+    temporalTracker: null,
+    temporalSnapshot: null,
+    latestPosture: null,
+    sessionStartedAt: null,
+    calibrationSamples: [],
+    pendingCalibration: null,
+    experimentBaseline: null,
+    experimentResult: null,
+    sessionCorrections: [],
+    localProfile: null,
     visionMode: null,
     lastVideoTime: -1,
     lastInferenceAt: 0,
@@ -72,6 +92,65 @@
     TLR: '右倾已持续出现，可以尝试把常用物品移近身体中线；先确认是否由任务造成。'
   };
 
+  const PROFILE_STORAGE_KEY = 'healthverse.profile.v1';
+
+  function emptyLocalProfile() {
+    return {
+      schema: 'healthverse.local-profile.v1',
+      privacy: { saveExperiments: true, personalization: true, federatedOptIn: false },
+      calibration: null,
+      memories: [],
+      experiments: [],
+      updatedAt: null
+    };
+  }
+
+  function loadLocalProfile() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY) || 'null');
+      if (parsed?.schema !== 'healthverse.local-profile.v1') return emptyLocalProfile();
+      return {
+        ...emptyLocalProfile(), ...parsed,
+        privacy: { ...emptyLocalProfile().privacy, ...(parsed.privacy || {}) },
+        memories: Array.isArray(parsed.memories) ? parsed.memories : [],
+        experiments: Array.isArray(parsed.experiments) ? parsed.experiments : []
+      };
+    } catch (error) {
+      return emptyLocalProfile();
+    }
+  }
+
+  function persistLocalProfile() {
+    if (!state.localProfile) return;
+    state.localProfile.updatedAt = new Date().toISOString();
+    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(state.localProfile));
+    renderMemories();
+  }
+
+  function addConfirmedMemory(title, source, detail) {
+    if (!state.localProfile?.privacy.personalization) return;
+    const id = `memory-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+    state.localProfile.memories.push({ id, title, source, detail, enabled: true, createdAt: new Date().toISOString() });
+    persistLocalProfile();
+  }
+
+  function renderMemories() {
+    const container = $('#memoryItems');
+    if (!container || !state.localProfile) return;
+    const memories = state.localProfile.memories;
+    updateVisionMetric('#memoryCount', `已保存 ${memories.length} 条`);
+    if (!memories.length) {
+      container.innerHTML = '<p class="empty-memory">尚无经用户确认的个人记忆。</p>';
+      return;
+    }
+    container.innerHTML = memories.map((memory) => `
+      <div class="memory-item" data-memory-id="${escapeHtml(memory.id)}">
+        <div><b>${escapeHtml(memory.title)}</b><small>${escapeHtml(memory.source)} · ${memory.enabled ? '已启用' : '已停用'}</small></div>
+        <button class="toggle ${memory.enabled ? 'on' : ''}" data-memory-toggle="${escapeHtml(memory.id)}" type="button" aria-label="${memory.enabled ? '停用' : '启用'}该记忆"><i></i></button>
+        <button class="delete-memory" data-memory-delete="${escapeHtml(memory.id)}" type="button">删除</button>
+      </div>`).join('');
+  }
+
   function escapeHtml(value) {
     return String(value).replace(/[&<>'"]/g, (character) => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
@@ -106,14 +185,37 @@
     if (node) node.textContent = text;
   }
 
+  async function ensureVisionRuntime() {
+    if (!state.visionModulePromise) {
+      state.visionModulePromise = import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.3/+esm');
+    }
+    const visionModule = await state.visionModulePromise;
+    if (!state.visionFilesetPromise) {
+      state.visionFilesetPromise = visionModule.FilesetResolver.forVisionTasks(
+        'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.3/wasm'
+      );
+    }
+    return { visionModule, vision: await state.visionFilesetPromise };
+  }
+
+  async function ensureSpatialRuntime() {
+    if (state.spatialRuntime) return state.spatialRuntime;
+    if (!state.spatialRuntimePromise) {
+      const runtimeUrl = appContext ? `${appContext}/assets/js/spatial-inference.mjs` : './spatial-inference.mjs';
+      state.spatialRuntimePromise = import(runtimeUrl).then((runtime) => {
+        state.spatialRuntime = runtime;
+        state.temporalTracker = new runtime.TemporalEvidenceTracker();
+        return runtime;
+      });
+    }
+    return state.spatialRuntimePromise;
+  }
+
   async function ensurePoseLandmarker() {
     if (state.poseLandmarker) return state.poseLandmarker;
     if (state.poseModelPromise) return state.poseModelPromise;
     state.poseModelPromise = (async () => {
-      const visionModule = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.3/+esm');
-      const vision = await visionModule.FilesetResolver.forVisionTasks(
-        'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.3/wasm'
-      );
+      const { visionModule, vision } = await ensureVisionRuntime();
       const options = {
         baseOptions: {
           modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task',
@@ -141,11 +243,42 @@
     }
   }
 
+  async function ensureObjectDetector() {
+    if (state.objectDetector) return state.objectDetector;
+    if (state.objectModelPromise) return state.objectModelPromise;
+    state.objectModelPromise = (async () => {
+      const { visionModule, vision } = await ensureVisionRuntime();
+      const options = {
+        baseOptions: {
+          modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/int8/1/efficientdet_lite0.tflite',
+          delegate: 'GPU'
+        },
+        runningMode: 'VIDEO',
+        maxResults: 12,
+        scoreThreshold: 0.35,
+        categoryAllowlist: ['tv', 'laptop', 'chair', 'dining table', 'keyboard', 'mouse', 'cup', 'bottle', 'book', 'cell phone']
+      };
+      try {
+        state.objectDetector = await visionModule.ObjectDetector.createFromOptions(vision, options);
+      } catch (gpuError) {
+        delete options.baseOptions.delegate;
+        state.objectDetector = await visionModule.ObjectDetector.createFromOptions(vision, options);
+      }
+      return state.objectDetector;
+    })();
+    try {
+      return await state.objectModelPromise;
+    } catch (error) {
+      state.objectModelPromise = null;
+      throw error;
+    }
+  }
+
   async function ensurePostureClassifier() {
     if (state.postureModel && state.postureRuntime) return state.postureModel;
     if (state.postureModelPromise) return state.postureModelPromise;
     const runtimeUrl = appContext ? `${appContext}/assets/js/posture-inference.mjs` : './posture-inference.mjs';
-    const modelUrl = appContext ? `${appContext}/assets/models/posture-classifiers-v1.json` : './models/posture-classifiers-v1.json';
+    const modelUrl = `${appContext}/assets/models/posture-classifiers-v1.json`;
     state.postureModelPromise = Promise.all([
       import(runtimeUrl),
       fetch(modelUrl).then((response) => {
@@ -172,6 +305,30 @@
     updateVisionMetric('#confidenceText', '—');
     const bar = $('#confidenceBar');
     if (bar) bar.style.width = '0%';
+    state.latestPosture = null;
+  }
+
+  function formatDuration(milliseconds) {
+    const seconds = Math.max(0, Math.round((milliseconds || 0) / 1000));
+    if (seconds < 60) return `${seconds}秒`;
+    return `${Math.floor(seconds / 60)}分${String(seconds % 60).padStart(2, '0')}秒`;
+  }
+
+  function updateTemporalEvidence(label, confidence, timestamp) {
+    if (!state.temporalTracker) return;
+    state.temporalSnapshot = state.temporalTracker.update(label, confidence, timestamp);
+    const current = state.temporalSnapshot.current;
+    const total = state.temporalSnapshot.totals[label] || 0;
+    updateVisionMetric('#temporalMetric', current
+      ? `${POSTURE_LABELS[current.label] || current.label}持续 ${formatDuration(current.durationMs)}`
+      : '时序事件等待中');
+    updateVisionMetric('#sessionBehavior', `${POSTURE_LABELS[label] || label}累计 ${formatDuration(total)}`);
+    if (state.sessionStartedAt) {
+      updateVisionMetric('#taskDuration', `当前会话：${formatDuration(Date.now() - state.sessionStartedAt)}`);
+    }
+    updateVisionMetric('#interruptReason', current && current.durationMs >= 5000
+      ? `“${POSTURE_LABELS[current.label] || current.label}”已持续 ${formatDuration(current.durationMs)}，此时显示一条可忽略建议。`
+      : '尚未达到持续触发阈值，不打断当前任务。');
   }
 
   function applyPostureInference(landmarks, timestamp) {
@@ -180,6 +337,8 @@
     const prediction = state.postureRuntime.classifyPose(state.postureModel, landmarks);
     const upper = prediction.upper;
     const lower = prediction.lower;
+    state.latestPosture = { upper, lower, at: Date.now() };
+    updateTemporalEvidence(upper.label, upper.confidence, timestamp);
     const confidence = Math.round(upper.confidence * 100);
     updateVisionMetric('#confidenceText', `${confidence}%`);
     const bar = $('#confidenceBar');
@@ -214,6 +373,53 @@
     $('#agentReason').textContent = `${POSTURE_GUIDANCE[upper.label]} 这是基于关键点关系的非医疗建议，原始画面仍只在本机处理。`;
   }
 
+  function renderObjects(context, width, height) {
+    if (!context || !state.objectDetections.length || $('#scene')?.classList.contains('hide-objects')) return;
+    context.save();
+    context.font = `${Math.max(14, Math.round(width / 70))}px "Microsoft YaHei", sans-serif`;
+    context.textBaseline = 'top';
+    state.objectDetections.forEach((item, index) => {
+      const x = item.box.x * width;
+      const y = item.box.y * height;
+      const boxWidth = item.box.width * width;
+      const boxHeight = item.box.height * height;
+      const label = `${item.label} ${Math.round(item.score * 100)}%`;
+      context.strokeStyle = index % 2 ? '#87669b' : '#e0a800';
+      context.fillStyle = 'rgba(251, 248, 241, .92)';
+      context.lineWidth = Math.max(2, width / 500);
+      context.setLineDash(index % 2 ? [9, 5] : [15, 4, 3, 4]);
+      context.strokeRect(x, y, boxWidth, boxHeight);
+      const textWidth = context.measureText(label).width + 14;
+      const textY = Math.max(0, y - 24);
+      context.fillRect(x, textY, textWidth, 23);
+      context.fillStyle = '#171717';
+      context.fillText(label, x + 7, textY + 3);
+    });
+    context.restore();
+  }
+
+  function updateSpatialEvidence() {
+    if (!state.spatialRuntime) return;
+    const objectsCopy = state.objectDetections;
+    updateVisionMetric('#objectMetric', objectsCopy.length
+      ? `物体 ${objectsCopy.length}：${state.spatialRuntime.summarizeObjects(objectsCopy)}`
+      : '支持的工作区物体 0');
+    state.spatialRelations = state.latestLandmarks
+      ? state.spatialRuntime.inferSpatialRelations(state.latestLandmarks, objectsCopy)
+      : [];
+    const review = state.spatialRelations.find((item) => item.severity === 'review');
+    const relation = review || state.spatialRelations[0];
+    updateVisionMetric('#relationMetric', relation ? relation.label : '等待人–物关系');
+    updateVisionMetric('#spatialSummary', relation ? relation.label : '尚未建立关系');
+    updateVisionMetric('#spatialSummaryDetail', relation
+      ? `${relation.evidence}；置信度 ${Math.round(relation.confidence * 100)}%`
+      : '需要同时看到人体和支持的工作区物体');
+    if (review && (!state.latestPosture || state.latestPosture.upper.label === 'TUP')) {
+      $('#agentFinding').textContent = review.label;
+      $('#agentReason').textContent = `${review.evidence}。${review.recommendation} 这是二维单目证据，不声称真实厘米距离。`;
+    }
+  }
+
   function setLiveStage(active) {
     if (liveVisionStage) liveVisionStage.hidden = !active;
     if (scenePlaceholder) scenePlaceholder.hidden = active;
@@ -222,8 +428,8 @@
     if (startCameraBtn) startCameraBtn.setAttribute('aria-pressed', String(active && state.visionMode === 'camera'));
     const objectOverlay = $('[data-overlay="objects"]');
     if (objectOverlay) {
-      objectOverlay.disabled = active;
-      objectOverlay.title = active ? '当前真实输入仅启用 MediaPipe 姿态模型，不虚构物体检测结果' : '';
+      objectOverlay.disabled = false;
+      objectOverlay.title = active ? '显示或隐藏 EfficientDet 真实检测框' : '';
     }
   }
 
@@ -233,6 +439,9 @@
     updateVisionMetric('#shoulderMetric', '肩线角度 —');
     updateVisionMetric('#visionPoseMetric', '姿态关键点 —');
     updateVisionMetric('#visionFpsMetric', '分析帧率 —');
+    updateVisionMetric('#objectMetric', '工作区物体 —');
+    updateVisionMetric('#relationMetric', '等待人–物关系');
+    updateVisionMetric('#temporalMetric', '时序事件等待中');
   }
 
   function stopVisionInput({ announce = true } = {}) {
@@ -261,6 +470,14 @@
     state.paused = false;
     state.lastVideoTime = -1;
     state.inferenceFrames = 0;
+    state.lastObjectInferenceAt = 0;
+    state.objectDetections = [];
+    state.latestLandmarks = null;
+    state.spatialRelations = [];
+    if (state.temporalTracker) {
+      state.temporalTracker.close(performance.now());
+      state.temporalSnapshot = state.temporalTracker.snapshot(performance.now());
+    }
     resetPostureInference();
     setLiveStage(false);
     resetVisionMetrics();
@@ -277,6 +494,8 @@
       pauseBtn.disabled = true;
     }
     updateVisionMetric('#visionStatusPill', '等待视觉输入');
+    updateVisionMetric('#taskDuration', '当前会话：等待真实输入');
+    state.sessionStartedAt = null;
     if (videoFileInput) videoFileInput.value = '';
     if (announce) toast('视觉输入已停止，摄像头轨道与视频缓存已释放。');
   }
@@ -301,10 +520,14 @@
     context.clearRect(0, 0, width, height);
     const landmarks = result?.landmarks?.[0];
     if (!landmarks) {
+      state.latestLandmarks = null;
       updateVisionMetric('#poseMetric', '画面中未检测到人体');
       updateVisionMetric('#visionPoseMetric', '姿态关键点 0');
+      renderObjects(context, width, height);
+      updateSpatialEvidence();
       return;
     }
+    state.latestLandmarks = landmarks;
 
     context.lineCap = 'round';
     context.lineJoin = 'round';
@@ -327,6 +550,7 @@
       context.fill();
       context.stroke();
     });
+    renderObjects(context, width, height);
 
     const leftShoulder = landmarks[11];
     const rightShoulder = landmarks[12];
@@ -351,6 +575,7 @@
     updateVisionMetric('#neckMetric', neckAngle == null ? '头颈偏移 —' : `头颈偏移 ${neckAngle}°`);
     updateVisionMetric('#shoulderMetric', shoulderAngle == null ? '肩线角度 —' : `肩线角度 ${shoulderAngle}°`);
     applyPostureInference(landmarks, performance.now());
+    updateSpatialEvidence();
     if (neckAngle != null && !state.postureModel) {
       $('#agentFinding').textContent = neckAngle >= 12 ? '真实画面中检测到头部相对肩线偏移' : '真实画面中的头肩关系较稳定';
       $('#agentReason').textContent = `当前帧来自${state.visionMode === 'camera' ? '摄像头' : '导入视频'}，MediaPipe 估计头颈偏移约 ${neckAngle}°、肩线约 ${shoulderAngle ?? '—'}°。这是二维姿态线索，不是医疗诊断；你可以暂停、纠正或更换视角。`;
@@ -366,6 +591,14 @@
       if (state.poseLandmarker) {
         try {
           renderPose(state.poseLandmarker.detectForVideo(visionVideo, performance.now()));
+          if (state.objectDetector && timestamp - state.lastObjectInferenceAt >= 500) {
+            state.lastObjectInferenceAt = timestamp;
+            const rawObjects = state.objectDetector.detectForVideo(visionVideo, performance.now());
+            state.objectDetections = state.spatialRuntime
+              ? state.spatialRuntime.normalizeDetections(rawObjects, visionVideo.videoWidth, visionVideo.videoHeight)
+              : [];
+            updateSpatialEvidence();
+          }
           state.inferenceFrames += 1;
           const elapsed = timestamp - state.inferenceWindowStarted;
           if (elapsed >= 1000) {
@@ -387,6 +620,11 @@
     state.lastVideoTime = -1;
     state.inferenceFrames = 0;
     state.inferenceWindowStarted = performance.now();
+    state.sessionStartedAt = Date.now();
+    state.lastObjectInferenceAt = 0;
+    state.objectDetections = [];
+    state.spatialRelations = [];
+    if (state.temporalTracker) state.temporalTracker.reset();
     setLiveStage(true);
     updateVisionMetric('#visionSourceMetric', label);
     updateVisionMetric('#visionSummary', mode === 'camera' ? '摄像头在线' : '视频已导入');
@@ -411,6 +649,15 @@
     });
     ensurePostureClassifier().catch(() => {
       toast('MediaPipe 仍可工作，但训练后的姿态分类器没有加载成功。', 3600);
+    });
+    ensureSpatialRuntime().then(() => ensureObjectDetector()).then(() => {
+      if (state.visionMode !== mode) return;
+      updateVisionMetric('#objectMetric', 'EfficientDet 已加载，等待物体');
+      toast('真实物体检测已启用，检测框与原始画面一样只在浏览器内处理。', 3600);
+    }).catch(() => {
+      if (state.visionMode !== mode) return;
+      updateVisionMetric('#objectMetric', '物体模型加载失败');
+      toast('姿态分析仍可使用，物体检测模型暂未加载。', 3600);
     });
   }
 
@@ -540,9 +787,10 @@
     <h2 id="modalTitle">你的数据，你来决定</h2>
     <p>摄像头或导入视频只在当前浏览器内处理。停止输入时会立即关闭摄像头轨道并释放本地视频缓存；保存任何实验结论前仍需你的确认。</p>
     <div class="privacy-options">
-      <label><span><b>实时画面分析</b><small>仅在当前会话处理</small></span><input type="checkbox" checked></label>
-      <label><span><b>保存实验结果</b><small>保存前必须由你确认</small></span><input type="checkbox" checked></label>
-      <label><span><b>个性化记忆</b><small>可随时停用或删除</small></span><input type="checkbox" checked></label>
+      <label><span><b>实时画面分析</b><small>仅在当前会话处理</small></span><input id="privacyVision" type="checkbox" checked disabled></label>
+      <label><span><b>保存实验结果</b><small>保存前必须由你确认</small></span><input id="privacyExperiments" type="checkbox" ${state.localProfile?.privacy.saveExperiments ? 'checked' : ''}></label>
+      <label><span><b>个性化记忆</b><small>可随时停用或删除</small></span><input id="privacyPersonalization" type="checkbox" ${state.localProfile?.privacy.personalization ? 'checked' : ''}></label>
+      <label><span><b>联邦学习</b><small>默认关闭；仅显式选择加入</small></span><input id="privacyFederated" type="checkbox" ${state.localProfile?.privacy.federatedOptIn ? 'checked' : ''}></label>
     </div>
     <div class="modal-actions privacy-actions">
       <button class="secondary-btn" data-modal-action="stop-camera" type="button">停止摄像头</button>
@@ -598,7 +846,7 @@
     },
     cup: {
       title: '水杯位于惯用手一侧',
-      reason: '水杯距离右手约 31 cm，当前仍在舒适可达区。除非你希望保留右侧手写区域，否则无需主动调整。'
+      reason: '只能比较水杯与手腕在二维画面中的相对距离，单目摄像头不能给出真实厘米。若需要频繁使用，可在预览中将它移近。'
     },
     chair: {
       title: '座椅状态已识别，尚无结论',
@@ -635,12 +883,27 @@
     button.setAttribute('aria-pressed', 'true');
     $('#agentFinding').textContent = `用户已纠正：${copy[0]}`;
     $('#agentReason').textContent = copy[1];
+    state.sessionCorrections.push({
+      kind: key,
+      posture: state.latestPosture?.upper?.label || null,
+      relations: state.spatialRelations.map((item) => item.type),
+      createdAt: new Date().toISOString()
+    });
     toast(copy[1], 3200);
   });
 
   $('#evidenceBtn')?.addEventListener('click', () => {
     const hasLiveEvidence = Boolean(state.visionMode);
     const source = state.visionMode === 'camera' ? '实时摄像头' : state.visionMode === 'file' ? '本地视频' : '未连接';
+    const objectEvidence = state.objectDetections.length
+      ? state.objectDetections.slice(0, 6).map((item) => `${item.label} ${Math.round(item.score * 100)}%`).join('、')
+      : '尚未检测到支持的工作区物体';
+    const relationEvidence = state.spatialRelations.length
+      ? state.spatialRelations.slice(0, 5).map((item) => `${item.label}：${item.evidence}`).join('；')
+      : '尚未建立可报告的人–物关系';
+    const temporalEvidence = state.temporalSnapshot?.current
+      ? `${POSTURE_LABELS[state.temporalSnapshot.current.label] || state.temporalSnapshot.current.label}持续 ${formatDuration(state.temporalSnapshot.current.durationMs)}`
+      : '尚未形成持续行为事件';
     openModal(`
       <span class="modal-kicker">REAL VISUAL EVIDENCE</span>
       <h2 id="modalTitle">当前判断使用了什么真实证据？</h2>
@@ -650,7 +913,10 @@
           <li><b>输入来源</b><span>${hasLiveEvidence ? `${escapeHtml(source)}，原始画面未上传` : '尚未启用摄像头或导入视频'}</span></li>
           <li><b>姿态检测</b><span>${escapeHtml($('#poseMetric')?.textContent || '无检测结果')}</span></li>
           <li><b>头肩线索</b><span>${escapeHtml([$('#neckMetric')?.textContent, $('#shoulderMetric')?.textContent].filter(Boolean).join(' · ') || '无检测结果')}</span></li>
-          <li class="uncertain"><b>仍不确定</b><span>${hasLiveEvidence ? '二维单视角不能确认真实距离、屏幕高度或长期健康影响' : '没有真实视觉输入时，系统不会声称已经观察你的姿态'}</span></li>
+          <li><b>真实物体检测</b><span>${escapeHtml(objectEvidence)}</span></li>
+          <li><b>人–物关系</b><span>${escapeHtml(relationEvidence)}</span></li>
+          <li><b>时序证据</b><span>${escapeHtml(temporalEvidence)}</span></li>
+          <li class="uncertain"><b>仍不确定</b><span>${hasLiveEvidence ? '二维单视角不能确认真实厘米距离、深度、力量或长期健康影响' : '没有真实视觉输入时，系统不会声称已经观察你的姿态'}</span></li>
         </ol>
       </div>
       <p class="modal-note">MediaPipe 本地姿态估计 · 可暂停、纠正或立即停止，不是医疗诊断。</p>
@@ -658,7 +924,16 @@
   });
 
   $('#previewBtn')?.addEventListener('click', () => {
-    toast('已根据你的任务与空间限制生成 2 个可撤销方案。');
+    const screenRelation = state.spatialRelations.find((item) => item.id === 'eye-screen-height');
+    if (screenRelation) {
+      const offset = Math.abs(screenRelation.measures?.verticalOffsetShoulderWidths || 0);
+      planData.a.height = Math.max(4, Math.min(20, Math.round(offset * 10)));
+      planData.a.summary = screenRelation.type === 'screen_above_eye' ? '降低屏幕的相对预览' : '抬高屏幕的相对预览';
+      selectPlan('a');
+      toast(`已使用真实关系证据生成预览：${screenRelation.evidence}。`);
+    } else {
+      toast('尚未同时检测到眼部与屏幕；已进入手动相对预览，不声称真实厘米调整量。', 3800);
+    }
     window.setTimeout(() => showView('design'), 360);
   });
 
@@ -686,13 +961,22 @@
         body: JSON.stringify({
           message: value,
           context: {
-            task: '深度学习与论文写作，已持续 42 分钟',
+            task: state.sessionStartedAt ? `当前视觉会话已持续 ${formatDuration(Date.now() - state.sessionStartedAt)}` : '当前尚未开始视觉会话',
             visualSource: state.visionMode === 'camera' ? '用户授权的实时摄像头' : state.visionMode === 'file' ? '用户导入的本地视频' : '尚无真实视觉输入',
             observations: state.visionMode ? [
               $('#poseMetric')?.textContent || '姿态检测状态未知',
               $('#neckMetric')?.textContent || '头颈偏移未知',
               $('#shoulderMetric')?.textContent || '肩线角度未知'
             ] : ['尚未启用摄像头或导入视频，不能声称已观察真实姿态'],
+            objects: state.objectDetections.map((item) => ({
+              type: item.type, label: item.label, confidence: Number(item.score.toFixed(3)), box: item.box
+            })),
+            spatialRelations: state.spatialRelations.map((item) => ({
+              type: item.type, label: item.label, severity: item.severity,
+              confidence: Number(item.confidence.toFixed(3)), evidence: item.evidence
+            })),
+            temporalEvidence: state.temporalSnapshot,
+            evidenceBoundary: '二维单目画面不提供真实厘米深度；不得生成医疗诊断',
             userControl: '用户要求方案可比较、可纠正、可撤销'
           }
         })
@@ -737,6 +1021,19 @@
     const steps = $$('.cal-step');
     const activeIndex = steps.findIndex((item) => item.classList.contains('active'));
     const current = steps[Math.max(0, activeIndex)];
+    if (!state.latestLandmarks || !state.spatialRuntime) {
+      toast('请先在“实时空间感知”启用摄像头或导入视频，再采集真实关键点。', 3800);
+      return;
+    }
+    const action = $('b', current)?.textContent || `action-${activeIndex + 1}`;
+    state.calibrationSamples.push({
+      action,
+      capturedAt: new Date().toISOString(),
+      landmarks: state.latestLandmarks.map((point) => ({
+        x: point.x, y: point.y, z: point.z, visibility: point.visibility
+      }))
+    });
+    state.pendingCalibration = state.spatialRuntime.deriveBodyProfile(state.calibrationSamples);
     current?.classList.remove('active');
     current?.classList.add('done');
     const marker = $('i', current);
@@ -746,9 +1043,20 @@
       next.classList.add('active');
       toast('动作已采集，继续完成下一项。');
     } else {
-      event.currentTarget.textContent = '校准已完成';
+      event.currentTarget.textContent = '等待保存确认';
       event.currentTarget.disabled = true;
-      toast('个人活动范围已更新；保存前仍需你的确认。');
+      const profile = state.pendingCalibration;
+      openModal(`
+        <span class="modal-kicker">LOCAL BODY CALIBRATION</span>
+        <h2 id="modalTitle">保存本地个人校准？</h2>
+        <p>已从 ${profile.sampleCount} 次真实 MediaPipe 关键点采集中计算归一化身体比例。原始视频和关键点序列不会写入记忆。</p>
+        <div class="modal-list">
+          <div><b>肩宽比例</b><span>${profile.shoulderWidthNorm?.toFixed(3) || '无法计算'}</span></div>
+          <div><b>左/右手臂触达比例</b><span>${profile.leftReachNorm?.toFixed(3) || '—'} / ${profile.rightReachNorm?.toFixed(3) || '—'}</span></div>
+          <div><b>数据位置</b><span>当前浏览器 localStorage</span></div>
+        </div>
+        <div class="modal-actions"><button class="secondary-btn" data-modal-action="discard-calibration" type="button">不保存</button><button class="primary-btn" data-modal-action="save-calibration" type="button">确认保存</button></div>
+      `);
     }
   });
 
@@ -770,8 +1078,8 @@
   function updateMonitorHeight(value, fixedAngle) {
     const amount = Number(value);
     const angle = fixedAngle ?? Math.max(4, Math.round(22 - amount * 1.15));
-    $('#heightValue').textContent = `+${amount} cm`;
-    $('#angleValue').textContent = `${angle}°`;
+    $('#heightValue').textContent = `+${amount}% 画面高度`;
+    $('#angleValue').textContent = `偏移级别 ${angle}`;
     $('#compareScene')?.style.setProperty('--monitor-lift', `${amount * 2.1}px`);
   }
 
@@ -851,13 +1159,55 @@
     state.timerHandle = null;
   }
 
+  function temporalRatio(snapshot, baselineTotals = null) {
+    const totals = snapshot?.totals || {};
+    const entries = Object.entries(totals).map(([label, value]) => [label, Math.max(0, value - (baselineTotals?.[label] || 0))]);
+    const total = entries.reduce((sum, item) => sum + item[1], 0);
+    const nonNeutral = entries.filter(([label]) => label !== 'TUP').reduce((sum, item) => sum + item[1], 0);
+    return { total, nonNeutral, ratio: total > 0 ? nonNeutral / total : null };
+  }
+
+  function renderExperimentEvidence(result) {
+    const baselinePercent = result.baseline.ratio == null ? null : Math.round(result.baseline.ratio * 100);
+    const candidatePercent = result.candidate.ratio == null ? null : Math.round(result.candidate.ratio * 100);
+    $('#baselinePostureBar')?.style.setProperty('width', `${baselinePercent || 0}%`);
+    $('#candidatePostureBar')?.style.setProperty('width', `${candidatePercent || 0}%`);
+    updateVisionMetric('#baselinePostureValue', baselinePercent == null ? '基线：证据不足' : `基线：${baselinePercent}%`);
+    updateVisionMetric('#candidatePostureValue', candidatePercent == null ? '方案：证据不足' : `方案：${candidatePercent}%`);
+    const relationCount = state.spatialRelations.length;
+    $('#relationEvidenceBar')?.style.setProperty('width', `${Math.min(100, relationCount * 18)}%`);
+    updateVisionMetric('#relationEvidenceValue', `当前有 ${relationCount} 条真实二维关系证据`);
+    if (Number.isFinite(result.comfort)) {
+      $('#comfortBar')?.style.setProperty('width', `${result.comfort * 10}%`);
+      updateVisionMetric('#comfortValue', `用户评分 ${result.comfort}/10`);
+    }
+  }
+
   function finishExperiment() {
     stopTimer();
-    state.experimentPhase = 'confirm';
-    $('#experimentState').textContent = '等待用户确认';
-    $('#experimentBtn').textContent = '确认方案 A 并更新记忆';
-    $('#experimentBtn').classList.add('confirm');
-    toast('比较已完成：请确认是否把结果写入个人记忆。', 3400);
+    const baselineTotals = state.experimentBaseline?.snapshot?.totals || {};
+    state.experimentResult = {
+      id: `experiment-${Date.now()}`,
+      plan: state.selectedPlan,
+      startedAt: state.experimentBaseline?.startedAt || null,
+      finishedAt: new Date().toISOString(),
+      baseline: temporalRatio(state.experimentBaseline?.snapshot),
+      candidate: temporalRatio(state.temporalSnapshot, baselineTotals),
+      relations: state.spatialRelations.map((item) => ({ type: item.type, label: item.label, confidence: item.confidence })),
+      comfort: null,
+      source: 'live-browser-evidence'
+    };
+    renderExperimentEvidence(state.experimentResult);
+    state.experimentPhase = 'rating';
+    $('#experimentState').textContent = '等待主观评分';
+    $('#experimentBtn').textContent = '填写舒适度并查看结果';
+    openModal(`
+      <span class="modal-kicker">SUBJECTIVE RATING</span>
+      <h2 id="modalTitle">这次短时体验感受如何？</h2>
+      <p>请输入当下主观舒适度。系统不会把这个短时评分解释为长期健康改善。</p>
+      <label class="modal-field"><span>舒适度 1–10</span><input id="comfortInput" type="range" min="1" max="10" value="5"></label>
+      <button class="primary-btn wide" data-modal-action="record-comfort" type="button">记录评分并查看结果</button>
+    `, '#comfortInput');
   }
 
   $('#experimentBtn')?.addEventListener('click', (event) => {
@@ -865,21 +1215,29 @@
       state.experimentPhase = 'running';
       $('#experimentState').textContent = '正在体验方案 A';
       event.currentTarget.textContent = '结束体验并查看结果';
+      state.experimentBaseline = { snapshot: JSON.parse(JSON.stringify(state.temporalSnapshot || { totals: {} })), startedAt: new Date().toISOString() };
       state.timerSeconds = 720;
       renderTimer();
       state.timerHandle = window.setInterval(() => {
-        state.timerSeconds = Math.max(0, state.timerSeconds - 15);
+        state.timerSeconds = Math.max(0, state.timerSeconds - 1);
         renderTimer();
         if (state.timerSeconds === 0) finishExperiment();
       }, 1000);
       toast('实验已开始；你可以随时提前结束。');
     } else if (state.experimentPhase === 'running') {
       finishExperiment();
+    } else if (state.experimentPhase === 'rating') {
+      finishExperiment();
     } else {
       state.experimentPhase = 'saved';
       event.currentTarget.textContent = '结果已保存';
       event.currentTarget.disabled = true;
-      toast('已保存“方案 A 更舒适”；你可以在记忆页面撤销。');
+      if (state.localProfile?.privacy.saveExperiments && state.experimentResult) {
+        state.localProfile.experiments.push(state.experimentResult);
+        persistLocalProfile();
+        addConfirmedMemory(`${planData[state.selectedPlan].label}的短时舒适度 ${state.experimentResult.comfort}/10`, '用户确认的自我实验', '来自真实会话的姿态时序与主观评分');
+      }
+      toast('已保存真实短时体验记录；你可以在记忆页面停用或删除。');
       window.setTimeout(() => showView('memory'), 420);
     }
   });
@@ -891,19 +1249,23 @@
     window.setTimeout(() => showView('sense'), 360);
   });
 
-  $$('.toggle').forEach((button) => button.addEventListener('click', () => {
-    button.classList.toggle('on');
-    const active = button.classList.contains('on');
-    button.setAttribute('aria-pressed', String(active));
-    const title = $('b', button.closest('.memory-item'))?.textContent || '该记忆';
-    toast(`${title}已${active ? '启用' : '停用'}。`);
-  }));
-
-  $('.delete-memory')?.addEventListener('click', (event) => {
-    const item = event.currentTarget.closest('.memory-item');
-    item?.classList.add('removing');
-    window.setTimeout(() => item?.remove(), 240);
-    toast('这条待确认推断已删除。');
+  document.addEventListener('click', (event) => {
+    const toggleId = event.target.closest('[data-memory-toggle]')?.dataset.memoryToggle;
+    const deleteId = event.target.closest('[data-memory-delete]')?.dataset.memoryDelete;
+    if (toggleId) {
+      const memory = state.localProfile?.memories.find((item) => item.id === toggleId);
+      if (!memory) return;
+      memory.enabled = !memory.enabled;
+      persistLocalProfile();
+      toast(`${memory.title}已${memory.enabled ? '启用' : '停用'}。`);
+    }
+    if (deleteId) {
+      const memory = state.localProfile?.memories.find((item) => item.id === deleteId);
+      if (!memory) return;
+      state.localProfile.memories = state.localProfile.memories.filter((item) => item.id !== deleteId);
+      persistLocalProfile();
+      toast(`已删除“${memory.title}”。`);
+    }
   });
 
   $('#clearMemory')?.addEventListener('click', () => openModal(`
@@ -918,16 +1280,26 @@
 
   $('#exportBtn')?.addEventListener('click', () => {
     const payload = {
-      product: 'HealthVerse concept prototype',
+      product: 'HealthVerse',
+      schema: 'healthverse.user-export.v1',
       exportedAt: new Date().toISOString(),
-      confirmedPreferences: ['桌面右侧保留手写区域', '方案 A 在短时体验中更舒适'],
-      note: 'Demo data only. Not medical advice.'
+      localProfile: state.localProfile,
+      currentSession: {
+        startedAt: state.sessionStartedAt ? new Date(state.sessionStartedAt).toISOString() : null,
+        source: state.visionMode,
+        posture: state.latestPosture,
+        objects: state.objectDetections,
+        spatialRelations: state.spatialRelations,
+        temporalEvidence: state.temporalSnapshot,
+        corrections: state.sessionCorrections
+      },
+      note: '原始视频和完整关键点序列不在此导出中。本系统不提供医疗诊断。'
     };
     const file = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(file);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'healthverse-demo-data.json';
+    link.download = 'healthverse-user-data.json';
     document.body.append(link);
     link.click();
     link.remove();
@@ -1012,13 +1384,24 @@
   modalBody?.addEventListener('click', (event) => {
     const action = event.target.closest('[data-modal-action]')?.dataset.modalAction;
     if (!action) return;
-    if (action === 'save-privacy') toast('隐私设置已保存。');
+    if (action === 'save-privacy') {
+      state.localProfile.privacy.saveExperiments = Boolean($('#privacyExperiments')?.checked);
+      state.localProfile.privacy.personalization = Boolean($('#privacyPersonalization')?.checked);
+      state.localProfile.privacy.federatedOptIn = Boolean($('#privacyFederated')?.checked);
+      persistLocalProfile();
+      toast('隐私设置已保存在当前浏览器。');
+    }
     if (action === 'stop-camera') {
       stopVisionInput();
     }
     if (action === 'delete-session') {
       stopVisionInput({ announce: false });
       state.appliedPlan = false;
+      state.sessionCorrections = [];
+      state.temporalTracker?.reset();
+      state.temporalSnapshot = null;
+      state.objectDetections = [];
+      state.spatialRelations = [];
       stopTimer();
       $$('.object-tag').forEach((tag) => tag.classList.remove('selected'));
       $('#agentFinding') && ($('#agentFinding').textContent = '本次会话数据已删除');
@@ -1031,12 +1414,47 @@
       if (value && copy) copy.textContent = `“${value}”`;
       toast('限制已更新，两个方案已重新比较。');
     }
+    if (action === 'save-calibration') {
+      state.localProfile.calibration = state.pendingCalibration;
+      state.pendingCalibration = null;
+      state.calibrationSamples = [];
+      persistLocalProfile();
+      const button = $('#captureBtn');
+      if (button) button.textContent = '校准已保存';
+      updateVisionMetric('#calibrationSummary', '已本地校准');
+      updateVisionMetric('#calibrationDetail', `${state.localProfile.calibration.sampleCount} 次真实关键点采集，仅保存归一化比例`);
+      addConfirmedMemory('个人活动范围已校准', '用户确认的本地校准', '仅保存归一化比例，不保存原始画面');
+      toast('个人校准已保存；原始画面和关键点序列未写入记忆。');
+    }
+    if (action === 'discard-calibration') {
+      state.pendingCalibration = null;
+      state.calibrationSamples = [];
+      const button = $('#captureBtn');
+      if (button) { button.disabled = false; button.textContent = '采集当前动作'; }
+      toast('本次校准已丢弃，没有写入本地记忆。');
+    }
+    if (action === 'record-comfort') {
+      const comfort = Number($('#comfortInput')?.value);
+      if (state.experimentResult && Number.isFinite(comfort)) {
+        state.experimentResult.comfort = comfort;
+        renderExperimentEvidence(state.experimentResult);
+        state.experimentPhase = 'confirm';
+        $('#experimentState').textContent = '等待用户确认';
+        $('#experimentBtn').textContent = `确认${planData[state.selectedPlan].label}并保存记录`;
+        $('#experimentBtn').classList.add('confirm');
+        toast('真实时序证据与主观评分已组合，请确认是否保存。');
+      }
+    }
     if (action === 'disable-memory') {
-      $$('.toggle').forEach((toggle) => toggle.classList.remove('on'));
+      state.localProfile.memories.forEach((memory) => { memory.enabled = false; });
+      persistLocalProfile();
       toast('全部记忆已停用，记录仍可恢复。');
     }
     if (action === 'delete-memory') {
-      $$('.memory-item').forEach((item) => item.remove());
+      state.localProfile.memories = [];
+      state.localProfile.experiments = [];
+      state.localProfile.calibration = null;
+      persistLocalProfile();
       toast('全部个人记忆已清空。');
     }
     closeModal();
@@ -1060,10 +1478,17 @@
   window.addEventListener('pagehide', () => {
     stopVisionInput({ announce: false });
     state.poseLandmarker?.close?.();
+    state.objectDetector?.close?.();
     stopTimer();
     window.clearInterval(state.storyboardHandle);
   });
 
+  state.localProfile = loadLocalProfile();
+  if (state.localProfile.calibration) {
+    updateVisionMetric('#calibrationSummary', '已本地校准');
+    updateVisionMetric('#calibrationDetail', `${state.localProfile.calibration.sampleCount} 次真实关键点采集，仅保存归一化比例`);
+  }
+  renderMemories();
   selectPlan('a');
   showView('sense');
 })();

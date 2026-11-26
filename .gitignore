@@ -8,6 +8,7 @@ target/
 .env.*
 !.env.example
 .claude/
+.playwright-cli/
 
 # Python caches and environments
 __pycache__/

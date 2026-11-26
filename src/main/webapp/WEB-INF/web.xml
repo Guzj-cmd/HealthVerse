@@ -31,6 +31,11 @@
         <welcome-file>public/index.jsp</welcome-file>
     </welcome-file-list>
 
+    <mime-mapping>
+        <extension>mjs</extension>
+        <mime-type>text/javascript</mime-type>
+    </mime-mapping>
+
     <session-config>
         <cookie-config>
             <http-only>true</http-only>
