@@ -2853,3 +2853,23 @@ body {
   background: #f1f5f6;
   color: #536b72;
 }
+
+/* One palette, including runtime HUD, consent note and transient feedback. */
+.vision-hud span,
+.vision-hud span:nth-child(1),
+.vision-hud span:nth-child(2),
+.vision-hud span:nth-child(3),
+.vision-hud span:nth-child(4),
+.vision-hud span:nth-child(5) {
+  background: #f1f5f6 !important;
+  color: #536b72;
+}
+.agent .consent-note,
+.toast {
+  border-color: #9fb3ba;
+  background: #f1f5f6;
+  color: #43585f;
+}
+.agent .consent-note { border-left-color: #9fb3ba; }
+.agent .consent-note span,
+.toast.show { color: #43585f; }

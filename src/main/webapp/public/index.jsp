@@ -9,7 +9,7 @@
   <link rel="icon" href="data:,">
   <title>HealthVerse · 个人健康 AI 工作台</title>
   <meta name="description" content="一个以视觉感知、空间协同设计和自我实验为核心的个人健康 AI 工作台概念原型。">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/healthverse.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/healthverse.css?v=20261126-cool-paper-2">
 </head>
 <body>
   <div class="app-shell">
@@ -403,6 +403,6 @@
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="${pageContext.request.contextPath}/assets/js/healthverse.js"></script>
+  <script src="${pageContext.request.contextPath}/assets/js/healthverse.js?v=20261126-cool-paper-2"></script>
 </body>
 </html>
